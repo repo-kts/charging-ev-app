@@ -9,6 +9,11 @@ import { NoticeModal } from './components/NoticeModal';
 import { HeroCarousel } from './components/HeroCarousel';
 import { BlogPage } from './components/BlogPage';
 import { ContactSalesForm } from './components/ContactSalesForm';
+import { PremiumChargingHubPage } from './components/PremiumChargingHubPage';
+import { EVInfraConsultancyPage } from './components/EVInfraConsultancyPage';
+import { ChargerSupplyPage } from './components/ChargerSupplyPage';
+import { CPMSPage } from './components/CPMSPage';
+import { OMServicesPage } from './components/OMServicesPage';
 import { trackPageView } from './lib/track';
 import { api } from './lib/axios';
 import professorImg from './assets/Screenshot_2026-05-08_003804-removebg-preview.png'
@@ -220,7 +225,7 @@ const WHY_SLIDES = [
   }
 ];
 
-type Page = 'home' | 'find-stations' | 'privacy-policy' | 'terms-conditions' | 'refund-policy' | 'about-us' | 'blog' | 'contact-us';
+type Page = 'home' | 'find-stations' | 'privacy-policy' | 'terms-conditions' | 'refund-policy' | 'about-us' | 'blog' | 'contact-us' | 'premium-charging-hub' | 'ev-infra-consultancy' | 'charger-supply' | 'cpms' | 'om-services';
 const PAGE_TO_PATH: Record<Page, string> = {
   'home': '/',
   'find-stations': '/find-stations',
@@ -230,6 +235,11 @@ const PAGE_TO_PATH: Record<Page, string> = {
   'terms-conditions': '/terms-conditions',
   'refund-policy': '/refund-policy',
   'contact-us': '/contact-us',
+  'premium-charging-hub': '/services/premium-charging-hub',
+  'ev-infra-consultancy': '/services/ev-infra-consultancy',
+  'charger-supply': '/services/charger-supply',
+  'cpms': '/services/cpms',
+  'om-services': '/services/om-services',
 };
 function pathToPage(path: string): Page {
   const normalized = (path || '/').replace(/\/+$/, '') || '/';
@@ -282,7 +292,7 @@ export default function App() {
   // Auto-rotate Services showcase every 4s; timer resets on manual change (mobile + desktop)
   useEffect(() => {
     const t = setTimeout(() => {
-      setActiveService(prev => (prev + 1) % 4);
+      setActiveService(prev => (prev + 1) % 5);
     }, 4000);
     return () => clearTimeout(t);
   }, [activeService, isMobile]);
@@ -493,6 +503,21 @@ export default function App() {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else if (target === 'contact-us') {
       setPage('contact-us');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else if (target === 'premium-charging-hub') {
+      setPage('premium-charging-hub');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else if (target === 'ev-infra-consultancy') {
+      setPage('ev-infra-consultancy');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else if (target === 'charger-supply') {
+      setPage('charger-supply');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else if (target === 'cpms') {
+      setPage('cpms');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else if (target === 'om-services') {
+      setPage('om-services');
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
       setPage('home');
@@ -980,33 +1005,81 @@ export default function App() {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
+            style={{
+              overflowY: 'auto',
+              justifyContent: 'flex-start',
+              paddingTop: 80,
+              paddingBottom: 40,
+            }}
           >
             <button
-              style={{ position: 'absolute', top: 24, right: 24, background: 'none', border: 'none', color: TEXT, cursor: 'pointer' }}
+              style={{ position: 'absolute', top: 24, right: 24, background: 'none', border: 'none', color: TEXT, cursor: 'pointer', zIndex: 10 }}
               onClick={() => setShowMobileMenu(false)}
             >
               <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
             </button>
 
-            {[
-              { label: 'Find stations', target: 'find-stations' },
-              { label: 'About us', target: 'about-us' },
-              { label: 'Blog', target: 'blog' },
-            ].map(l => (
-              <a
-                key={l.label}
-                href="#"
-                className="mobile-menu-link"
-                onClick={(e) => { e.preventDefault(); navigate(l.target as any); setShowMobileMenu(false); }}
-              >
-                {l.label}
-              </a>
-            ))}
+            {/* Main Links */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 20, alignItems: 'center', width: '100%' }}>
+              {[
+                { label: 'Find stations', target: 'find-stations' },
+                { label: 'About us', target: 'about-us' },
+                { label: 'Blog', target: 'blog' },
+              ].map(l => (
+                <a
+                  key={l.label}
+                  href="#"
+                  className="mobile-menu-link"
+                  onClick={(e) => { e.preventDefault(); navigate(l.target as any); setShowMobileMenu(false); }}
+                  style={{ fontSize: '1.4rem', fontWeight: 600 }}
+                >
+                  {l.label}
+                </a>
+              ))}
+            </div>
+
+            {/* Services Links Group */}
+            <div style={{ width: '100%', maxWidth: 280, marginTop: 12, padding: '20px 0', borderTop: '1px solid rgba(255,255,255,0.08)', borderBottom: '1px solid rgba(255,255,255,0.08)', display: 'flex', flexDirection: 'column', gap: 14 }}>
+              <div style={{ color: ACCENT, fontSize: '0.68rem', fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', textAlign: 'center', marginBottom: 4 }}>
+                Our Services
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                {[
+                  { label: 'Charging Solutions', target: 'premium-charging-hub' },
+                  { label: 'User Convenience', target: 'cpms' },
+                  { label: 'Energy Management', target: 'ev-infra-consultancy' },
+                  { label: 'Hardware Supply', target: 'charger-supply' },
+                  { label: 'Maintenance & Support', target: 'om-services' }
+                ].map(srv => (
+                  <a
+                    key={srv.target}
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      navigate(srv.target);
+                      setShowMobileMenu(false);
+                    }}
+                    style={{
+                      color: TEXT_DIM,
+                      textDecoration: 'none',
+                      fontSize: '0.95rem',
+                      fontWeight: 500,
+                      textAlign: 'center',
+                      transition: 'color 0.2s',
+                    }}
+                    onMouseEnter={(e: any) => e.target.style.color = TEXT}
+                    onMouseLeave={(e: any) => e.target.style.color = TEXT_DIM}
+                  >
+                    {srv.label}
+                  </a>
+                ))}
+              </div>
+            </div>
 
             <button
               className="btn-accent"
               onClick={() => { setShowContactForm(true); setShowMobileMenu(false); }}
-              style={{ marginTop: 20, padding: '16px 40px', fontSize: '1.1rem' }}
+              style={{ marginTop: 10, padding: '16px 40px', fontSize: '1.1rem' }}
             >
               Contact Us
             </button>
@@ -1618,6 +1691,7 @@ export default function App() {
                     desc: 'Level 2 charging at 240V — moderate speed, ideal for daily use and longer stops.',
                     features: ['Universal CCS · CHAdeMO · Type 2', '240V smart output', '4–8 hour full charge'],
                     tag: 'Daily use',
+                    target: 'premium-charging-hub',
                     icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" /></svg>,
                   },
                   {
@@ -1626,6 +1700,7 @@ export default function App() {
                     desc: 'Locate stations, start sessions, and pay seamlessly through the Trio app. Real-time availability with smart routing built in.',
                     features: ['Live station availability', 'In-app payments', 'Smart route planning'],
                     tag: 'One-tap',
+                    target: 'cpms',
                     icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><rect x="5" y="2" width="14" height="20" rx="2.5" ry="2.5" /><line x1="12" y1="18" x2="12" y2="18" /></svg>,
                   },
                   {
@@ -1634,14 +1709,25 @@ export default function App() {
                     desc: 'Hubs powered by 100% renewable energy with BESS stabilization for grid resilience and zero net emissions.',
                     features: ['100% renewable input', 'BESS grid stabilization', 'Zero carbon footprint'],
                     tag: 'Renewable',
+                    target: 'ev-infra-consultancy',
                     icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s-7-5-7-12a7 7 0 0 1 14 0c0 7-7 12-7 12z" /><path d="M9 9c1 2 3 3 6 3" /></svg>,
+                  },
+                  {
+                    short: 'Hardware',
+                    title: 'Hardware Supply',
+                    desc: 'Turnkey supply and installation — 60kW DC chargers, ACDB panels, industrial cabling, chemical earthing, and custom canopies.',
+                    features: ['Dual-gun CCS2 chargers', 'IP65-rated ACDB panels', 'Custom branded canopy'],
+                    tag: 'Turnkey',
+                    target: 'charger-supply',
+                    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="6" width="13" height="13" rx="2" /><path d="M16 10h3l2 3v5a1 1 0 0 1-1 1h-1" /><circle cx="7" cy="19" r="1.6" /><circle cx="17" cy="19" r="1.6" /></svg>,
                   },
                   {
                     short: 'Support',
                     title: 'Maintenance & Support',
-                    desc: '24/7 dedicated support with real-time telemetry and predictive maintenance, ensuring 99.99% uptime across the network.',
-                    features: ['24/7 expert response', 'Predictive maintenance', '99.99% uptime SLA'],
+                    desc: '24/7 O&M with tiered support, ≥97% uptime SLAs, certified field engineers, and audit-ready compliance reporting.',
+                    features: ['≥97% uptime SLA', 'Tiered L1 → L2 → L3 support', 'Compliance reporting'],
                     tag: '24 / 7',
+                    target: 'om-services',
                     icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6" /><path d="M21 19a2 2 0 0 1-2 2h-1v-6h3z" /><path d="M3 19a2 2 0 0 0 2 2h1v-6H3z" /></svg>,
                   },
                 ];
@@ -1661,9 +1747,40 @@ export default function App() {
                         Powering your fleet,<br /><span style={{ color: ACCENT }}>end to end.</span>
                       </h2>
                       <p style={{ color: TEXT_DIM, fontSize: '0.9rem', lineHeight: 1.55, marginBottom: 22 }}>
-                        Four integrated services that take your EV operation from grid to gateway.
+                        Five integrated services that take your EV operation from grid to gateway.
                       </p>
                     </motion.div>
+
+                    {/* Integrated eco-car charging animation iframe */}
+                    <div
+                      style={{
+                        position: 'relative',
+                        width: '100%',
+                        height: 220,
+                        overflow: 'hidden',
+                        borderRadius: 20,
+                        background: '#0a2620',
+                        boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
+                        marginTop: 12,
+                        marginBottom: 20,
+                        border: `1px solid ${BORDER_STRONG}`
+                      }}
+                    >
+                      <iframe
+                        src="/ev-eco-car.html"
+                        title="TRIO EV — Eco Charging"
+                        style={{
+                          width: '140%',
+                          height: '140%',
+                          position: 'absolute',
+                          top: '-20%',
+                          left: '-20%',
+                          border: 'none',
+                          display: 'block',
+                          background: '#0a2620',
+                        }}
+                      />
+                    </div>
 
                     {/* Hero showcase card — swipeable, slides up from below with subtle 3D tilt */}
                     <div style={{ position: 'relative', perspective: 1200, minHeight: 360, marginTop: 24 }}>
@@ -1745,6 +1862,43 @@ export default function App() {
                                 <span style={{ color: TEXT, fontSize: '0.84rem', lineHeight: 1.4 }}>{f}</span>
                               </motion.div>
                             ))}
+                          </div>
+
+                          {/* Explore Solutions CTA */}
+                          <div style={{ marginTop: 24 }}>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                navigate(current.target);
+                              }}
+                              style={{
+                                width: '100%',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                gap: 8,
+                                padding: '12px 20px',
+                                background: `linear-gradient(90deg, ${ACCENT}e0 0%, ${ACCENT_SOFT}e0 100%)`,
+                                border: 'none',
+                                borderRadius: 12,
+                                color: BG,
+                                fontSize: '0.88rem',
+                                fontWeight: 700,
+                                cursor: 'pointer',
+                                boxShadow: `0 4px 12px ${ACCENT}22`,
+                                fontFamily: 'Inter, sans-serif',
+                                transition: 'transform 0.2s',
+                              }}
+                              onMouseEnter={(e: any) => {
+                                e.currentTarget.style.transform = 'scale(1.02)';
+                              }}
+                              onMouseLeave={(e: any) => {
+                                e.currentTarget.style.transform = 'scale(1)';
+                              }}
+                            >
+                              Explore {current.short} Solutions
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                            </button>
                           </div>
                         </div>
                       </motion.div>
@@ -1835,10 +1989,11 @@ export default function App() {
 
                     {(() => {
                       const SERVICES = [
-                        { title: 'CHARGING SOLUTIONS', desc: 'We offer Level 2 charging, which provides a moderate charging speed at 240V, ideal for daily use and longer stops.' },
-                        { title: 'USER CONVENIENCE', desc: 'Locate stations, start charging, and pay seamlessly using our mobile app. Enjoy real-time availability and smart routing.' },
-                        { title: 'ENERGY MANAGEMENT', desc: 'Our hubs are powered by 100% renewable energy with BESS stabilization for grid resilience and zero carbon footprint.' },
-                        { title: 'MAINTENANCE AND SUPPORT', desc: '24/7 dedicated support team with real-time telemetry and predictive maintenance to ensure 99.99% uptime.' }
+                        { title: 'CHARGING SOLUTIONS', desc: 'Premium DC fast charging hubs with dedicated 60kW bays, structural canopies, and a hospitality lounge for drivers.' },
+                        { title: 'USER CONVENIENCE', desc: 'Cloud CPMS — live station discovery, in-app sessions, dynamic tariffs, multi-payment, and white-label driver experience.' },
+                        { title: 'ENERGY MANAGEMENT', desc: 'End-to-end infrastructure consultancy — site feasibility, load planning, solar + BESS integration, and grid interconnection.' },
+                        { title: 'HARDWARE SUPPLY', desc: 'Turnkey supply and installation — 60kW chargers, ACDB panels, industrial cabling, chemical earthing, and custom canopies.' },
+                        { title: 'MAINTENANCE & SUPPORT', desc: '24/7 O&M with tiered support, ≥97% uptime SLAs, certified field engineers, and audit-ready compliance reporting.' }
                       ];
                       return (
                         <div className="services-desc" style={{ paddingLeft: 12 }}>
@@ -1863,33 +2018,53 @@ export default function App() {
                     })()}
                   </div>
 
-                  {/* Right: compact clickable services list, evenly distributed within iframe height */}
+                  {/* Right: compact clickable services list — click navigates to dedicated page */}
                   <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: 460 }}>
                     {[
-                      { title: 'CHARGING SOLUTIONS' },
-                      { title: 'USER CONVENIENCE' },
-                      { title: 'ENERGY MANAGEMENT' },
-                      { title: 'MAINTENANCE AND SUPPORT' }
+                      { title: 'CHARGING SOLUTIONS', target: 'premium-charging-hub' },
+                      { title: 'USER CONVENIENCE', target: 'cpms' },
+                      { title: 'ENERGY MANAGEMENT', target: 'ev-infra-consultancy' },
+                      { title: 'HARDWARE SUPPLY', target: 'charger-supply' },
+                      { title: 'MAINTENANCE & SUPPORT', target: 'om-services' }
                     ].map((srv, idx) => {
                       const isActive = activeService === idx;
                       return (
                         <div
                           key={idx}
                           className="service-item"
-                          onClick={() => setActiveService(idx)}
+                          onClick={() => navigate(srv.target)}
+                          onMouseEnter={() => setActiveService(idx)}
                           style={{
-                            padding: '20px 28px',
+                            padding: '16px 28px',
                             cursor: 'pointer',
                             position: 'relative',
-                            borderBottom: idx === 3 ? 'none' : `1px solid rgba(255,255,255,0.06)`,
+                            borderBottom: idx === 4 ? 'none' : `1px solid rgba(255,255,255,0.06)`,
                             background: isActive ? `linear-gradient(90deg, ${ACCENT}14 0%, transparent 100%)` : 'transparent',
                             transition: 'all 0.3s ease',
                             borderLeft: isActive ? `4px solid ${ACCENT}` : '4px solid transparent',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            gap: 16,
                           }}
                         >
-                          <h4 style={{ fontSize: '1.15rem', fontWeight: 600, color: isActive ? ACCENT : '#ffffff', textTransform: 'uppercase', letterSpacing: -0.01, transition: 'color 0.3s ease' }}>
+                          <h4 style={{ fontSize: '1.15rem', fontWeight: 600, color: isActive ? ACCENT : '#ffffff', textTransform: 'uppercase', letterSpacing: -0.01, transition: 'color 0.3s ease', margin: 0 }}>
                             {srv.title}
                           </h4>
+                          <svg
+                            width="18"
+                            height="18"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke={isActive ? ACCENT : 'rgba(255,255,255,0.4)'}
+                            strokeWidth="2.2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            style={{ transition: 'all 0.3s ease', transform: isActive ? 'translateX(2px)' : 'translateX(0)', flexShrink: 0 }}
+                          >
+                            <line x1="5" y1="12" x2="19" y2="12" />
+                            <polyline points="12 5 19 12 12 19" />
+                          </svg>
                         </div>
                       );
                     })}
@@ -1899,37 +2074,7 @@ export default function App() {
               )}
             </section>
 
-            {/* Mobile-only EV-Eco animation — placed just above the Energy Synapse section */}
-            {isMobile && (
-              <section style={{ padding: '8px 20px 0', background: '#000' }}>
-                <div
-                  style={{
-                    position: 'relative',
-                    width: '100%',
-                    height: 260,
-                    overflow: 'hidden',
-                    borderRadius: 20,
-                    background: '#0a2620',
-                    boxShadow: '0 16px 40px rgba(0,0,0,0.45)',
-                  }}
-                >
-                  <iframe
-                    src="/ev-eco-car.html"
-                    title="TRIO EV — Eco Charging"
-                    style={{
-                      width: '140%',
-                      height: '140%',
-                      position: 'absolute',
-                      top: '-22%',
-                      left: '-20%',
-                      border: 'none',
-                      display: 'block',
-                      background: '#0a2620',
-                    }}
-                  />
-                </div>
-              </section>
-            )}
+
 
             {/* INDIA COVERAGE — operational dashboard */}
             {/* INDIA COVERAGE OPERATIONAL DASHBOARD (Integrated High-Fidelity Prototype) */}
@@ -3496,6 +3641,46 @@ export default function App() {
           >
             <BlogPage />
           </motion.div>
+        )}
+
+        {page === 'premium-charging-hub' && (
+          <PremiumChargingHubPage
+            isMobile={isMobile}
+            onPrimaryCta={() => navigate('find-stations')}
+            onSecondaryCta={() => navigate('contact-us')}
+          />
+        )}
+
+        {page === 'ev-infra-consultancy' && (
+          <EVInfraConsultancyPage
+            isMobile={isMobile}
+            onPrimaryCta={() => navigate('contact-us')}
+            onSecondaryCta={() => navigate('contact-us')}
+          />
+        )}
+
+        {page === 'charger-supply' && (
+          <ChargerSupplyPage
+            isMobile={isMobile}
+            onPrimaryCta={() => navigate('contact-us')}
+            onSecondaryCta={() => navigate('contact-us')}
+          />
+        )}
+
+        {page === 'cpms' && (
+          <CPMSPage
+            isMobile={isMobile}
+            onPrimaryCta={() => navigate('contact-us')}
+            onSecondaryCta={() => navigate('contact-us')}
+          />
+        )}
+
+        {page === 'om-services' && (
+          <OMServicesPage
+            isMobile={isMobile}
+            onPrimaryCta={() => navigate('contact-us')}
+            onSecondaryCta={() => navigate('contact-us')}
+          />
         )}
       </AnimatePresence>
 
