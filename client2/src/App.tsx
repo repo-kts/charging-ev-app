@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
-import logo from './assets/logo.png'
+import logo from './assets/TM_Secondary_1_JPEG-removebg-preview.png'
 import charger3d from './assets/charger-3d.png'
 import hub3d from './assets/Screenshot_2026-05-05_004406-removebg-preview.png'
 import serviceImg from './assets/Screenshot_2026-05-06_131630-removebg-preview-Picsart-AiImageEnhancer.png'
@@ -269,6 +269,7 @@ export default function App() {
   );
   const [showContactForm, setShowContactForm] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
+  const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
   const isMobile = useIsMobile(1024);
   const [searchQuery, setSearchQuery] = useState('');
   const [connFilter, setConnFilter] = useState('Any');
@@ -385,51 +386,51 @@ export default function App() {
         pointerEvents: 'auto',
       }}
     >
-    <motion.div
-      key="cluster-popup-inner"
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.95 }}
-      transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
-      style={{
-        width: '100%',
-        background: '#0B0F0D', border: `1px solid ${ACCENT}`, borderRadius: 14,
-        padding: isMobile ? 16 : 32,
-        boxShadow: `0 24px 64px rgba(0,0,0,0.8), 0 0 24px ${ACCENT}33`,
-      }}
-    >
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: isMobile ? 16 : 24, gap: 8 }}>
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ color: ACCENT, fontSize: isMobile ? '0.58rem' : '0.65rem', fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: isMobile ? 6 : 8 }}>{cluster.state} · {cluster.count === 1 ? 'STATION' : 'CLUSTER'}</div>
-          <h3 style={{ fontSize: isMobile ? '1.05rem' : '1.6rem', fontWeight: 700, color: '#fff', margin: 0, letterSpacing: -0.5, lineHeight: 1.2 }}>{cluster.count === 1 ? cluster.stations[0].name : `${cluster.count} stations in this area`}</h3>
-        </div>
-        <button onClick={onClose} style={{ background: 'rgba(255,255,255,0.05)', border: 'none', color: '#fff', cursor: 'pointer', width: 28, height: 28, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontSize: 18 }}>×</button>
-      </div>
-
-      <div style={{ display: 'flex', gap: isMobile ? 16 : 32, marginBottom: isMobile ? 14 : 24, paddingBottom: isMobile ? 14 : 24, borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-        <div>
-          <div style={{ fontSize: isMobile ? '1rem' : '1.4rem', fontWeight: 700, color: ACCENT }}>{cluster.totalKw}<span style={{ fontSize: isMobile ? '0.62rem' : '0.75rem', fontWeight: 500, color: TEXT_DIM, marginLeft: 4 }}>kW total</span></div>
-        </div>
-        <div>
-          <div style={{ fontSize: isMobile ? '1rem' : '1.4rem', fontWeight: 700, color: '#fff' }}>{Math.round(cluster.totalKw / cluster.count)}<span style={{ fontSize: isMobile ? '0.62rem' : '0.75rem', fontWeight: 500, color: TEXT_DIM, marginLeft: 4 }}>kW avg</span></div>
-        </div>
-      </div>
-
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 2, maxHeight: isMobile ? 180 : 240, overflowY: 'auto' }} className="custom-scrollbar">
-        {cluster.stations.map((s: any) => (
-          <div key={s.id} onClick={() => onPick(s)} style={{
-            display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer',
-            padding: isMobile ? '8px 10px' : '12px 16px', borderRadius: 8, transition: 'all 0.2s'
-          }}>
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ color: '#fff', fontSize: isMobile ? '0.82rem' : '0.9rem', fontWeight: 600 }}>{s.name}</div>
-              <div style={{ color: TEXT_DIM, fontSize: isMobile ? '0.62rem' : '0.7rem' }}>{s.id}</div>
-            </div>
-            <div style={{ color: ACCENT, fontWeight: 700, fontSize: isMobile ? '0.82rem' : '0.9rem' }}>{s.kw} kW</div>
+      <motion.div
+        key="cluster-popup-inner"
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.95 }}
+        transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+        style={{
+          width: '100%',
+          background: '#0B0F0D', border: `1px solid ${ACCENT}`, borderRadius: 14,
+          padding: isMobile ? 16 : 32,
+          boxShadow: `0 24px 64px rgba(0,0,0,0.8), 0 0 24px ${ACCENT}33`,
+        }}
+      >
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: isMobile ? 16 : 24, gap: 8 }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ color: ACCENT, fontSize: isMobile ? '0.58rem' : '0.65rem', fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: isMobile ? 6 : 8 }}>{cluster.state} · {cluster.count === 1 ? 'STATION' : 'CLUSTER'}</div>
+            <h3 style={{ fontSize: isMobile ? '1.05rem' : '1.6rem', fontWeight: 700, color: '#fff', margin: 0, letterSpacing: -0.5, lineHeight: 1.2 }}>{cluster.count === 1 ? cluster.stations[0].name : `${cluster.count} stations in this area`}</h3>
           </div>
-        ))}
-      </div>
-    </motion.div>
+          <button onClick={onClose} style={{ background: 'rgba(255,255,255,0.05)', border: 'none', color: '#fff', cursor: 'pointer', width: 28, height: 28, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontSize: 18 }}>×</button>
+        </div>
+
+        <div style={{ display: 'flex', gap: isMobile ? 16 : 32, marginBottom: isMobile ? 14 : 24, paddingBottom: isMobile ? 14 : 24, borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+          <div>
+            <div style={{ fontSize: isMobile ? '1rem' : '1.4rem', fontWeight: 700, color: ACCENT }}>{cluster.totalKw}<span style={{ fontSize: isMobile ? '0.62rem' : '0.75rem', fontWeight: 500, color: TEXT_DIM, marginLeft: 4 }}>kW total</span></div>
+          </div>
+          <div>
+            <div style={{ fontSize: isMobile ? '1rem' : '1.4rem', fontWeight: 700, color: '#fff' }}>{Math.round(cluster.totalKw / cluster.count)}<span style={{ fontSize: isMobile ? '0.62rem' : '0.75rem', fontWeight: 500, color: TEXT_DIM, marginLeft: 4 }}>kW avg</span></div>
+          </div>
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 2, maxHeight: isMobile ? 180 : 240, overflowY: 'auto' }} className="custom-scrollbar">
+          {cluster.stations.map((s: any) => (
+            <div key={s.id} onClick={() => onPick(s)} style={{
+              display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer',
+              padding: isMobile ? '8px 10px' : '12px 16px', borderRadius: 8, transition: 'all 0.2s'
+            }}>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ color: '#fff', fontSize: isMobile ? '0.82rem' : '0.9rem', fontWeight: 600 }}>{s.name}</div>
+                <div style={{ color: TEXT_DIM, fontSize: isMobile ? '0.62rem' : '0.7rem' }}>{s.id}</div>
+              </div>
+              <div style={{ color: ACCENT, fontWeight: 700, fontSize: isMobile ? '0.82rem' : '0.9rem' }}>{s.kw} kW</div>
+            </div>
+          ))}
+        </div>
+      </motion.div>
     </div>
   );
 
@@ -732,7 +733,7 @@ export default function App() {
           align-items: center;
           justify-content: center;
           gap: 32px;
-          padding: 40px;
+          padding: 40px 14px;
         }
 
         .mobile-menu-link {
@@ -871,7 +872,7 @@ export default function App() {
         @media (max-width: 1024px) {
           /* HEADER / FOOTER LOGO */
           .header-logo { height: 76px !important; }
-          .footer-logo { height: 60px !important; }
+          .footer-logo { height: 110px !important; margin-top: -25px !important; margin-bottom: -11px !important; }
           .menu-toggle { min-width: 44px; min-height: 44px; }
 
           /* HERO — charger first (visual), then text + stats */
@@ -962,6 +963,83 @@ export default function App() {
           .hero-stat-strip .flip-stat:last-child { border-bottom: none; padding-bottom: 0 !important; }
           .hero-stat-strip .flip-stat .stat-val { font-size: 1.3rem !important; }
         }
+
+        /* PREMIUM MOBILE CARD MENU */
+        .mobile-card-menu {
+          width: 100%;
+          max-width: 440px;
+          background: linear-gradient(180deg, #151B18 0%, #0F1412 100%);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          border-radius: 24px;
+          padding: 8px 0px 8px 0px;
+          display: flex;
+          flex-direction: column;
+          box-shadow: 0 24px 48px rgba(0, 0, 0, 0.6);
+          position: relative;
+          overflow: hidden;
+        }
+        .mobile-card-menu::before {
+          content: '';
+          position: absolute;
+          top: -40%;
+          right: -30%;
+          width: 320px;
+          height: 320px;
+          background: radial-gradient(circle, rgba(0,255,136,0.16), transparent 65%);
+          pointer-events: none;
+          z-index: 0;
+        }
+        .mobile-card-menu > * { position: relative; z-index: 1; }
+        .mobile-card-link {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 18px 24px;
+          color: ${TEXT};
+          text-decoration: none;
+          font-size: 1.1rem;
+          font-weight: 600;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+          transition: background-color 0.2s, color 0.2s;
+        }
+        .mobile-card-link:last-child {
+          border-bottom: none;
+        }
+        .mobile-card-link:hover {
+          background-color: rgba(255, 255, 255, 0.03);
+          color: ${ACCENT};
+        }
+        .mobile-card-link:hover svg {
+          stroke: ${ACCENT};
+          transform: translateX(2px);
+        }
+        .mobile-card-btn-container {
+          padding: 14px 11px 9px 11px;
+          border-top: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .mobile-card-btn {
+          width: 100%;
+          background: ${ACCENT};
+          color: #0B0F0D;
+          border: none;
+          padding: 16px;
+          border-radius: 999px;
+          font-weight: 700;
+          font-size: 1rem;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+          transition: all 0.2s;
+        }
+        .mobile-card-btn:hover {
+          background: #B5F08A;
+          transform: translateY(-1px);
+        }
+        .mobile-card-btn:hover svg {
+          transform: translateX(2px);
+        }
       `}</style>
 
       {/* HEADER */}
@@ -1007,8 +1085,8 @@ export default function App() {
             exit={{ opacity: 0, y: -20 }}
             style={{
               overflowY: 'auto',
-              justifyContent: 'flex-start',
-              paddingTop: 80,
+              justifyContent: 'center',
+              paddingTop: 40,
               paddingBottom: 40,
             }}
           >
@@ -1019,70 +1097,121 @@ export default function App() {
               <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
             </button>
 
-            {/* Main Links */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 20, alignItems: 'center', width: '100%' }}>
-              {[
-                { label: 'Find stations', target: 'find-stations' },
-                { label: 'About us', target: 'about-us' },
-                { label: 'Blog', target: 'blog' },
-              ].map(l => (
-                <a
-                  key={l.label}
-                  href="#"
-                  className="mobile-menu-link"
-                  onClick={(e) => { e.preventDefault(); navigate(l.target as any); setShowMobileMenu(false); }}
-                  style={{ fontSize: '1.4rem', fontWeight: 600 }}
-                >
-                  {l.label}
-                </a>
-              ))}
-            </div>
-
-            {/* Services Links Group */}
-            <div style={{ width: '100%', maxWidth: 280, marginTop: 12, padding: '20px 0', borderTop: '1px solid rgba(255,255,255,0.08)', borderBottom: '1px solid rgba(255,255,255,0.08)', display: 'flex', flexDirection: 'column', gap: 14 }}>
-              <div style={{ color: ACCENT, fontSize: '0.68rem', fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', textAlign: 'center', marginBottom: 4 }}>
-                Our Services
-              </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            {/* Styled Menu Card */}
+            <div className="mobile-card-menu">
+              {/* List of Navigation Links */}
+              <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
                 {[
-                  { label: 'Charging Solutions', target: 'premium-charging-hub' },
-                  { label: 'User Convenience', target: 'cpms' },
-                  { label: 'Energy Management', target: 'ev-infra-consultancy' },
-                  { label: 'Hardware Supply', target: 'charger-supply' },
-                  { label: 'Maintenance & Support', target: 'om-services' }
-                ].map(srv => (
+                  { label: 'Find stations', target: 'find-stations' },
+                ].map(l => (
                   <a
-                    key={srv.target}
+                    key={l.label}
                     href="#"
+                    className="mobile-card-link"
                     onClick={(e) => {
                       e.preventDefault();
-                      navigate(srv.target);
+                      navigate(l.target as any);
                       setShowMobileMenu(false);
                     }}
-                    style={{
-                      color: TEXT_DIM,
-                      textDecoration: 'none',
-                      fontSize: '0.95rem',
-                      fontWeight: 500,
-                      textAlign: 'center',
-                      transition: 'color 0.2s',
-                    }}
-                    onMouseEnter={(e: any) => e.target.style.color = TEXT}
-                    onMouseLeave={(e: any) => e.target.style.color = TEXT_DIM}
                   >
-                    {srv.label}
+                    <span>{l.label}</span>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ transition: 'stroke 0.2s, transform 0.2s' }}>
+                      <line x1="5" y1="12" x2="19" y2="12"></line>
+                      <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
+                  </a>
+                ))}
+
+                {/* Services — expandable dropdown */}
+                <button
+                  className="mobile-card-link"
+                  style={{ background: 'none', border: 'none', width: '100%', cursor: 'pointer', fontFamily: 'inherit', fontSize: '1.1rem', fontWeight: 600, borderBottom: `1px solid rgba(255,255,255,0.06)` }}
+                  onClick={() => setMobileServicesOpen(o => !o)}
+                >
+                  <span>Services</span>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={mobileServicesOpen ? ACCENT : 'rgba(255,255,255,0.4)'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ transition: 'transform 0.25s, stroke 0.2s', transform: mobileServicesOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}>
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                  </svg>
+                </button>
+                <AnimatePresence initial={false}>
+                  {mobileServicesOpen && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+                      style={{ overflow: 'hidden', background: 'rgba(0,255,136,0.03)' }}
+                    >
+                      {[
+                        { label: 'Premium Charging Hub', target: 'premium-charging-hub' },
+                        { label: 'EV Infra Consultancy', target: 'ev-infra-consultancy' },
+                        { label: 'Hardware Supply', target: 'charger-supply' },
+                        { label: 'Charge Point Management', target: 'cpms' },
+                        { label: 'Maintenance & Support', target: 'om-services' },
+                      ].map(s => (
+                        <a
+                          key={s.target}
+                          href="#"
+                          className="mobile-card-link"
+                          style={{ paddingLeft: 40, fontSize: '0.98rem', fontWeight: 500 }}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            navigate(s.target as any);
+                            setShowMobileMenu(false);
+                            setMobileServicesOpen(false);
+                          }}
+                        >
+                          <span>{s.label}</span>
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                          </svg>
+                        </a>
+                      ))}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                {[
+                  { label: 'About us', target: 'about-us' },
+                  { label: 'Blog', target: 'blog' },
+                ].map(l => (
+                  <a
+                    key={l.label}
+                    href="#"
+                    className="mobile-card-link"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      navigate(l.target as any);
+                      setShowMobileMenu(false);
+                    }}
+                  >
+                    <span>{l.label}</span>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ transition: 'stroke 0.2s, transform 0.2s' }}>
+                      <line x1="5" y1="12" x2="19" y2="12"></line>
+                      <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
                   </a>
                 ))}
               </div>
-            </div>
 
-            <button
-              className="btn-accent"
-              onClick={() => { setShowContactForm(true); setShowMobileMenu(false); }}
-              style={{ marginTop: 10, padding: '16px 40px', fontSize: '1.1rem' }}
-            >
-              Contact Us
-            </button>
+              {/* Contact Button Container */}
+              <div className="mobile-card-btn-container">
+                <button
+                  className="mobile-card-btn"
+                  onClick={() => {
+                    setShowContactForm(true);
+                    setShowMobileMenu(false);
+                  }}
+                >
+                  <span>Contact Us</span>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0B0F0D" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ transition: 'transform 0.2s' }}>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12 5 19 12 12 19"></polyline>
+                  </svg>
+                </button>
+              </div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -1499,185 +1628,185 @@ export default function App() {
                   </div>
                 </section>
               ) : (
-              <section style={{ minHeight: '100vh', position: 'relative', overflow: 'hidden', paddingTop: 72, background: BG }}>
-                {/* Subtle ambient gradient */}
-                <div style={{ position: 'absolute', right: '-10%', top: '15%', width: 760, height: 760, background: `radial-gradient(circle, ${ACCENT_SOFT}22, transparent 60%)`, pointerEvents: 'none', borderRadius: '50%' }} />
+                <section style={{ minHeight: '100vh', position: 'relative', overflow: 'hidden', paddingTop: 72, background: BG }}>
+                  {/* Subtle ambient gradient */}
+                  <div style={{ position: 'absolute', right: '-10%', top: '15%', width: 760, height: 760, background: `radial-gradient(circle, ${ACCENT_SOFT}22, transparent 60%)`, pointerEvents: 'none', borderRadius: '50%' }} />
 
-                <div className="hero-grid" style={{ display: 'grid', gridTemplateColumns: '1.05fr 1fr', gap: 80, padding: '24px var(--side-padding) 0', alignItems: 'center', minHeight: 'calc(100vh - 120px)', position: 'relative', zIndex: 5, maxWidth: 1440, margin: '0 auto' }}>
+                  <div className="hero-grid" style={{ display: 'grid', gridTemplateColumns: '1.05fr 1fr', gap: 80, padding: '24px var(--side-padding) 0', alignItems: 'center', minHeight: 'calc(100vh - 120px)', position: 'relative', zIndex: 5, maxWidth: 1440, margin: '0 auto' }}>
 
-                  {/* LEFT COLUMN */}
-                  <div className="hero-left">
-                    <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}>
-                      {/* Eyebrow */}
-                      <div style={{ display: 'inline-flex', alignItems: 'center', gap: 12, marginBottom: 32, padding: '6px 12px', border: `1px solid ${BORDER}`, borderRadius: 999, background: SURFACE }}>
-                        <span className="circle pulse-dot" style={{ width: 6, height: 6, background: ACCENT, color: ACCENT }} />
-                        <span className="eyebrow" style={{ color: ACCENT_SOFT, fontSize: '0.68rem' }}>Live network · {clock || '--:--:--'}</span>
+                    {/* LEFT COLUMN */}
+                    <div className="hero-left">
+                      <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}>
+                        {/* Eyebrow */}
+                        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 12, marginBottom: 32, padding: '6px 12px', border: `1px solid ${BORDER}`, borderRadius: 999, background: SURFACE }}>
+                          <span className="circle pulse-dot" style={{ width: 6, height: 6, background: ACCENT, color: ACCENT }} />
+                          <span className="eyebrow" style={{ color: ACCENT_SOFT, fontSize: '0.68rem' }}>Live network · {clock || '--:--:--'}</span>
+                        </div>
+
+                        {/* TITLE */}
+                        <h1 style={{ fontSize: 'clamp(2.4rem, 4.8vw, 4.8rem)', lineHeight: 1.02, marginBottom: 28, fontWeight: 600 }}>
+                          <motion.span initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }} style={{ display: 'block' }}>
+                            EV power,
+                          </motion.span>
+                          <motion.span initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }} style={{ display: 'block', color: ACCENT }}>
+                            redefined.
+                          </motion.span>
+                        </h1>
+
+                        <motion.p
+                          initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }}
+                          style={{ color: TEXT_DIM, fontSize: '1.1rem', lineHeight: 1.65, marginBottom: 40, maxWidth: '520px', fontWeight: 400 }}
+                        >
+                          The intelligence layer for industrial-scale charging infrastructure — orchestrating every electron from grid to vehicle, in real time.
+                        </motion.p>
+
+                        <motion.div
+                          className="hero-btns"
+                          initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55 }}
+                          style={{ display: 'flex', gap: 12, marginBottom: 64 }}
+                        >
+                          <button
+                            className="btn-accent"
+                            onClick={() => setPage('find-stations')}
+                          >
+                            Find a station <span style={{ fontSize: '1rem' }}>→</span>
+                          </button>
+                        </motion.div>
+
+                        {/* STAT STRIP */}
+                        <motion.div
+                          className="hero-stat-strip"
+                          initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.75 }}
+                          style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', maxWidth: 640, gap: 0 }}
+                        >
+                          <FlipStat label="Stations live" value={stationsOnline.toLocaleString()} trend="+12 / 24h" />
+                          <FlipStat label="kWh delivered today" value={kwhToday.toLocaleString()} trend="Live" />
+                          <FlipStat label="Avg session" value="22:14" trend="-1.4%" />
+                        </motion.div>
+                      </motion.div>
+                    </div>
+
+                    {/* RIGHT COLUMN — charger */}
+                    <div className="hero-right hero-right-charger" style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '600px' }}>
+                      {/* Soft floor gradient */}
+                      <div style={{ position: 'absolute', bottom: '6%', left: '50%', transform: 'translateX(-50%)', width: '90%', height: '40%', background: `radial-gradient(ellipse at center, ${ACCENT_SOFT}1f, transparent 65%)`, pointerEvents: 'none' }} />
+
+                      {/* charger image — entrance then continuous float (matches mobile hero) */}
+                      <motion.img
+                        src={charger3d}
+                        initial={{ opacity: 0, scale: 0.96 }}
+                        animate={{ opacity: 1, scale: 1, y: [0, -8, 0] }}
+                        transition={{
+                          opacity: { duration: 1.1, ease: [0.22, 1, 0.36, 1] },
+                          scale: { duration: 1.1, ease: [0.22, 1, 0.36, 1] },
+                          y: { duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 1.1 },
+                        }}
+                        style={{ width: '100%', maxWidth: '680px', position: 'relative', zIndex: 5 }}
+                      />
+
+                      {/* HUD cards & Charging Lines */}
+                      <div className="hero-hud-left" style={{ position: 'absolute', top: '22%', left: '-15%', zIndex: 20 }}>
+                        <HUDCard
+                          icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>}
+                          title="Total Customers"
+                          value="56,894"
+                          delay={0.8}
+                          lineCycle={2.6}
+                        />
+                      </div>
+                      <div className="hero-hud-right" style={{ position: 'absolute', bottom: '28%', right: '-15%', zIndex: 20 }}>
+                        <HUDCard
+                          icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>}
+                          title="Total Bookings"
+                          value="38,465"
+                          delay={1.0}
+                          lineCycle={2.2}
+                        />
                       </div>
 
-                      {/* TITLE */}
-                      <h1 style={{ fontSize: 'clamp(2.4rem, 4.8vw, 4.8rem)', lineHeight: 1.02, marginBottom: 28, fontWeight: 600 }}>
-                        <motion.span initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }} style={{ display: 'block' }}>
-                          EV power,
-                        </motion.span>
-                        <motion.span initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }} style={{ display: 'block', color: ACCENT }}>
-                          redefined.
-                        </motion.span>
-                      </h1>
-
-                      <motion.p
-                        initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }}
-                        style={{ color: TEXT_DIM, fontSize: '1.1rem', lineHeight: 1.65, marginBottom: 40, maxWidth: '520px', fontWeight: 400 }}
+                      {/* CHARGING LINES — Static green dashed connectors. preserveAspectRatio=none so SVG units map 1:1 to container percentages; overflow:visible lets lines extend outside viewBox to reach cards (which sit at left/right:-15%) */}
+                      <svg
+                        className="hero-charging-lines"
+                        style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none', zIndex: 10, overflow: 'visible' }}
+                        viewBox="0 0 1000 600"
+                        preserveAspectRatio="none"
                       >
-                        The intelligence layer for industrial-scale charging infrastructure — orchestrating every electron from grid to vehicle, in real time.
-                      </motion.p>
+                        {/* Left Connection (Total Customers): flowing dashes toward card. Path is card→charger so positive offset moves dashes toward card */}
+                        <motion.path
+                          d="M -25 180 L -25 380 L 360 380"
+                          fill="none"
+                          stroke={ACCENT}
+                          strokeWidth="1.5"
+                          strokeDasharray="6 6"
+                          strokeLinecap="round"
+                          opacity={0.75}
+                          vectorEffect="non-scaling-stroke"
+                          animate={{ strokeDashoffset: [0, 24] }}
+                          transition={{ duration: 1.4, repeat: Infinity, ease: 'linear' }}
+                        />
+                        {/* Bright pulse traveling from charger → card (left) */}
+                        <motion.path
+                          d="M -25 180 L -25 380 L 360 380"
+                          fill="none"
+                          stroke={ACCENT}
+                          strokeWidth="2.2"
+                          strokeDasharray="50 600"
+                          strokeLinecap="round"
+                          vectorEffect="non-scaling-stroke"
+                          style={{ filter: `drop-shadow(0 0 6px ${ACCENT})` }}
+                          animate={{ strokeDashoffset: [-650, 0] }}
+                          transition={{ duration: 2.6, repeat: Infinity, ease: 'linear' }}
+                        />
 
-                      <motion.div
-                        className="hero-btns"
-                        initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55 }}
-                        style={{ display: 'flex', gap: 12, marginBottom: 64 }}
-                      >
-                        <button
-                          className="btn-accent"
-                          onClick={() => setPage('find-stations')}
-                        >
-                          Find a station <span style={{ fontSize: '1rem' }}>→</span>
-                        </button>
-                      </motion.div>
-
-                      {/* STAT STRIP */}
-                      <motion.div
-                        className="hero-stat-strip"
-                        initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.75 }}
-                        style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', maxWidth: 640, gap: 0 }}
-                      >
-                        <FlipStat label="Stations live" value={stationsOnline.toLocaleString()} trend="+12 / 24h" />
-                        <FlipStat label="kWh delivered today" value={kwhToday.toLocaleString()} trend="Live" />
-                        <FlipStat label="Avg session" value="22:14" trend="-1.4%" />
-                      </motion.div>
-                    </motion.div>
-                  </div>
-
-                  {/* RIGHT COLUMN — charger */}
-                  <div className="hero-right hero-right-charger" style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '600px' }}>
-                    {/* Soft floor gradient */}
-                    <div style={{ position: 'absolute', bottom: '6%', left: '50%', transform: 'translateX(-50%)', width: '90%', height: '40%', background: `radial-gradient(ellipse at center, ${ACCENT_SOFT}1f, transparent 65%)`, pointerEvents: 'none' }} />
-
-                    {/* charger image — entrance then continuous float (matches mobile hero) */}
-                    <motion.img
-                      src={charger3d}
-                      initial={{ opacity: 0, scale: 0.96 }}
-                      animate={{ opacity: 1, scale: 1, y: [0, -8, 0] }}
-                      transition={{
-                        opacity: { duration: 1.1, ease: [0.22, 1, 0.36, 1] },
-                        scale: { duration: 1.1, ease: [0.22, 1, 0.36, 1] },
-                        y: { duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 1.1 },
-                      }}
-                      style={{ width: '100%', maxWidth: '680px', position: 'relative', zIndex: 5 }}
-                    />
-
-                    {/* HUD cards & Charging Lines */}
-                    <div className="hero-hud-left" style={{ position: 'absolute', top: '22%', left: '-15%', zIndex: 20 }}>
-                      <HUDCard
-                        icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>}
-                        title="Total Customers"
-                        value="56,894"
-                        delay={0.8}
-                        lineCycle={2.6}
-                      />
+                        {/* Right Connection (Total Bookings): flowing dashes toward card. Path is charger→card so negative offset moves dashes toward card */}
+                        <motion.path
+                          d="M 760 320 L 1025 320 L 1025 380"
+                          fill="none"
+                          stroke={ACCENT}
+                          strokeWidth="1.5"
+                          strokeDasharray="6 6"
+                          strokeLinecap="round"
+                          opacity={0.75}
+                          vectorEffect="non-scaling-stroke"
+                          animate={{ strokeDashoffset: [0, -24] }}
+                          transition={{ duration: 1.4, repeat: Infinity, ease: 'linear' }}
+                        />
+                        {/* Bright pulse traveling from charger → card (right) */}
+                        <motion.path
+                          d="M 760 320 L 1025 320 L 1025 380"
+                          fill="none"
+                          stroke={ACCENT}
+                          strokeWidth="2.2"
+                          strokeDasharray="40 360"
+                          strokeLinecap="round"
+                          vectorEffect="non-scaling-stroke"
+                          style={{ filter: `drop-shadow(0 0 6px ${ACCENT})` }}
+                          animate={{ strokeDashoffset: [400, 0] }}
+                          transition={{ duration: 2.2, repeat: Infinity, ease: 'linear' }}
+                        />
+                      </svg>
                     </div>
-                    <div className="hero-hud-right" style={{ position: 'absolute', bottom: '28%', right: '-15%', zIndex: 20 }}>
-                      <HUDCard
-                        icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>}
-                        title="Total Bookings"
-                        value="38,465"
-                        delay={1.0}
-                        lineCycle={2.2}
-                      />
+                  </div>
+
+                  {/* Bottom ticker — calm */}
+                  <div className="ticker" style={{ position: 'relative', marginTop: 64 }}>
+                    <div className="ticker-track">
+                      {[...tickerItems, ...tickerItems].map((it, i) => {
+                        const parts = it.split(' / ');
+                        const isCharging = parts[2] === 'CHARGING';
+                        return (
+                          <span key={i} className="ticker-item">
+                            <span style={{ color: isCharging ? ACCENT_SOFT : TEXT_DIM }}>●</span>{' '}
+                            <span style={{ color: TEXT, fontWeight: 600 }}>{parts[0]}</span>
+                            <span className="sep">·</span>{parts[1]}
+                            <span className="sep">·</span><span style={{ color: isCharging ? ACCENT_SOFT : TEXT_DIM }}>{parts[2].toLowerCase()}</span>
+                            <span className="sep">·</span>{parts[3]}
+                          </span>
+                        );
+                      })}
                     </div>
-
-                    {/* CHARGING LINES — Static green dashed connectors. preserveAspectRatio=none so SVG units map 1:1 to container percentages; overflow:visible lets lines extend outside viewBox to reach cards (which sit at left/right:-15%) */}
-                    <svg
-                      className="hero-charging-lines"
-                      style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none', zIndex: 10, overflow: 'visible' }}
-                      viewBox="0 0 1000 600"
-                      preserveAspectRatio="none"
-                    >
-                      {/* Left Connection (Total Customers): flowing dashes toward card. Path is card→charger so positive offset moves dashes toward card */}
-                      <motion.path
-                        d="M -25 180 L -25 380 L 360 380"
-                        fill="none"
-                        stroke={ACCENT}
-                        strokeWidth="1.5"
-                        strokeDasharray="6 6"
-                        strokeLinecap="round"
-                        opacity={0.75}
-                        vectorEffect="non-scaling-stroke"
-                        animate={{ strokeDashoffset: [0, 24] }}
-                        transition={{ duration: 1.4, repeat: Infinity, ease: 'linear' }}
-                      />
-                      {/* Bright pulse traveling from charger → card (left) */}
-                      <motion.path
-                        d="M -25 180 L -25 380 L 360 380"
-                        fill="none"
-                        stroke={ACCENT}
-                        strokeWidth="2.2"
-                        strokeDasharray="50 600"
-                        strokeLinecap="round"
-                        vectorEffect="non-scaling-stroke"
-                        style={{ filter: `drop-shadow(0 0 6px ${ACCENT})` }}
-                        animate={{ strokeDashoffset: [-650, 0] }}
-                        transition={{ duration: 2.6, repeat: Infinity, ease: 'linear' }}
-                      />
-
-                      {/* Right Connection (Total Bookings): flowing dashes toward card. Path is charger→card so negative offset moves dashes toward card */}
-                      <motion.path
-                        d="M 760 320 L 1025 320 L 1025 380"
-                        fill="none"
-                        stroke={ACCENT}
-                        strokeWidth="1.5"
-                        strokeDasharray="6 6"
-                        strokeLinecap="round"
-                        opacity={0.75}
-                        vectorEffect="non-scaling-stroke"
-                        animate={{ strokeDashoffset: [0, -24] }}
-                        transition={{ duration: 1.4, repeat: Infinity, ease: 'linear' }}
-                      />
-                      {/* Bright pulse traveling from charger → card (right) */}
-                      <motion.path
-                        d="M 760 320 L 1025 320 L 1025 380"
-                        fill="none"
-                        stroke={ACCENT}
-                        strokeWidth="2.2"
-                        strokeDasharray="40 360"
-                        strokeLinecap="round"
-                        vectorEffect="non-scaling-stroke"
-                        style={{ filter: `drop-shadow(0 0 6px ${ACCENT})` }}
-                        animate={{ strokeDashoffset: [400, 0] }}
-                        transition={{ duration: 2.2, repeat: Infinity, ease: 'linear' }}
-                      />
-                    </svg>
                   </div>
-                </div>
-
-                {/* Bottom ticker — calm */}
-                <div className="ticker" style={{ position: 'relative', marginTop: 64 }}>
-                  <div className="ticker-track">
-                    {[...tickerItems, ...tickerItems].map((it, i) => {
-                      const parts = it.split(' / ');
-                      const isCharging = parts[2] === 'CHARGING';
-                      return (
-                        <span key={i} className="ticker-item">
-                          <span style={{ color: isCharging ? ACCENT_SOFT : TEXT_DIM }}>●</span>{' '}
-                          <span style={{ color: TEXT, fontWeight: 600 }}>{parts[0]}</span>
-                          <span className="sep">·</span>{parts[1]}
-                          <span className="sep">·</span><span style={{ color: isCharging ? ACCENT_SOFT : TEXT_DIM }}>{parts[2].toLowerCase()}</span>
-                          <span className="sep">·</span>{parts[3]}
-                        </span>
-                      );
-                    })}
-                  </div>
-                </div>
-              </section>
+                </section>
               )
             } />
 
@@ -1814,95 +1943,95 @@ export default function App() {
                             touchAction: 'pan-y',
                           }}
                         >
-                        {/* Glow blob */}
-                        <div style={{ position: 'absolute', top: -70, right: -70, width: 240, height: 240, background: `radial-gradient(circle, ${ACCENT}26, transparent 70%)`, pointerEvents: 'none' }} />
-                        {/* Dotted grid */}
-                        <div style={{ position: 'absolute', inset: 0, backgroundImage: `radial-gradient(${ACCENT}12 1px, transparent 1px)`, backgroundSize: '16px 16px', opacity: 0.4, pointerEvents: 'none', maskImage: 'radial-gradient(circle at 100% 0%, black 0%, transparent 60%)', WebkitMaskImage: 'radial-gradient(circle at 100% 0%, black 0%, transparent 60%)' }} />
+                          {/* Glow blob */}
+                          <div style={{ position: 'absolute', top: -70, right: -70, width: 240, height: 240, background: `radial-gradient(circle, ${ACCENT}26, transparent 70%)`, pointerEvents: 'none' }} />
+                          {/* Dotted grid */}
+                          <div style={{ position: 'absolute', inset: 0, backgroundImage: `radial-gradient(${ACCENT}12 1px, transparent 1px)`, backgroundSize: '16px 16px', opacity: 0.4, pointerEvents: 'none', maskImage: 'radial-gradient(circle at 100% 0%, black 0%, transparent 60%)', WebkitMaskImage: 'radial-gradient(circle at 100% 0%, black 0%, transparent 60%)' }} />
 
-                        <div style={{ position: 'relative', zIndex: 1 }}>
-                          {/* Top row */}
-                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 18 }}>
-                            <div className="mono" style={{ color: ACCENT, fontSize: '0.68rem', fontWeight: 700, letterSpacing: '0.2em', marginTop: 14 }}>
-                              0{activeService + 1} <span style={{ color: TEXT_DIM, fontWeight: 500 }}>/ 0{MOBILE_SERVICES.length}</span>
+                          <div style={{ position: 'relative', zIndex: 1 }}>
+                            {/* Top row */}
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 18 }}>
+                              <div className="mono" style={{ color: ACCENT, fontSize: '0.68rem', fontWeight: 700, letterSpacing: '0.2em', marginTop: 14 }}>
+                                0{activeService + 1} <span style={{ color: TEXT_DIM, fontWeight: 500 }}>/ 0{MOBILE_SERVICES.length}</span>
+                              </div>
+                              <div style={{ width: 52, height: 52, borderRadius: 16, background: `${ACCENT}1a`, border: `1px solid ${ACCENT}55`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: ACCENT, boxShadow: `0 0 24px ${ACCENT}22 inset, 0 0 16px ${ACCENT}22` }}>
+                                {current.icon}
+                              </div>
                             </div>
-                            <div style={{ width: 52, height: 52, borderRadius: 16, background: `${ACCENT}1a`, border: `1px solid ${ACCENT}55`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: ACCENT, boxShadow: `0 0 24px ${ACCENT}22 inset, 0 0 16px ${ACCENT}22` }}>
-                              {current.icon}
+
+                            {/* Tag pill */}
+                            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '3px 9px', background: 'rgba(11,15,13,0.55)', border: `1px solid ${BORDER_STRONG}`, borderRadius: 999, marginBottom: 12 }}>
+                              <span style={{ width: 5, height: 5, borderRadius: '50%', background: ACCENT }} />
+                              <span style={{ fontSize: '0.6rem', color: ACCENT, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase' }}>{current.tag}</span>
                             </div>
-                          </div>
 
-                          {/* Tag pill */}
-                          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '3px 9px', background: 'rgba(11,15,13,0.55)', border: `1px solid ${BORDER_STRONG}`, borderRadius: 999, marginBottom: 12 }}>
-                            <span style={{ width: 5, height: 5, borderRadius: '50%', background: ACCENT }} />
-                            <span style={{ fontSize: '0.6rem', color: ACCENT, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase' }}>{current.tag}</span>
-                          </div>
+                            {/* Title */}
+                            <h3 style={{ fontSize: '1.5rem', fontWeight: 400, color: TEXT, marginBottom: 12, letterSpacing: '-0.025em', lineHeight: 1.15 }}>
+                              {current.title}
+                            </h3>
 
-                          {/* Title */}
-                          <h3 style={{ fontSize: '1.5rem', fontWeight: 700, color: TEXT, marginBottom: 12, letterSpacing: '-0.025em', lineHeight: 1.15 }}>
-                            {current.title}
-                          </h3>
+                            {/* Description */}
+                            <p style={{ color: TEXT_DIM, fontSize: '0.88rem', lineHeight: 1.65, marginBottom: 22 }}>
+                              {current.desc}
+                            </p>
 
-                          {/* Description */}
-                          <p style={{ color: TEXT_DIM, fontSize: '0.88rem', lineHeight: 1.65, marginBottom: 22 }}>
-                            {current.desc}
-                          </p>
+                            {/* Feature list */}
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: 11 }}>
+                              {current.features.map((f, i) => (
+                                <motion.div
+                                  key={i}
+                                  initial={{ opacity: 0, x: -6 }}
+                                  animate={{ opacity: 1, x: 0 }}
+                                  transition={{ duration: 0.3, delay: 0.1 + i * 0.06 }}
+                                  style={{ display: 'flex', alignItems: 'center', gap: 11 }}
+                                >
+                                  <div style={{ width: 20, height: 20, borderRadius: '50%', background: `${ACCENT}1c`, border: `1px solid ${ACCENT}55`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke={ACCENT} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
+                                  </div>
+                                  <span style={{ color: TEXT, fontSize: '0.84rem', lineHeight: 1.4 }}>{f}</span>
+                                </motion.div>
+                              ))}
+                            </div>
 
-                          {/* Feature list */}
-                          <div style={{ display: 'flex', flexDirection: 'column', gap: 11 }}>
-                            {current.features.map((f, i) => (
-                              <motion.div
-                                key={i}
-                                initial={{ opacity: 0, x: -6 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                transition={{ duration: 0.3, delay: 0.1 + i * 0.06 }}
-                                style={{ display: 'flex', alignItems: 'center', gap: 11 }}
+                            {/* Explore Solutions CTA */}
+                            <div style={{ marginTop: 24 }}>
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  navigate(current.target);
+                                }}
+                                style={{
+                                  width: '100%',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  gap: 8,
+                                  padding: '12px 20px',
+                                  background: `linear-gradient(90deg, ${ACCENT}e0 0%, ${ACCENT_SOFT}e0 100%)`,
+                                  border: 'none',
+                                  borderRadius: 12,
+                                  color: BG,
+                                  fontSize: '0.88rem',
+                                  fontWeight: 700,
+                                  cursor: 'pointer',
+                                  boxShadow: `0 4px 12px ${ACCENT}22`,
+                                  fontFamily: 'Inter, sans-serif',
+                                  transition: 'transform 0.2s',
+                                }}
+                                onMouseEnter={(e: any) => {
+                                  e.currentTarget.style.transform = 'scale(1.02)';
+                                }}
+                                onMouseLeave={(e: any) => {
+                                  e.currentTarget.style.transform = 'scale(1)';
+                                }}
                               >
-                                <div style={{ width: 20, height: 20, borderRadius: '50%', background: `${ACCENT}1c`, border: `1px solid ${ACCENT}55`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke={ACCENT} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
-                                </div>
-                                <span style={{ color: TEXT, fontSize: '0.84rem', lineHeight: 1.4 }}>{f}</span>
-                              </motion.div>
-                            ))}
+                                Explore {current.short} Solutions
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                              </button>
+                            </div>
                           </div>
-
-                          {/* Explore Solutions CTA */}
-                          <div style={{ marginTop: 24 }}>
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                navigate(current.target);
-                              }}
-                              style={{
-                                width: '100%',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                gap: 8,
-                                padding: '12px 20px',
-                                background: `linear-gradient(90deg, ${ACCENT}e0 0%, ${ACCENT_SOFT}e0 100%)`,
-                                border: 'none',
-                                borderRadius: 12,
-                                color: BG,
-                                fontSize: '0.88rem',
-                                fontWeight: 700,
-                                cursor: 'pointer',
-                                boxShadow: `0 4px 12px ${ACCENT}22`,
-                                fontFamily: 'Inter, sans-serif',
-                                transition: 'transform 0.2s',
-                              }}
-                              onMouseEnter={(e: any) => {
-                                e.currentTarget.style.transform = 'scale(1.02)';
-                              }}
-                              onMouseLeave={(e: any) => {
-                                e.currentTarget.style.transform = 'scale(1)';
-                              }}
-                            >
-                              Explore {current.short} Solutions
-                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                            </button>
-                          </div>
-                        </div>
-                      </motion.div>
-                    </AnimatePresence>
+                        </motion.div>
+                      </AnimatePresence>
                     </div>
 
                     {/* Carousel controls — pagination dots + arrows (matches why-ev section) */}
@@ -1943,134 +2072,134 @@ export default function App() {
                   </div>
                 );
               })() : (
-              <div style={{ maxWidth: 1440, margin: '0 auto', position: 'relative', zIndex: 5 }}>
-                {/* Header */}
-                <div style={{ textAlign: 'center', marginBottom: 40 }}>
-                  <div className="services-eyebrow" style={{ fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.2em', color: '#e0e0e0', marginBottom: 16, textTransform: 'uppercase' }}>
-                    EXPLORE OUR SERVICES
+                <div style={{ maxWidth: 1440, margin: '0 auto', position: 'relative', zIndex: 5 }}>
+                  {/* Header */}
+                  <div style={{ textAlign: 'center', marginBottom: 40 }}>
+                    <div className="services-eyebrow" style={{ fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.2em', color: '#e0e0e0', marginBottom: 16, textTransform: 'uppercase' }}>
+                      EXPLORE OUR SERVICES
+                    </div>
+                    <h2 className="services-h2" style={{ fontSize: 'clamp(3rem, 6vw, 6.5rem)', fontWeight: 800, letterSpacing: -0.01, marginBottom: 20, textTransform: 'uppercase', background: 'linear-gradient(180deg, #FFFFFF 0%, #B0B0B0 45%, #606060 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', filter: 'drop-shadow(0px 8px 16px rgba(0,0,0,0.4))' }}>
+                      OUR SERVICES
+                    </h2>
+                    <p className="services-tag" style={{ color: TEXT_DIM, fontSize: '1.05rem', fontWeight: 400, maxWidth: 480, margin: '0 auto', lineHeight: 1.6 }}>
+                      We provide the best services for your electric vehicles, Fast,<br />Convenient and Eco-friendly.
+                    </p>
                   </div>
-                  <h2 className="services-h2" style={{ fontSize: 'clamp(3rem, 6vw, 6.5rem)', fontWeight: 800, letterSpacing: -0.01, marginBottom: 20, textTransform: 'uppercase', background: 'linear-gradient(180deg, #FFFFFF 0%, #B0B0B0 45%, #606060 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', filter: 'drop-shadow(0px 8px 16px rgba(0,0,0,0.4))' }}>
-                    OUR SERVICES
-                  </h2>
-                  <p className="services-tag" style={{ color: TEXT_DIM, fontSize: '1.05rem', fontWeight: 400, maxWidth: 480, margin: '0 auto', lineHeight: 1.6 }}>
-                    We provide the best services for your electric vehicles, Fast,<br />Convenient and Eco-friendly.
-                  </p>
-                </div>
 
-                {/* Main Content Grid — left: live EV-Eco animation iframe + active description, right: services list */}
-                <div className="services-main-grid" style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: 80, alignItems: 'stretch', marginTop: 20 }}>
-                  {/* Left: live animated hero + active service description */}
-                  <div style={{ display: 'flex', flexDirection: 'column' }}>
-                    <div
-                      className="services-iframe-wrap"
-                      style={{
-                        position: 'relative',
-                        width: '100%',
-                        height: '460px',
-                        marginBottom: 36,
-                        overflow: 'hidden',
-                      }}
-                    >
-                      <iframe
-                        src="/ev-eco-car.html"
-                        title="TRIO EV — Eco Charging"
+                  {/* Main Content Grid — left: live EV-Eco animation iframe + active description, right: services list */}
+                  <div className="services-main-grid" style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: 80, alignItems: 'stretch', marginTop: 20 }}>
+                    {/* Left: live animated hero + active service description */}
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                      <div
+                        className="services-iframe-wrap"
                         style={{
-                          width: '130%',
-                          height: '130%',
-                          position: 'absolute',
-                          top: '-15%',
-                          left: '-15%',
-                          border: 'none',
-                          display: 'block',
-                          background: '#0a2620',
+                          position: 'relative',
+                          width: '100%',
+                          height: '460px',
+                          marginBottom: 36,
+                          overflow: 'hidden',
                         }}
-                      />
+                      >
+                        <iframe
+                          src="/ev-eco-car.html"
+                          title="TRIO EV — Eco Charging"
+                          style={{
+                            width: '130%',
+                            height: '130%',
+                            position: 'absolute',
+                            top: '-15%',
+                            left: '-15%',
+                            border: 'none',
+                            display: 'block',
+                            background: '#0a2620',
+                          }}
+                        />
+                      </div>
+
+                      {(() => {
+                        const SERVICES = [
+                          { title: 'CHARGING SOLUTIONS', desc: 'Premium DC fast charging hubs with dedicated 60kW bays, structural canopies, and a hospitality lounge for drivers.' },
+                          { title: 'USER CONVENIENCE', desc: 'Cloud CPMS — live station discovery, in-app sessions, dynamic tariffs, multi-payment, and white-label driver experience.' },
+                          { title: 'ENERGY MANAGEMENT', desc: 'End-to-end infrastructure consultancy — site feasibility, load planning, solar + BESS integration, and grid interconnection.' },
+                          { title: 'HARDWARE SUPPLY', desc: 'Turnkey supply and installation — 60kW chargers, ACDB panels, industrial cabling, chemical earthing, and custom canopies.' },
+                          { title: 'MAINTENANCE & SUPPORT', desc: '24/7 O&M with tiered support, ≥97% uptime SLAs, certified field engineers, and audit-ready compliance reporting.' }
+                        ];
+                        return (
+                          <div className="services-desc" style={{ paddingLeft: 12 }}>
+                            <AnimatePresence mode="wait">
+                              <motion.div
+                                key={activeService}
+                                initial={{ opacity: 0, x: 24 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: -16 }}
+                                transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                              >
+                                <h3 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#ffffff', textTransform: 'uppercase', marginBottom: 14, letterSpacing: -0.01 }}>
+                                  {SERVICES[activeService].title}
+                                </h3>
+                                <p style={{ color: TEXT_DIM, fontSize: '1rem', lineHeight: 1.6, maxWidth: '90%' }}>
+                                  {SERVICES[activeService].desc}
+                                </p>
+                              </motion.div>
+                            </AnimatePresence>
+                          </div>
+                        );
+                      })()}
                     </div>
 
-                    {(() => {
-                      const SERVICES = [
-                        { title: 'CHARGING SOLUTIONS', desc: 'Premium DC fast charging hubs with dedicated 60kW bays, structural canopies, and a hospitality lounge for drivers.' },
-                        { title: 'USER CONVENIENCE', desc: 'Cloud CPMS — live station discovery, in-app sessions, dynamic tariffs, multi-payment, and white-label driver experience.' },
-                        { title: 'ENERGY MANAGEMENT', desc: 'End-to-end infrastructure consultancy — site feasibility, load planning, solar + BESS integration, and grid interconnection.' },
-                        { title: 'HARDWARE SUPPLY', desc: 'Turnkey supply and installation — 60kW chargers, ACDB panels, industrial cabling, chemical earthing, and custom canopies.' },
-                        { title: 'MAINTENANCE & SUPPORT', desc: '24/7 O&M with tiered support, ≥97% uptime SLAs, certified field engineers, and audit-ready compliance reporting.' }
-                      ];
-                      return (
-                        <div className="services-desc" style={{ paddingLeft: 12 }}>
-                          <AnimatePresence mode="wait">
-                            <motion.div
-                              key={activeService}
-                              initial={{ opacity: 0, x: 24 }}
-                              animate={{ opacity: 1, x: 0 }}
-                              exit={{ opacity: 0, x: -16 }}
-                              transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-                            >
-                              <h3 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#ffffff', textTransform: 'uppercase', marginBottom: 14, letterSpacing: -0.01 }}>
-                                {SERVICES[activeService].title}
-                              </h3>
-                              <p style={{ color: TEXT_DIM, fontSize: '1rem', lineHeight: 1.6, maxWidth: '90%' }}>
-                                {SERVICES[activeService].desc}
-                              </p>
-                            </motion.div>
-                          </AnimatePresence>
-                        </div>
-                      );
-                    })()}
-                  </div>
-
-                  {/* Right: compact clickable services list — click navigates to dedicated page */}
-                  <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: 460 }}>
-                    {[
-                      { title: 'CHARGING SOLUTIONS', target: 'premium-charging-hub' },
-                      { title: 'USER CONVENIENCE', target: 'cpms' },
-                      { title: 'ENERGY MANAGEMENT', target: 'ev-infra-consultancy' },
-                      { title: 'HARDWARE SUPPLY', target: 'charger-supply' },
-                      { title: 'MAINTENANCE & SUPPORT', target: 'om-services' }
-                    ].map((srv, idx) => {
-                      const isActive = activeService === idx;
-                      return (
-                        <div
-                          key={idx}
-                          className="service-item"
-                          onClick={() => navigate(srv.target)}
-                          onMouseEnter={() => setActiveService(idx)}
-                          style={{
-                            padding: '16px 28px',
-                            cursor: 'pointer',
-                            position: 'relative',
-                            borderBottom: idx === 4 ? 'none' : `1px solid rgba(255,255,255,0.06)`,
-                            background: isActive ? `linear-gradient(90deg, ${ACCENT}14 0%, transparent 100%)` : 'transparent',
-                            transition: 'all 0.3s ease',
-                            borderLeft: isActive ? `4px solid ${ACCENT}` : '4px solid transparent',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'space-between',
-                            gap: 16,
-                          }}
-                        >
-                          <h4 style={{ fontSize: '1.15rem', fontWeight: 600, color: isActive ? ACCENT : '#ffffff', textTransform: 'uppercase', letterSpacing: -0.01, transition: 'color 0.3s ease', margin: 0 }}>
-                            {srv.title}
-                          </h4>
-                          <svg
-                            width="18"
-                            height="18"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke={isActive ? ACCENT : 'rgba(255,255,255,0.4)'}
-                            strokeWidth="2.2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            style={{ transition: 'all 0.3s ease', transform: isActive ? 'translateX(2px)' : 'translateX(0)', flexShrink: 0 }}
+                    {/* Right: compact clickable services list — click navigates to dedicated page */}
+                    <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: 460 }}>
+                      {[
+                        { title: 'CHARGING SOLUTIONS', target: 'premium-charging-hub' },
+                        { title: 'USER CONVENIENCE', target: 'cpms' },
+                        { title: 'ENERGY MANAGEMENT', target: 'ev-infra-consultancy' },
+                        { title: 'HARDWARE SUPPLY', target: 'charger-supply' },
+                        { title: 'MAINTENANCE & SUPPORT', target: 'om-services' }
+                      ].map((srv, idx) => {
+                        const isActive = activeService === idx;
+                        return (
+                          <div
+                            key={idx}
+                            className="service-item"
+                            onClick={() => navigate(srv.target)}
+                            onMouseEnter={() => setActiveService(idx)}
+                            style={{
+                              padding: '16px 28px',
+                              cursor: 'pointer',
+                              position: 'relative',
+                              borderBottom: idx === 4 ? 'none' : `1px solid rgba(255,255,255,0.06)`,
+                              background: isActive ? `linear-gradient(90deg, ${ACCENT}14 0%, transparent 100%)` : 'transparent',
+                              transition: 'all 0.3s ease',
+                              borderLeft: isActive ? `4px solid ${ACCENT}` : '4px solid transparent',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'space-between',
+                              gap: 16,
+                            }}
                           >
-                            <line x1="5" y1="12" x2="19" y2="12" />
-                            <polyline points="12 5 19 12 12 19" />
-                          </svg>
-                        </div>
-                      );
-                    })}
+                            <h4 style={{ fontSize: '1.15rem', fontWeight: 600, color: isActive ? ACCENT : '#ffffff', textTransform: 'uppercase', letterSpacing: -0.01, transition: 'color 0.3s ease', margin: 0 }}>
+                              {srv.title}
+                            </h4>
+                            <svg
+                              width="18"
+                              height="18"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke={isActive ? ACCENT : 'rgba(255,255,255,0.4)'}
+                              strokeWidth="2.2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              style={{ transition: 'all 0.3s ease', transform: isActive ? 'translateX(2px)' : 'translateX(0)', flexShrink: 0 }}
+                            >
+                              <line x1="5" y1="12" x2="19" y2="12" />
+                              <polyline points="12 5 19 12 12 19" />
+                            </svg>
+                          </div>
+                        );
+                      })}
+                    </div>
                   </div>
                 </div>
-              </div>
               )}
             </section>
 
@@ -2443,216 +2572,216 @@ export default function App() {
                   </div>
                 </div>
               ) : (
-              <div style={{ maxWidth: 1440, margin: '0 auto', position: 'relative', zIndex: 5 }}>
-                {/* Header */}
-                <div style={{ textAlign: 'center', marginBottom: 50 }}>
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.6 }}
-                    style={{ fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.2em', color: '#e0e0e0', marginBottom: 16, textTransform: 'uppercase' }}
-                  >
-                    EV CHARGING IS THE BEST FOR ELECTRICAL VEHICLES
-                  </motion.div>
-
-                  <motion.h2
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.8, delay: 0.1 }}
-                    style={{
-                      fontSize: 'clamp(3rem, 6vw, 6.5rem)',
-                      fontWeight: 800,
-                      letterSpacing: -0.01,
-                      marginBottom: 32,
-                      textTransform: 'uppercase',
-                      background: 'linear-gradient(180deg, #FFFFFF 0%, #B0B0B0 45%, #606060 100%)',
-                      WebkitBackgroundClip: 'text',
-                      WebkitTextFillColor: 'transparent',
-                      filter: 'drop-shadow(0px 8px 16px rgba(0,0,0,0.4))'
-                    }}
-                  >
-                    WHY EV CHARGING?
-                  </motion.h2>
-
-                  <motion.p
-                    initial={{ opacity: 0 }}
-                    whileInView={{ opacity: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.8, delay: 0.3 }}
-                    style={{ color: 'rgba(255,255,255,0.5)', fontSize: '1.1rem', fontWeight: 400, maxWidth: 800, margin: '0 auto', lineHeight: 1.6 }}
-                  >
-                    Electric vehicle (EV) charging is at the forefront of a transportation revolution that is reshaping the way we move and the world we live in.
-                  </motion.p>
-                </div>
-
-                {/* Content Grid */}
-                <div className="why-grid" style={{ display: 'grid', gridTemplateColumns: '1.1fr 0.9fr', gap: 100, alignItems: 'center' }}>
-                  {/* Left side: Text Carousel */}
-                  <div style={{ position: 'relative' }}>
-                    <AnimatePresence mode="wait">
-                      <motion.div
-                        key={whySlide}
-                        className="why-slide-content"
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: 20 }}
-                        transition={{ duration: 0.5 }}
-                        style={{ minHeight: '320px' }}
-                      >
-                        <h3 className="why-slide-title" style={{
-                          fontSize: '1.8rem',
-                          fontWeight: 700,
-                          color: '#ffffff',
-                          textTransform: 'uppercase',
-                          marginBottom: 32,
-                          letterSpacing: '0.02em',
-                          background: 'linear-gradient(180deg, #FFFFFF 0%, #A0A0A0 100%)',
-                          WebkitBackgroundClip: 'text',
-                          WebkitTextFillColor: 'transparent'
-                        }}>
-                          {WHY_SLIDES[whySlide].title}
-                        </h3>
-
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
-                          <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '1rem', lineHeight: 1.7 }}>
-                            {WHY_SLIDES[whySlide].text}
-                          </p>
-                        </div>
-                      </motion.div>
-                    </AnimatePresence>
-
-                    {/* Carousel Controls */}
+                <div style={{ maxWidth: 1440, margin: '0 auto', position: 'relative', zIndex: 5 }}>
+                  {/* Header */}
+                  <div style={{ textAlign: 'center', marginBottom: 50 }}>
                     <motion.div
                       initial={{ opacity: 0, y: 20 }}
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true }}
-                      transition={{ duration: 0.6, delay: 0.6 }}
-                      style={{ display: 'flex', alignItems: 'center', gap: 24, marginTop: 48 }}
+                      transition={{ duration: 0.6 }}
+                      style={{ fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.2em', color: '#e0e0e0', marginBottom: 16, textTransform: 'uppercase' }}
                     >
-                      <div style={{ display: 'flex', gap: 12 }}>
-                        <button
-                          onClick={() => setWhySlide(prev => (prev - 1 + WHY_SLIDES.length) % WHY_SLIDES.length)}
-                          style={{
-                            width: 44,
-                            height: 44,
-                            borderRadius: '50%',
-                            border: '1px solid rgba(132, 204, 22, 0.4)',
-                            background: 'rgba(132, 204, 22, 0.05)',
-                            color: '#84cc16',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            cursor: 'pointer',
-                            transition: 'all 0.3s'
-                          }}
-                          onMouseEnter={(e: any) => { e.currentTarget.style.background = 'rgba(132, 204, 22, 0.15)'; e.currentTarget.style.borderColor = '#84cc16'; }}
-                          onMouseLeave={(e: any) => { e.currentTarget.style.background = 'rgba(132, 204, 22, 0.05)'; e.currentTarget.style.borderColor = 'rgba(132, 204, 22, 0.4)'; }}
-                        >
-                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-                        </button>
-
-                        <button
-                          onClick={() => setWhySlide(prev => (prev + 1) % WHY_SLIDES.length)}
-                          style={{
-                            width: 44,
-                            height: 44,
-                            borderRadius: '50%',
-                            border: '1px solid rgba(132, 204, 22, 0.4)',
-                            background: 'rgba(132, 204, 22, 0.05)',
-                            color: '#84cc16',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            cursor: 'pointer',
-                            transition: 'all 0.3s'
-                          }}
-                          onMouseEnter={(e: any) => { e.currentTarget.style.background = 'rgba(132, 204, 22, 0.15)'; e.currentTarget.style.borderColor = '#84cc16'; }}
-                          onMouseLeave={(e: any) => { e.currentTarget.style.background = 'rgba(132, 204, 22, 0.05)'; e.currentTarget.style.borderColor = 'rgba(132, 204, 22, 0.4)'; }}
-                        >
-                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                        </button>
-                      </div>
-
-                      <div style={{ display: 'flex', gap: 8 }}>
-                        {WHY_SLIDES.map((_, i) => (
-                          <div
-                            key={i}
-                            onClick={() => setWhySlide(i)}
-                            style={{
-                              width: 6,
-                              height: 6,
-                              borderRadius: '50%',
-                              background: whySlide === i ? '#84cc16' : 'rgba(255,255,255,0.2)',
-                              cursor: 'pointer',
-                              transition: 'all 0.3s'
-                            }}
-                          />
-                        ))}
-                      </div>
+                      EV CHARGING IS THE BEST FOR ELECTRICAL VEHICLES
                     </motion.div>
+
+                    <motion.h2
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.8, delay: 0.1 }}
+                      style={{
+                        fontSize: 'clamp(3rem, 6vw, 6.5rem)',
+                        fontWeight: 800,
+                        letterSpacing: -0.01,
+                        marginBottom: 32,
+                        textTransform: 'uppercase',
+                        background: 'linear-gradient(180deg, #FFFFFF 0%, #B0B0B0 45%, #606060 100%)',
+                        WebkitBackgroundClip: 'text',
+                        WebkitTextFillColor: 'transparent',
+                        filter: 'drop-shadow(0px 8px 16px rgba(0,0,0,0.4))'
+                      }}
+                    >
+                      WHY EV CHARGING?
+                    </motion.h2>
+
+                    <motion.p
+                      initial={{ opacity: 0 }}
+                      whileInView={{ opacity: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.8, delay: 0.3 }}
+                      style={{ color: 'rgba(255,255,255,0.5)', fontSize: '1.1rem', fontWeight: 400, maxWidth: 800, margin: '0 auto', lineHeight: 1.6 }}
+                    >
+                      Electric vehicle (EV) charging is at the forefront of a transportation revolution that is reshaping the way we move and the world we live in.
+                    </motion.p>
                   </div>
 
-                  {/* Right side: Professor Profile */}
-                  <div className="why-right-col" style={{ textAlign: 'right' }}>
-                    <motion.div
-                      initial={{ opacity: 0, x: 40 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 1, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                      style={{ position: 'relative', display: 'inline-block' }}
-                    >
-                      {/* Image Container with Gradient Background */}
-                      <div className="prof-img-container" style={{
-                        width: '420px',
-                        height: '520px',
-                        background: 'radial-gradient(circle at center, rgba(0, 255, 136, 0.08) 0%, transparent 70%)',
-                        borderRadius: '20px',
-                        overflow: 'hidden',
-                        position: 'relative',
-                      }}>
-                        <img
-                          src={professorImg}
-                          alt="David M. Johnson"
-                          style={{
-                            width: '100%',
-                            height: '100%',
-                            objectFit: 'contain',
-                            objectPosition: 'bottom center',
-                            filter: 'drop-shadow(0 20px 40px rgba(0,0,0,0.5))'
-                          }}
-                        />
-                      </div>
+                  {/* Content Grid */}
+                  <div className="why-grid" style={{ display: 'grid', gridTemplateColumns: '1.1fr 0.9fr', gap: 100, alignItems: 'center' }}>
+                    {/* Left side: Text Carousel */}
+                    <div style={{ position: 'relative' }}>
+                      <AnimatePresence mode="wait">
+                        <motion.div
+                          key={whySlide}
+                          className="why-slide-content"
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          exit={{ opacity: 0, x: 20 }}
+                          transition={{ duration: 0.5 }}
+                          style={{ minHeight: '320px' }}
+                        >
+                          <h3 className="why-slide-title" style={{
+                            fontSize: '1.8rem',
+                            fontWeight: 700,
+                            color: '#ffffff',
+                            textTransform: 'uppercase',
+                            marginBottom: 32,
+                            letterSpacing: '0.02em',
+                            background: 'linear-gradient(180deg, #FFFFFF 0%, #A0A0A0 100%)',
+                            WebkitBackgroundClip: 'text',
+                            WebkitTextFillColor: 'transparent'
+                          }}>
+                            {WHY_SLIDES[whySlide].title}
+                          </h3>
 
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+                            <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '1rem', lineHeight: 1.7 }}>
+                              {WHY_SLIDES[whySlide].text}
+                            </p>
+                          </div>
+                        </motion.div>
+                      </AnimatePresence>
+
+                      {/* Carousel Controls */}
                       <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
-                        transition={{ duration: 0.8, delay: 0.8 }}
-                        style={{ marginTop: 32 }}
+                        transition={{ duration: 0.6, delay: 0.6 }}
+                        style={{ display: 'flex', alignItems: 'center', gap: 24, marginTop: 48 }}
                       >
-                        <h4 className="prof-name" style={{
-                          fontSize: '3.2rem',
-                          fontWeight: 800,
-                          color: '#ffffff',
-                          textTransform: 'uppercase',
-                          letterSpacing: '-0.02em',
-                          marginBottom: 4,
-                          background: 'linear-gradient(180deg, #FFFFFF 0%, #B0B0B0 45%, #606060 100%)',
-                          WebkitBackgroundClip: 'text',
-                          WebkitTextFillColor: 'transparent',
-                        }}>
-                          DAVID M. JOHNSON
-                        </h4>
-                        <p className="prof-role" style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.85rem', fontWeight: 600, letterSpacing: '0.2em', textTransform: 'uppercase' }}>
-                          ENVIRONMENT PROFESSOR AT HARVARD
-                        </p>
+                        <div style={{ display: 'flex', gap: 12 }}>
+                          <button
+                            onClick={() => setWhySlide(prev => (prev - 1 + WHY_SLIDES.length) % WHY_SLIDES.length)}
+                            style={{
+                              width: 44,
+                              height: 44,
+                              borderRadius: '50%',
+                              border: '1px solid rgba(132, 204, 22, 0.4)',
+                              background: 'rgba(132, 204, 22, 0.05)',
+                              color: '#84cc16',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              cursor: 'pointer',
+                              transition: 'all 0.3s'
+                            }}
+                            onMouseEnter={(e: any) => { e.currentTarget.style.background = 'rgba(132, 204, 22, 0.15)'; e.currentTarget.style.borderColor = '#84cc16'; }}
+                            onMouseLeave={(e: any) => { e.currentTarget.style.background = 'rgba(132, 204, 22, 0.05)'; e.currentTarget.style.borderColor = 'rgba(132, 204, 22, 0.4)'; }}
+                          >
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                          </button>
+
+                          <button
+                            onClick={() => setWhySlide(prev => (prev + 1) % WHY_SLIDES.length)}
+                            style={{
+                              width: 44,
+                              height: 44,
+                              borderRadius: '50%',
+                              border: '1px solid rgba(132, 204, 22, 0.4)',
+                              background: 'rgba(132, 204, 22, 0.05)',
+                              color: '#84cc16',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              cursor: 'pointer',
+                              transition: 'all 0.3s'
+                            }}
+                            onMouseEnter={(e: any) => { e.currentTarget.style.background = 'rgba(132, 204, 22, 0.15)'; e.currentTarget.style.borderColor = '#84cc16'; }}
+                            onMouseLeave={(e: any) => { e.currentTarget.style.background = 'rgba(132, 204, 22, 0.05)'; e.currentTarget.style.borderColor = 'rgba(132, 204, 22, 0.4)'; }}
+                          >
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                          </button>
+                        </div>
+
+                        <div style={{ display: 'flex', gap: 8 }}>
+                          {WHY_SLIDES.map((_, i) => (
+                            <div
+                              key={i}
+                              onClick={() => setWhySlide(i)}
+                              style={{
+                                width: 6,
+                                height: 6,
+                                borderRadius: '50%',
+                                background: whySlide === i ? '#84cc16' : 'rgba(255,255,255,0.2)',
+                                cursor: 'pointer',
+                                transition: 'all 0.3s'
+                              }}
+                            />
+                          ))}
+                        </div>
                       </motion.div>
-                    </motion.div>
+                    </div>
+
+                    {/* Right side: Professor Profile */}
+                    <div className="why-right-col" style={{ textAlign: 'right' }}>
+                      <motion.div
+                        initial={{ opacity: 0, x: 40 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 1, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                        style={{ position: 'relative', display: 'inline-block' }}
+                      >
+                        {/* Image Container with Gradient Background */}
+                        <div className="prof-img-container" style={{
+                          width: '420px',
+                          height: '520px',
+                          background: 'radial-gradient(circle at center, rgba(0, 255, 136, 0.08) 0%, transparent 70%)',
+                          borderRadius: '20px',
+                          overflow: 'hidden',
+                          position: 'relative',
+                        }}>
+                          <img
+                            src={professorImg}
+                            alt="David M. Johnson"
+                            style={{
+                              width: '100%',
+                              height: '100%',
+                              objectFit: 'contain',
+                              objectPosition: 'bottom center',
+                              filter: 'drop-shadow(0 20px 40px rgba(0,0,0,0.5))'
+                            }}
+                          />
+                        </div>
+
+                        <motion.div
+                          initial={{ opacity: 0, y: 20 }}
+                          whileInView={{ opacity: 1, y: 0 }}
+                          viewport={{ once: true }}
+                          transition={{ duration: 0.8, delay: 0.8 }}
+                          style={{ marginTop: 32 }}
+                        >
+                          <h4 className="prof-name" style={{
+                            fontSize: '3.2rem',
+                            fontWeight: 800,
+                            color: '#ffffff',
+                            textTransform: 'uppercase',
+                            letterSpacing: '-0.02em',
+                            marginBottom: 4,
+                            background: 'linear-gradient(180deg, #FFFFFF 0%, #B0B0B0 45%, #606060 100%)',
+                            WebkitBackgroundClip: 'text',
+                            WebkitTextFillColor: 'transparent',
+                          }}>
+                            DAVID M. JOHNSON
+                          </h4>
+                          <p className="prof-role" style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.85rem', fontWeight: 600, letterSpacing: '0.2em', textTransform: 'uppercase' }}>
+                            ENVIRONMENT PROFESSOR AT HARVARD
+                          </p>
+                        </motion.div>
+                      </motion.div>
+                    </div>
                   </div>
                 </div>
-              </div>
               )}
             </section>
 
@@ -3050,83 +3179,83 @@ export default function App() {
                             {visible.map((s, idx) => {
                               const isSelected = selectedStationId === s.id;
                               const isFast = s.kw >= 100;
-                        const connColor = s.conn === 'CCS' ? ACCENT : s.conn === 'CHAdeMO' ? '#FFB020' : '#5EC8FF';
-                        return (
-                          <motion.div
-                            key={s.id}
-                            initial={{ opacity: 0, y: 12 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.35, delay: Math.min(idx * 0.03, 0.4) }}
-                            whileTap={{ scale: 0.985 }}
-                            onClick={() => { setSelectedStationId(s.id); setStationSheetOpen(true); }}
-                            style={{
-                              background: isSelected ? `${ACCENT}10` : CARD,
-                              border: `1px solid ${isSelected ? ACCENT : BORDER}`,
-                              borderRadius: 16,
-                              padding: '14px 16px 14px 14px',
-                              display: 'flex',
-                              alignItems: 'center',
-                              gap: 14,
-                              cursor: 'pointer',
-                              transition: 'background 200ms, border-color 200ms',
-                              position: 'relative',
-                              overflow: 'hidden',
-                            }}
-                          >
-                            {isSelected && (
-                              <motion.div
-                                initial={{ scaleY: 0 }}
-                                animate={{ scaleY: 1 }}
-                                transition={{ duration: 0.25 }}
-                                style={{ position: 'absolute', left: 0, top: 10, bottom: 10, width: 3, background: ACCENT, borderRadius: 999, transformOrigin: 'center' }}
-                              />
-                            )}
+                              const connColor = s.conn === 'CCS' ? ACCENT : s.conn === 'CHAdeMO' ? '#FFB020' : '#5EC8FF';
+                              return (
+                                <motion.div
+                                  key={s.id}
+                                  initial={{ opacity: 0, y: 12 }}
+                                  animate={{ opacity: 1, y: 0 }}
+                                  transition={{ duration: 0.35, delay: Math.min(idx * 0.03, 0.4) }}
+                                  whileTap={{ scale: 0.985 }}
+                                  onClick={() => { setSelectedStationId(s.id); setStationSheetOpen(true); }}
+                                  style={{
+                                    background: isSelected ? `${ACCENT}10` : CARD,
+                                    border: `1px solid ${isSelected ? ACCENT : BORDER}`,
+                                    borderRadius: 16,
+                                    padding: '14px 16px 14px 14px',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: 14,
+                                    cursor: 'pointer',
+                                    transition: 'background 200ms, border-color 200ms',
+                                    position: 'relative',
+                                    overflow: 'hidden',
+                                  }}
+                                >
+                                  {isSelected && (
+                                    <motion.div
+                                      initial={{ scaleY: 0 }}
+                                      animate={{ scaleY: 1 }}
+                                      transition={{ duration: 0.25 }}
+                                      style={{ position: 'absolute', left: 0, top: 10, bottom: 10, width: 3, background: ACCENT, borderRadius: 999, transformOrigin: 'center' }}
+                                    />
+                                  )}
 
-                            {/* Connector icon */}
-                            <div style={{
-                              width: 44,
-                              height: 44,
-                              borderRadius: 12,
-                              background: `${connColor}18`,
-                              border: `1px solid ${connColor}33`,
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              flexShrink: 0,
-                              color: connColor,
-                            }}>
-                              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path></svg>
-                            </div>
+                                  {/* Connector icon */}
+                                  <div style={{
+                                    width: 44,
+                                    height: 44,
+                                    borderRadius: 12,
+                                    background: `${connColor}18`,
+                                    border: `1px solid ${connColor}33`,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    flexShrink: 0,
+                                    color: connColor,
+                                  }}>
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path></svg>
+                                  </div>
 
-                            {/* Info */}
-                            <div style={{ flex: 1, minWidth: 0 }}>
-                              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 3 }}>
-                                <div style={{ color: TEXT, fontSize: '1rem', fontWeight: 700, letterSpacing: '-0.01em', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', minWidth: 0 }}>{s.name}</div>
-                                {isFast && (
-                                  <span style={{ fontSize: '0.55rem', fontWeight: 700, color: ACCENT, background: `${ACCENT}1c`, padding: '2px 6px', borderRadius: 4, letterSpacing: '0.12em', flexShrink: 0 }}>FAST</span>
-                                )}
-                              </div>
-                              <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: '0.7rem', color: TEXT_DIM, marginBottom: 6 }}>
-                                <span>{s.id}</span>
-                                <span style={{ opacity: 0.5 }}>·</span>
-                                <span>{s.state}</span>
-                              </div>
-                              <div style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '2px 7px', background: `${connColor}10`, border: `1px solid ${connColor}25`, borderRadius: 6 }}>
-                                <span style={{ width: 4, height: 4, borderRadius: '50%', background: connColor }} />
-                                <span style={{ color: connColor, fontSize: '0.62rem', fontWeight: 600, letterSpacing: '0.04em' }}>{s.conn}</span>
-                              </div>
-                            </div>
+                                  {/* Info */}
+                                  <div style={{ flex: 1, minWidth: 0 }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 3 }}>
+                                      <div style={{ color: TEXT, fontSize: '1rem', fontWeight: 700, letterSpacing: '-0.01em', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', minWidth: 0 }}>{s.name}</div>
+                                      {isFast && (
+                                        <span style={{ fontSize: '0.55rem', fontWeight: 700, color: ACCENT, background: `${ACCENT}1c`, padding: '2px 6px', borderRadius: 4, letterSpacing: '0.12em', flexShrink: 0 }}>FAST</span>
+                                      )}
+                                    </div>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: '0.7rem', color: TEXT_DIM, marginBottom: 6 }}>
+                                      <span>{s.id}</span>
+                                      <span style={{ opacity: 0.5 }}>·</span>
+                                      <span>{s.state}</span>
+                                    </div>
+                                    <div style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '2px 7px', background: `${connColor}10`, border: `1px solid ${connColor}25`, borderRadius: 6 }}>
+                                      <span style={{ width: 4, height: 4, borderRadius: '50%', background: connColor }} />
+                                      <span style={{ color: connColor, fontSize: '0.62rem', fontWeight: 600, letterSpacing: '0.04em' }}>{s.conn}</span>
+                                    </div>
+                                  </div>
 
-                            {/* Power */}
-                            <div style={{ textAlign: 'right', flexShrink: 0, display: 'flex', alignItems: 'center', gap: 8 }}>
-                              <div>
-                                <div style={{ color: isSelected ? ACCENT : TEXT, fontWeight: 700, fontSize: '1.3rem', lineHeight: 1, fontVariantNumeric: 'tabular-nums', letterSpacing: '-0.02em' }}>{s.kw}</div>
-                                <div style={{ color: TEXT_DIM, fontSize: '0.58rem', marginTop: 4, letterSpacing: '0.18em', fontWeight: 600 }}>KW</div>
-                              </div>
-                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={isSelected ? ACCENT : TEXT_DIM} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.6 }}><polyline points="9 18 15 12 9 6"></polyline></svg>
-                            </div>
-                          </motion.div>
-                        );
+                                  {/* Power */}
+                                  <div style={{ textAlign: 'right', flexShrink: 0, display: 'flex', alignItems: 'center', gap: 8 }}>
+                                    <div>
+                                      <div style={{ color: isSelected ? ACCENT : TEXT, fontWeight: 700, fontSize: '1.3rem', lineHeight: 1, fontVariantNumeric: 'tabular-nums', letterSpacing: '-0.02em' }}>{s.kw}</div>
+                                      <div style={{ color: TEXT_DIM, fontSize: '0.58rem', marginTop: 4, letterSpacing: '0.18em', fontWeight: 600 }}>KW</div>
+                                    </div>
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={isSelected ? ACCENT : TEXT_DIM} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.6 }}><polyline points="9 18 15 12 9 6"></polyline></svg>
+                                  </div>
+                                </motion.div>
+                              );
                             })}
                             {hiddenCount > 0 && (
                               <motion.button
@@ -3300,333 +3429,333 @@ export default function App() {
             transition={{ duration: 0.3 }}
           >
             <section style={{ background: BG, color: TEXT, paddingTop: isMobile ? '92px' : '100px', paddingBottom: isMobile ? '64px' : '120px' }}>
-            {isMobile ? (
-              <div style={{ padding: '0 20px', position: 'relative', zIndex: 1 }}>
-                {/* Ambient backdrop */}
-                <div style={{ position: 'absolute', top: '5%', right: '-30%', width: 360, height: 360, background: `radial-gradient(circle, ${ACCENT_SOFT}20, transparent 65%)`, borderRadius: '50%', pointerEvents: 'none', zIndex: -1 }} />
+              {isMobile ? (
+                <div style={{ padding: '0 20px', position: 'relative', zIndex: 1 }}>
+                  {/* Ambient backdrop */}
+                  <div style={{ position: 'absolute', top: '5%', right: '-30%', width: 360, height: 360, background: `radial-gradient(circle, ${ACCENT_SOFT}20, transparent 65%)`, borderRadius: '50%', pointerEvents: 'none', zIndex: -1 }} />
 
-                {/* HERO */}
-                <motion.div initial={{ opacity: 0, y: -8 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }} style={{ marginBottom: 40 }}>
-                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 12px', background: 'rgba(0,255,136,0.08)', border: `1px solid ${BORDER_STRONG}`, borderRadius: 99, marginBottom: 16 }}>
-                    <span className="circle pulse-dot" style={{ width: 6, height: 6, background: ACCENT, color: ACCENT }} />
-                    <span className="mono" style={{ fontSize: '0.6rem', fontWeight: 700, color: ACCENT, letterSpacing: '0.18em' }}>WHO WE ARE</span>
-                  </div>
-                  <h1 style={{ fontFamily: "'Syne', sans-serif", fontSize: '2.4rem', fontWeight: 800, color: '#fff', marginBottom: 14, letterSpacing: '-0.035em', lineHeight: 1.05 }}>
-                    Our story <br /><span style={{ color: ACCENT }}>starts here.</span>
-                  </h1>
-                  <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: '0.95rem', color: TEXT_DIM, lineHeight: 1.6 }}>
-                    Empowering communities through clean technology and sustainable mobility — built in India, designed for the world.
-                  </p>
-                </motion.div>
+                  {/* HERO */}
+                  <motion.div initial={{ opacity: 0, y: -8 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }} style={{ marginBottom: 40 }}>
+                    <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 12px', background: 'rgba(0,255,136,0.08)', border: `1px solid ${BORDER_STRONG}`, borderRadius: 99, marginBottom: 16 }}>
+                      <span className="circle pulse-dot" style={{ width: 6, height: 6, background: ACCENT, color: ACCENT }} />
+                      <span className="mono" style={{ fontSize: '0.6rem', fontWeight: 700, color: ACCENT, letterSpacing: '0.18em' }}>WHO WE ARE</span>
+                    </div>
+                    <h1 style={{ fontFamily: "'Syne', sans-serif", fontSize: '2.4rem', fontWeight: 800, color: '#fff', marginBottom: 14, letterSpacing: '-0.035em', lineHeight: 1.05 }}>
+                      Our story <br /><span style={{ color: ACCENT }}>starts here.</span>
+                    </h1>
+                    <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: '0.95rem', color: TEXT_DIM, lineHeight: 1.6 }}>
+                      Empowering communities through clean technology and sustainable mobility — built in India, designed for the world.
+                    </p>
+                  </motion.div>
 
-                {/* VISION */}
-                <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} style={{ marginBottom: 32, background: `linear-gradient(180deg, ${SURFACE}, ${BG})`, border: `1px solid ${BORDER_STRONG}`, borderRadius: 20, overflow: 'hidden' }}>
-                  <div style={{ height: 180, background: SURFACE, position: 'relative', overflow: 'hidden', borderBottom: `1px solid ${BORDER}` }}>
-                    <img src="/sustainability.png" alt="Sustainability" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                    <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(180deg, transparent 40%, ${BG} 100%)` }} />
-                  </div>
-                  <div style={{ padding: '18px 18px 20px' }}>
+                  {/* VISION */}
+                  <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} style={{ marginBottom: 32, background: `linear-gradient(180deg, ${SURFACE}, ${BG})`, border: `1px solid ${BORDER_STRONG}`, borderRadius: 20, overflow: 'hidden' }}>
+                    <div style={{ height: 180, background: SURFACE, position: 'relative', overflow: 'hidden', borderBottom: `1px solid ${BORDER}` }}>
+                      <img src="/sustainability.png" alt="Sustainability" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(180deg, transparent 40%, ${BG} 100%)` }} />
+                    </div>
+                    <div style={{ padding: '18px 18px 20px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
+                        <div style={{ width: 28, height: 2, background: ACCENT }} />
+                        <span style={{ color: ACCENT, fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase' }}>Our Vision</span>
+                      </div>
+                      <h2 style={{ fontFamily: "'Syne', sans-serif", fontSize: '1.45rem', fontWeight: 800, color: '#fff', marginBottom: 12, letterSpacing: '-0.02em', lineHeight: 1.2 }}>
+                        A planet where progress moves with nature.
+                      </h2>
+                      <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: '0.88rem', color: TEXT_DIM, lineHeight: 1.65 }}>
+                        Trio envisions a world where every ride and every delivery contributes to a healthier planet. We aim to eliminate pollution and create a fully electric ecosystem for both personal mobility and logistics — making sustainable, smart, connected transport accessible to all.
+                      </p>
+                    </div>
+                  </motion.div>
+
+                  {/* MISSION */}
+                  <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} style={{ marginBottom: 40 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
                       <div style={{ width: 28, height: 2, background: ACCENT }} />
-                      <span style={{ color: ACCENT, fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase' }}>Our Vision</span>
+                      <span style={{ color: ACCENT, fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase' }}>Our Mission</span>
                     </div>
-                    <h2 style={{ fontFamily: "'Syne', sans-serif", fontSize: '1.45rem', fontWeight: 800, color: '#fff', marginBottom: 12, letterSpacing: '-0.02em', lineHeight: 1.2 }}>
-                      A planet where progress moves with nature.
+                    <h2 style={{ fontFamily: "'Syne', sans-serif", fontSize: '1.45rem', fontWeight: 800, color: '#fff', marginBottom: 18, letterSpacing: '-0.02em', lineHeight: 1.2 }}>
+                      Redefining how people move<br /><span style={{ color: ACCENT }}>and how business runs.</span>
                     </h2>
-                    <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: '0.88rem', color: TEXT_DIM, lineHeight: 1.65 }}>
-                      Trio envisions a world where every ride and every delivery contributes to a healthier planet. We aim to eliminate pollution and create a fully electric ecosystem for both personal mobility and logistics — making sustainable, smart, connected transport accessible to all.
-                    </p>
-                  </div>
-                </motion.div>
-
-                {/* MISSION */}
-                <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} style={{ marginBottom: 40 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
-                    <div style={{ width: 28, height: 2, background: ACCENT }} />
-                    <span style={{ color: ACCENT, fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase' }}>Our Mission</span>
-                  </div>
-                  <h2 style={{ fontFamily: "'Syne', sans-serif", fontSize: '1.45rem', fontWeight: 800, color: '#fff', marginBottom: 18, letterSpacing: '-0.02em', lineHeight: 1.2 }}>
-                    Redefining how people move<br /><span style={{ color: ACCENT }}>and how business runs.</span>
-                  </h2>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                    {[
-                      { tag: 'Electric Cars', text: 'Eco-friendly, stylish, reliable, and affordable for everyday use.' },
-                      { tag: 'Smart Logistics', text: '100% electric fleets that reduce congestion, noise, and emissions.' },
-                      { tag: 'Sustainability', text: 'Green practices across design, manufacturing, and daily operations.' },
-                      { tag: 'Innovation', text: 'Smart tech + renewable energy + continuous performance.' },
-                      { tag: 'Community', text: 'Raising awareness about eco-friendly mobility and nature-first choices.' },
-                      { tag: 'Connected Future', text: 'Technology, people, and the environment coexisting seamlessly.' },
-                    ].map((m, i) => (
-                      <motion.div
-                        key={i}
-                        initial={{ opacity: 0, x: -8 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.35, delay: 0.06 * i }}
-                        style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderLeft: `3px solid ${ACCENT}`, borderRadius: 12, padding: '12px 14px', display: 'flex', flexDirection: 'column', gap: 4 }}
-                      >
-                        <span style={{ color: ACCENT, fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase' }}>{m.tag}</span>
-                        <span style={{ color: TEXT, fontSize: '0.86rem', lineHeight: 1.45, fontFamily: "'Outfit', sans-serif" }}>{m.text}</span>
-                      </motion.div>
-                    ))}
-                  </div>
-                  <div style={{ marginTop: 16, padding: '12px 14px', borderLeft: `2px solid ${ACCENT}44`, fontStyle: 'italic', color: TEXT_DIM, fontSize: '0.82rem', lineHeight: 1.5, fontFamily: "'Outfit', sans-serif" }}>
-                    Our purpose is clear — protect nature, reduce pollution, and create a sustainable legacy.
-                  </div>
-                </motion.div>
-
-                {/* STORY TIMELINE */}
-                <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} style={{ marginBottom: 40 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
-                    <div style={{ width: 28, height: 2, background: ACCENT }} />
-                    <span style={{ color: ACCENT, fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase' }}>Our Story</span>
-                  </div>
-                  <h2 style={{ fontFamily: "'Syne', sans-serif", fontSize: '1.45rem', fontWeight: 800, color: '#fff', marginBottom: 22, letterSpacing: '-0.02em', lineHeight: 1.2 }}>
-                    From an idea<br /><span style={{ color: ACCENT }}>to a city-wide impact.</span>
-                  </h2>
-
-                  {/* Vertical timeline */}
-                  <div style={{ position: 'relative', paddingLeft: 24, marginBottom: 24 }}>
-                    <div style={{ position: 'absolute', left: 7, top: 6, bottom: 6, width: 1, background: `linear-gradient(180deg, ${ACCENT}55, ${BORDER_STRONG} 50%, ${ACCENT}55)` }} />
-                    {[
-                      { year: '2018', title: 'The spark', text: 'Roots in telecom (Vodafone, multi-country). The realization: tech advances but environment pays the cost.' },
-                      { year: '2022', title: 'Two cars in Pune', text: 'Tested the market by driving cars ourselves — learned operations, payments, and driver realities.' },
-                      { year: '2024', title: 'Trio Evolution India', text: 'Officially registered. Pivoted to B2B with Mahindra Logistics, serving TCS, Capgemini, Cognizant, KPMG, Indigo.' },
-                      { year: '2025', title: 'Kolkata charging hub', text: "Becoming Kolkata's first fleet owner to build a private EV charging hub in New Town's IT corridor." },
-                    ].map((step, i) => (
-                      <motion.div
-                        key={i}
-                        initial={{ opacity: 0, x: -8 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.4, delay: i * 0.1 }}
-                        style={{ position: 'relative', marginBottom: i === 3 ? 0 : 22 }}
-                      >
-                        <div style={{ position: 'absolute', left: -24, top: 4, width: 14, height: 14, borderRadius: '50%', background: BG, border: `2px solid ${ACCENT}`, boxShadow: `0 0 8px ${ACCENT}55` }} />
-                        <div className="mono" style={{ color: ACCENT, fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.18em', marginBottom: 4 }}>{step.year}</div>
-                        <div style={{ fontFamily: "'Syne', sans-serif", fontSize: '1rem', fontWeight: 700, color: TEXT, marginBottom: 4 }}>{step.title}</div>
-                        <p style={{ fontFamily: "'Outfit', sans-serif", color: TEXT_DIM, fontSize: '0.82rem', lineHeight: 1.55, margin: 0 }}>{step.text}</p>
-                      </motion.div>
-                    ))}
-                  </div>
-
-                  {/* Featured founder quote card */}
-                  <div style={{ background: `linear-gradient(140deg, ${ACCENT}12, ${SURFACE})`, border: `1px solid ${ACCENT}44`, borderRadius: 16, padding: '22px 18px', position: 'relative', overflow: 'hidden' }}>
-                    <svg width="22" height="18" viewBox="0 0 32 24" fill={ACCENT} style={{ opacity: 0.45, marginBottom: 10 }}>
-                      <path d="M0 14 C 0 6, 4 0, 12 0 L 12 4 C 8 4, 6 6, 6 12 L 12 12 L 12 24 L 0 24 Z M 20 14 C 20 6, 24 0, 32 0 L 32 4 C 28 4, 26 6, 26 12 L 32 12 L 32 24 L 20 24 Z" />
-                    </svg>
-                    <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: '1rem', fontStyle: 'italic', color: TEXT, lineHeight: 1.5, margin: 0, letterSpacing: '-0.01em' }}>
-                      We're not just offering transport — we're driving a transition to greener, smarter mobility for all.
-                    </p>
-                  </div>
-                </motion.div>
-
-                {/* LEADERSHIP */}
-                <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} style={{ marginBottom: 40 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
-                    <div style={{ width: 28, height: 2, background: ACCENT }} />
-                    <span style={{ color: ACCENT, fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase' }}>Leadership</span>
-                  </div>
-                  <h2 style={{ fontFamily: "'Syne', sans-serif", fontSize: '1.45rem', fontWeight: 800, color: '#fff', marginBottom: 18, letterSpacing: '-0.02em', lineHeight: 1.2 }}>
-                    The minds behind <span style={{ color: ACCENT }}>the mission.</span>
-                  </h2>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                    {[
-                      { name: 'Subhash Kumar', role: 'Founder & CEO', bio: 'B.Tech CS. Former Vodafone. Now leading Trio with focus on innovation and sustainability.', img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1974&auto=format&fit=crop' },
-                      { name: 'Somnath Das', role: 'Founder & COO', bio: 'M.A. graduate. Former Uber. Drives smooth operations and impactful strategy at Trio.', img: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=2070&auto=format&fit=crop' },
-                    ].map(leader => (
-                      <div key={leader.name} style={{ background: '#121915', border: `1px solid ${BORDER_STRONG}`, borderRadius: 18, padding: 18, display: 'flex', gap: 16, alignItems: 'flex-start' }}>
-                        <div style={{ width: 72, height: 72, borderRadius: '50%', overflow: 'hidden', border: `2px solid ${ACCENT}33`, flexShrink: 0 }}>
-                          <img src={leader.img} alt={leader.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                        </div>
-                        <div style={{ flex: 1, minWidth: 0 }}>
-                          <h3 style={{ fontFamily: "'Syne', sans-serif", fontSize: '1.05rem', fontWeight: 700, color: '#fff', marginBottom: 3, letterSpacing: '-0.01em' }}>{leader.name}</h3>
-                          <div style={{ fontFamily: "'Outfit', sans-serif", color: ACCENT, fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: 8 }}>{leader.role}</div>
-                          <p style={{ fontFamily: "'Outfit', sans-serif", color: TEXT_DIM, fontSize: '0.78rem', lineHeight: 1.5, margin: 0 }}>{leader.bio}</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </motion.div>
-
-                {/* IMPACT */}
-                <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
-                    <div style={{ width: 28, height: 2, background: ACCENT }} />
-                    <span style={{ color: ACCENT, fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase' }}>Impact</span>
-                  </div>
-                  <h2 style={{ fontFamily: "'Syne', sans-serif", fontSize: '1.45rem', fontWeight: 800, color: '#fff', marginBottom: 18, letterSpacing: '-0.02em', lineHeight: 1.2 }}>
-                    Accelerating a <span style={{ color: ACCENT }}>cleaner future.</span>
-                  </h2>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-                    {[
-                      { icon: 'M23 6l-9.5 9.5-5-5L1 18', title: 'EV-First Fleet', desc: 'All-electric fleet rollout across regions by 2026.' },
-                      { icon: 'M12 2L5 9h4v12h6V9h4L12 2z', title: 'Nature First', desc: 'Reforestation + renewables, net-zero by 2030.' },
-                      { icon: 'M13 2L3 14h9l-1 8 10-12h-9l1-8z', title: 'Smart Roads', desc: 'Road-harvested energy for streetlights & EVs.' },
-                      { icon: 'M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2 M9 7a4 4 0 1 0 0-8 4 4 0 0 0 0 8z M23 21v-2a4 4 0 0 0-3-3.87 M16 3.13a4 4 0 0 1 0 7.75', title: 'Inclusion', desc: 'R&D + skills for rural clean-tech adoption.' },
-                    ].map((item, i) => (
-                      <div key={i} style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderTop: `3px solid ${ACCENT}`, borderRadius: 12, padding: 14 }}>
-                        <div style={{ width: 32, height: 32, borderRadius: 8, background: `${ACCENT}15`, color: ACCENT, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 10 }}>
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d={item.icon} /></svg>
-                        </div>
-                        <h4 style={{ fontFamily: "'Syne', sans-serif", fontSize: '0.85rem', fontWeight: 700, color: '#fff', marginBottom: 5, lineHeight: 1.2 }}>{item.title}</h4>
-                        <p style={{ fontFamily: "'Outfit', sans-serif", color: TEXT_DIM, fontSize: '0.7rem', lineHeight: 1.45, margin: 0 }}>{item.desc}</p>
-                      </div>
-                    ))}
-                  </div>
-                </motion.div>
-              </div>
-            ) : (
-              <>
-              {/* 1. HERO */}
-              <div className="about-hero" style={{ textAlign: 'center', marginBottom: 120, padding: '0 24px' }}>
-                <h1 style={{ fontFamily: "'Syne', sans-serif", fontSize: 'clamp(3rem, 7vw, 4.5rem)', fontWeight: 800, color: '#fff', marginBottom: 20, letterSpacing: '-0.04em', lineHeight: 1.1 }}>
-                  Our Commitment to <br />
-                  <span style={{ color: ACCENT, fontSize: '0.8em' }}>Communities</span>
-                </h1>
-                <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: '1.25rem', color: TEXT_DIM, maxWidth: 600, margin: '0 auto', lineHeight: 1.6, fontWeight: 400 }}>
-                  Empowering local communities through clean technology and <br /> sustainable practices.
-                </p>
-              </div>
-
-              <div className="about-inner" style={{ maxWidth: 1200, margin: '0 auto', padding: '0 48px' }}>
-                {/* 2. VISION */}
-                <div className="vision-grid" style={{ display: 'grid', gridTemplateColumns: '1.2fr 0.8fr', gap: 60, alignItems: 'center', marginBottom: 120 }}>
-                  <div className="vision-img" style={{ background: SURFACE, borderRadius: 32, overflow: 'hidden', border: `1px solid ${BORDER}`, height: 420 }}>
-                    <img src="/sustainability.png" alt="Sustainability" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                  </div>
-                  <div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 24 }}>
-                      <div style={{ width: 40, height: 2, background: ACCENT, borderRadius: 1 }} />
-                      <h2 className="about-section-title" style={{ fontFamily: "'Syne', sans-serif", fontSize: '2.5rem', fontWeight: 800, color: '#fff', letterSpacing: '-0.02em' }}>Our Vision</h2>
-                    </div>
-                    <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: '1.1rem', color: TEXT_DIM, lineHeight: 1.8, fontWeight: 400 }}>
-                      Trio envisions a world where every ride and every delivery contributes to a healthier planet. Our vision is to eliminate pollution and carbon emissions by creating a fully electric ecosystem for both personal mobility and logistics. We aspire to lead the transformation of the automotive and logistics industries, making sustainable, smart, and connected transportation accessible to all. By combining innovation, responsibility, and care for nature, we aim to build a future where progress and the environment move together in harmony.
-                    </p>
-                  </div>
-                </div>
-
-                {/* 3. MISSION */}
-                <div className="mission-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1.1fr', gap: 60, alignItems: 'center', marginBottom: 120 }}>
-                  <div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 20 }}>
-                      <div style={{ width: 40, height: 2, background: ACCENT, borderRadius: 1 }} />
-                      <h2 className="about-section-title" style={{ fontFamily: "'Syne', sans-serif", fontSize: '2.2rem', fontWeight: 800, color: '#fff', letterSpacing: '-0.02em' }}>Our Mission</h2>
-                    </div>
-                    <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: '1rem', color: TEXT_DIM, lineHeight: 1.7, marginBottom: 20 }}>
-                      At Trio, our mission is to redefine the way people move and businesses operate. We are committed to:
-                    </p>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                       {[
-                        "Developing electric cars that are eco-friendly, stylish, reliable, and affordable for everyday use.",
-                        "Revolutionizing logistics with 100% electric fleets that reduce congestion, minimize noise, and lower emissions.",
-                        "Supporting sustainability by adopting green practices in design, manufacturing, and operations for healthier cities.",
-                        "Driving innovation through smart technology, renewable energy integration, and continuous performance improvements.",
-                        "Empowering communities by raising awareness about eco-friendly mobility and promoting nature-first choices.",
-                        "Building a connected future where technology, people, and the environment coexist seamlessly."
-                      ].map((item, i) => (
-                        <div key={i} style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
-                          <div style={{ width: 16, height: 16, borderRadius: '50%', border: `1px solid ${ACCENT}44`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: 4 }}>
-                            <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke={ACCENT} strokeWidth="4"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        { tag: 'Electric Cars', text: 'Eco-friendly, stylish, reliable, and affordable for everyday use.' },
+                        { tag: 'Smart Logistics', text: '100% electric fleets that reduce congestion, noise, and emissions.' },
+                        { tag: 'Sustainability', text: 'Green practices across design, manufacturing, and daily operations.' },
+                        { tag: 'Innovation', text: 'Smart tech + renewable energy + continuous performance.' },
+                        { tag: 'Community', text: 'Raising awareness about eco-friendly mobility and nature-first choices.' },
+                        { tag: 'Connected Future', text: 'Technology, people, and the environment coexisting seamlessly.' },
+                      ].map((m, i) => (
+                        <motion.div
+                          key={i}
+                          initial={{ opacity: 0, x: -8 }}
+                          whileInView={{ opacity: 1, x: 0 }}
+                          viewport={{ once: true }}
+                          transition={{ duration: 0.35, delay: 0.06 * i }}
+                          style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderLeft: `3px solid ${ACCENT}`, borderRadius: 12, padding: '12px 14px', display: 'flex', flexDirection: 'column', gap: 4 }}
+                        >
+                          <span style={{ color: ACCENT, fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase' }}>{m.tag}</span>
+                          <span style={{ color: TEXT, fontSize: '0.86rem', lineHeight: 1.45, fontFamily: "'Outfit', sans-serif" }}>{m.text}</span>
+                        </motion.div>
+                      ))}
+                    </div>
+                    <div style={{ marginTop: 16, padding: '12px 14px', borderLeft: `2px solid ${ACCENT}44`, fontStyle: 'italic', color: TEXT_DIM, fontSize: '0.82rem', lineHeight: 1.5, fontFamily: "'Outfit', sans-serif" }}>
+                      Our purpose is clear — protect nature, reduce pollution, and create a sustainable legacy.
+                    </div>
+                  </motion.div>
+
+                  {/* STORY TIMELINE */}
+                  <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} style={{ marginBottom: 40 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
+                      <div style={{ width: 28, height: 2, background: ACCENT }} />
+                      <span style={{ color: ACCENT, fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase' }}>Our Story</span>
+                    </div>
+                    <h2 style={{ fontFamily: "'Syne', sans-serif", fontSize: '1.45rem', fontWeight: 800, color: '#fff', marginBottom: 22, letterSpacing: '-0.02em', lineHeight: 1.2 }}>
+                      From an idea<br /><span style={{ color: ACCENT }}>to a city-wide impact.</span>
+                    </h2>
+
+                    {/* Vertical timeline */}
+                    <div style={{ position: 'relative', paddingLeft: 24, marginBottom: 24 }}>
+                      <div style={{ position: 'absolute', left: 7, top: 6, bottom: 6, width: 1, background: `linear-gradient(180deg, ${ACCENT}55, ${BORDER_STRONG} 50%, ${ACCENT}55)` }} />
+                      {[
+                        { year: '2018', title: 'The spark', text: 'Roots in telecom (Vodafone, multi-country). The realization: tech advances but environment pays the cost.' },
+                        { year: '2022', title: 'Two cars in Pune', text: 'Tested the market by driving cars ourselves — learned operations, payments, and driver realities.' },
+                        { year: '2024', title: 'Trio Evolution India', text: 'Officially registered. Pivoted to B2B with Mahindra Logistics, serving TCS, Capgemini, Cognizant, KPMG, Indigo.' },
+                        { year: '2025', title: 'Kolkata charging hub', text: "Becoming Kolkata's first fleet owner to build a private EV charging hub in New Town's IT corridor." },
+                      ].map((step, i) => (
+                        <motion.div
+                          key={i}
+                          initial={{ opacity: 0, x: -8 }}
+                          whileInView={{ opacity: 1, x: 0 }}
+                          viewport={{ once: true }}
+                          transition={{ duration: 0.4, delay: i * 0.1 }}
+                          style={{ position: 'relative', marginBottom: i === 3 ? 0 : 22 }}
+                        >
+                          <div style={{ position: 'absolute', left: -24, top: 4, width: 14, height: 14, borderRadius: '50%', background: BG, border: `2px solid ${ACCENT}`, boxShadow: `0 0 8px ${ACCENT}55` }} />
+                          <div className="mono" style={{ color: ACCENT, fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.18em', marginBottom: 4 }}>{step.year}</div>
+                          <div style={{ fontFamily: "'Syne', sans-serif", fontSize: '1rem', fontWeight: 700, color: TEXT, marginBottom: 4 }}>{step.title}</div>
+                          <p style={{ fontFamily: "'Outfit', sans-serif", color: TEXT_DIM, fontSize: '0.82rem', lineHeight: 1.55, margin: 0 }}>{step.text}</p>
+                        </motion.div>
+                      ))}
+                    </div>
+
+                    {/* Featured founder quote card */}
+                    <div style={{ background: `linear-gradient(140deg, ${ACCENT}12, ${SURFACE})`, border: `1px solid ${ACCENT}44`, borderRadius: 16, padding: '22px 18px', position: 'relative', overflow: 'hidden' }}>
+                      <svg width="22" height="18" viewBox="0 0 32 24" fill={ACCENT} style={{ opacity: 0.45, marginBottom: 10 }}>
+                        <path d="M0 14 C 0 6, 4 0, 12 0 L 12 4 C 8 4, 6 6, 6 12 L 12 12 L 12 24 L 0 24 Z M 20 14 C 20 6, 24 0, 32 0 L 32 4 C 28 4, 26 6, 26 12 L 32 12 L 32 24 L 20 24 Z" />
+                      </svg>
+                      <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: '1rem', fontStyle: 'italic', color: TEXT, lineHeight: 1.5, margin: 0, letterSpacing: '-0.01em' }}>
+                        We're not just offering transport — we're driving a transition to greener, smarter mobility for all.
+                      </p>
+                    </div>
+                  </motion.div>
+
+                  {/* LEADERSHIP */}
+                  <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} style={{ marginBottom: 40 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
+                      <div style={{ width: 28, height: 2, background: ACCENT }} />
+                      <span style={{ color: ACCENT, fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase' }}>Leadership</span>
+                    </div>
+                    <h2 style={{ fontFamily: "'Syne', sans-serif", fontSize: '1.45rem', fontWeight: 800, color: '#fff', marginBottom: 18, letterSpacing: '-0.02em', lineHeight: 1.2 }}>
+                      The minds behind <span style={{ color: ACCENT }}>the mission.</span>
+                    </h2>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                      {[
+                        { name: 'Subhash Kumar', role: 'Founder & CEO', bio: 'B.Tech CS. Former Vodafone. Now leading Trio with focus on innovation and sustainability.', img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1974&auto=format&fit=crop' },
+                        { name: 'Somnath Das', role: 'Founder & COO', bio: 'M.A. graduate. Former Uber. Drives smooth operations and impactful strategy at Trio.', img: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=2070&auto=format&fit=crop' },
+                      ].map(leader => (
+                        <div key={leader.name} style={{ background: '#121915', border: `1px solid ${BORDER_STRONG}`, borderRadius: 18, padding: 18, display: 'flex', gap: 16, alignItems: 'flex-start' }}>
+                          <div style={{ width: 72, height: 72, borderRadius: '50%', overflow: 'hidden', border: `2px solid ${ACCENT}33`, flexShrink: 0 }}>
+                            <img src={leader.img} alt={leader.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                           </div>
-                          <span style={{ fontFamily: "'Outfit', sans-serif", color: TEXT_DIM, fontSize: '0.9rem', lineHeight: 1.4 }}>{item}</span>
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <h3 style={{ fontFamily: "'Syne', sans-serif", fontSize: '1.05rem', fontWeight: 700, color: '#fff', marginBottom: 3, letterSpacing: '-0.01em' }}>{leader.name}</h3>
+                            <div style={{ fontFamily: "'Outfit', sans-serif", color: ACCENT, fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: 8 }}>{leader.role}</div>
+                            <p style={{ fontFamily: "'Outfit', sans-serif", color: TEXT_DIM, fontSize: '0.78rem', lineHeight: 1.5, margin: 0 }}>{leader.bio}</p>
+                          </div>
                         </div>
                       ))}
                     </div>
-                    <p style={{ fontFamily: "'Outfit', sans-serif", marginTop: 24, paddingLeft: 20, borderLeft: `2px solid ${ACCENT}33`, fontStyle: 'italic', color: TEXT_DIM, fontSize: '0.9rem' }}>
-                      Our purpose is clear: to protect nature, reduce pollution, and create a sustainable legacy where clean mobility becomes the heartbeat of modern living.
+                  </motion.div>
+
+                  {/* IMPACT */}
+                  <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
+                      <div style={{ width: 28, height: 2, background: ACCENT }} />
+                      <span style={{ color: ACCENT, fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase' }}>Impact</span>
+                    </div>
+                    <h2 style={{ fontFamily: "'Syne', sans-serif", fontSize: '1.45rem', fontWeight: 800, color: '#fff', marginBottom: 18, letterSpacing: '-0.02em', lineHeight: 1.2 }}>
+                      Accelerating a <span style={{ color: ACCENT }}>cleaner future.</span>
+                    </h2>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                      {[
+                        { icon: 'M23 6l-9.5 9.5-5-5L1 18', title: 'EV-First Fleet', desc: 'All-electric fleet rollout across regions by 2026.' },
+                        { icon: 'M12 2L5 9h4v12h6V9h4L12 2z', title: 'Nature First', desc: 'Reforestation + renewables, net-zero by 2030.' },
+                        { icon: 'M13 2L3 14h9l-1 8 10-12h-9l1-8z', title: 'Smart Roads', desc: 'Road-harvested energy for streetlights & EVs.' },
+                        { icon: 'M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2 M9 7a4 4 0 1 0 0-8 4 4 0 0 0 0 8z M23 21v-2a4 4 0 0 0-3-3.87 M16 3.13a4 4 0 0 1 0 7.75', title: 'Inclusion', desc: 'R&D + skills for rural clean-tech adoption.' },
+                      ].map((item, i) => (
+                        <div key={i} style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderTop: `3px solid ${ACCENT}`, borderRadius: 12, padding: 14 }}>
+                          <div style={{ width: 32, height: 32, borderRadius: 8, background: `${ACCENT}15`, color: ACCENT, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 10 }}>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d={item.icon} /></svg>
+                          </div>
+                          <h4 style={{ fontFamily: "'Syne', sans-serif", fontSize: '0.85rem', fontWeight: 700, color: '#fff', marginBottom: 5, lineHeight: 1.2 }}>{item.title}</h4>
+                          <p style={{ fontFamily: "'Outfit', sans-serif", color: TEXT_DIM, fontSize: '0.7rem', lineHeight: 1.45, margin: 0 }}>{item.desc}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </motion.div>
+                </div>
+              ) : (
+                <>
+                  {/* 1. HERO */}
+                  <div className="about-hero" style={{ textAlign: 'center', marginBottom: 120, padding: '0 24px' }}>
+                    <h1 style={{ fontFamily: "'Syne', sans-serif", fontSize: 'clamp(3rem, 7vw, 4.5rem)', fontWeight: 800, color: '#fff', marginBottom: 20, letterSpacing: '-0.04em', lineHeight: 1.1 }}>
+                      Our Commitment to <br />
+                      <span style={{ color: ACCENT, fontSize: '0.8em' }}>Communities</span>
+                    </h1>
+                    <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: '1.25rem', color: TEXT_DIM, maxWidth: 600, margin: '0 auto', lineHeight: 1.6, fontWeight: 400 }}>
+                      Empowering local communities through clean technology and <br /> sustainable practices.
                     </p>
                   </div>
-                  <div className="mission-img" style={{ background: SURFACE, borderRadius: 32, overflow: 'hidden', border: `1px solid ${BORDER}`, height: 500 }}>
-                    <img src="/energy.png" alt="Energy" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                  </div>
-                </div>
 
-                {/* 4. STORY */}
-                <div className="story-block" style={{ maxWidth: 800, margin: '0 auto 160px', textAlign: 'center' }}>
-                  <h2 style={{ fontFamily: "'Syne', sans-serif", fontSize: '3rem', fontWeight: 800, color: '#fff', marginBottom: 12 }}>Our <span style={{ color: ACCENT }}>Story</span></h2>
-                  <div style={{ width: 60, height: 2, background: ACCENT, margin: '0 auto 60px' }} />
-                  <div style={{ fontFamily: "'Outfit', sans-serif", color: TEXT_DIM, fontSize: '1.15rem', lineHeight: 1.8, textAlign: 'left', display: 'flex', flexDirection: 'column', gap: 32 }}>
-                    <p>Our journey began in the world of IT and telecom, where one of our founders worked on designing revenue models for Vodafone across Greece, Albania, and the UK. While building systems that directly impacted millions of customers, a realization struck — technology was advancing, but the hidden cost was environmental damage caused by emissions, vibrations, and unsustainable operations.</p>
-                    <p>With a background in Computer Science and years of experience in telecom, the seed of an idea was planted: how can technology and business models be re-imagined to serve both people and the planet? This vision led to an entrepreneurial journey beginning in 2018, exploring eco-friendly solutions and sustainability-driven startups.</p>
-                    <p>In 2022, the concept of clean transportation took shape. Starting small in Pune with just two leased vehicles, we tested the market, even driving the cars ourselves to understand a driver's real challenges. Those early months gave us invaluable insights into operations, payment irregularities, and the struggles drivers face daily. From there, we expanded to Kolkata, scaling our fleet and building strong foundations.</p>
-
-                    <div style={{ padding: '60px 0', textAlign: 'center' }}>
-                      <h3 className="story-quote" style={{ fontFamily: "'Outfit', sans-serif", fontSize: '2.2rem', fontWeight: 500, color: ACCENT, fontStyle: 'italic', lineHeight: 1.4, letterSpacing: '-0.01em' }}>
-                        "We're not just offering transport — we're driving a transition to greener, smarter mobility for all."
-                      </h3>
+                  <div className="about-inner" style={{ maxWidth: 1200, margin: '0 auto', padding: '0 48px' }}>
+                    {/* 2. VISION */}
+                    <div className="vision-grid" style={{ display: 'grid', gridTemplateColumns: '1.2fr 0.8fr', gap: 60, alignItems: 'center', marginBottom: 120 }}>
+                      <div className="vision-img" style={{ background: SURFACE, borderRadius: 32, overflow: 'hidden', border: `1px solid ${BORDER}`, height: 420 }}>
+                        <img src="/sustainability.png" alt="Sustainability" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      </div>
+                      <div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 24 }}>
+                          <div style={{ width: 40, height: 2, background: ACCENT, borderRadius: 1 }} />
+                          <h2 className="about-section-title" style={{ fontFamily: "'Syne', sans-serif", fontSize: '2.5rem', fontWeight: 800, color: '#fff', letterSpacing: '-0.02em' }}>Our Vision</h2>
+                        </div>
+                        <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: '1.1rem', color: TEXT_DIM, lineHeight: 1.8, fontWeight: 400 }}>
+                          Trio envisions a world where every ride and every delivery contributes to a healthier planet. Our vision is to eliminate pollution and carbon emissions by creating a fully electric ecosystem for both personal mobility and logistics. We aspire to lead the transformation of the automotive and logistics industries, making sustainable, smart, and connected transportation accessible to all. By combining innovation, responsibility, and care for nature, we aim to build a future where progress and the environment move together in harmony.
+                        </p>
+                      </div>
                     </div>
 
-                    <p>In July 2024, after two years of groundwork, we officially registered Trio Evolution India Pvt. Ltd. — named to represent the three founders who came together from IT, transportation, and mechanical engineering backgrounds. Though one co-founder eventually moved on, the vision remained strong: to revolutionize mobility through sustainability.</p>
-                    <p>We shifted from B2C to a B2B model, partnering with Mahindra Logistics to deploy EV fleets for large enterprises. Soon after, we began serving industry leaders like TCS, Capgemini, Cognizant, KPMG, and Indigo — expanding our fleet and proving that sustainable transport can meet the toughest corporate demands.</p>
-                    <p>Recognizing that fleet growth is incomplete without infrastructure, we took the bold step of becoming Kolkata's first fleet owner to build a private EV charging hub in New Town, right at the heart of the city's IT corridor. This hub, set to be completed by August 2025, not only powers our fleet but also supports smaller operators, ensuring accessibility and affordability for all.</p>
-                    <p>Today, our services span electric vehicle leasing, fleet management, smart charging infrastructure, and employee transportation solutions. From humble beginnings to city-wide impact, our story is proof that a vision backed by persistence can shape the future of mobility. As we move forward, our commitment remains the same: to empower businesses and communities to progress without compromising our planet. This is our story — and we're just getting started.</p>
-                  </div>
-                </div>
-
-                {/* 5. LEADERSHIP */}
-                <div className="leadership-block" style={{ marginBottom: 160 }}>
-                  <div style={{ textAlign: 'center', marginBottom: 80 }}>
-                    <h2 style={{ fontFamily: "'Syne', sans-serif", fontSize: '3rem', fontWeight: 800, color: '#fff', marginBottom: 20 }}>Leadership <span style={{ color: ACCENT }}>Team</span></h2>
-                    <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: '1.2rem', color: TEXT_DIM, maxWidth: 640, margin: '0 auto' }}>
-                      The minds behind our mission to transform transportation through clean energy and community-driven innovation.
-                    </p>
-                  </div>
-                  <div className="leadership-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 40, maxWidth: 1000, margin: '0 auto' }}>
-                    {[
-                      {
-                        name: "Subhash Kumar",
-                        role: "Founder & CEO",
-                        bio: "B.Tech in Computer Science. Former employee at Vodafone. Currently leading Trio as Founder & CEO, driving innovation and sustainable solutions.",
-                        img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1974&auto=format&fit=crop"
-                      },
-                      {
-                        name: "Somnath Das",
-                        role: "Founder & COO",
-                        bio: "M.A. graduate. Former employee at Uber. Now serving as Founder & COO of Trio, ensuring smooth operations and impactful strategies.",
-                        img: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=2070&auto=format&fit=crop"
-                      }
-                    ].map(leader => (
-                      <div key={leader.name} className="leadership-card" style={{ background: '#121915', border: `1px solid ${BORDER}`, borderRadius: 40, padding: 60, textAlign: 'center', transition: 'all 0.3s' }}>
-                        <div className="leader-avatar" style={{ width: 120, height: 120, borderRadius: '50%', overflow: 'hidden', margin: '0 auto 32px', border: `4px solid ${ACCENT}22` }}>
-                          <img src={leader.img} alt={leader.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    {/* 3. MISSION */}
+                    <div className="mission-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1.1fr', gap: 60, alignItems: 'center', marginBottom: 120 }}>
+                      <div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 20 }}>
+                          <div style={{ width: 40, height: 2, background: ACCENT, borderRadius: 1 }} />
+                          <h2 className="about-section-title" style={{ fontFamily: "'Syne', sans-serif", fontSize: '2.2rem', fontWeight: 800, color: '#fff', letterSpacing: '-0.02em' }}>Our Mission</h2>
                         </div>
-                        <h3 style={{ fontFamily: "'Syne', sans-serif", fontSize: '1.75rem', fontWeight: 700, color: '#fff', marginBottom: 8 }}>{leader.name}</h3>
-                        <div style={{ fontFamily: "'Outfit', sans-serif", color: ACCENT, fontSize: '0.9rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 24 }}>{leader.role}</div>
-                        <p style={{ fontFamily: "'Outfit', sans-serif", color: TEXT_DIM, fontSize: '0.95rem', lineHeight: 1.6 }}>{leader.bio}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* 6. IMPACT */}
-                <div>
-                  <div style={{ textAlign: 'center', marginBottom: 80 }}>
-                    <h2 style={{ fontFamily: "'Syne', sans-serif", fontSize: '3rem', fontWeight: 800, color: '#fff', marginBottom: 20 }}>Our <span style={{ color: ACCENT }}>Impact</span></h2>
-                    <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: '1.2rem', color: TEXT_DIM, maxWidth: 640, margin: '0 auto' }}>
-                      We are dedicated to accelerating a clean, equitable future by integrating technology and sustainability in every journey.
-                    </p>
-                  </div>
-                  <div className="impact-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 24 }}>
-                    {[
-                      { icon: 'M23 6l-9.5 9.5-5-5L1 18', title: "EV-First Fleet", desc: "Deploying electric vehicles and hybrid transport solutions across all regions by 2026." },
-                      { icon: 'M12 2L5 9h4v12h6V9h4L12 2z', title: "Commitment to Nature", desc: "Investing in reforestation and renewable projects to exceed net-zero impact by 2030." },
-                      { icon: 'M13 2L3 14h9l-1 8 10-12h-9l1-8z', title: "Sustainable Smart Roads", desc: "Implementing road-based energy harvesting to power streetlights and EV charging stations." },
-                      { icon: 'M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2 M9 7a4 4 0 1 0 0-8 4 4 0 0 0 0 8z M23 21v-2a4 4 0 0 0-3-3.87 M16 3.13a4 4 0 0 1 0 7.75', title: "Innovation & Inclusion", desc: "Fostering R&D and skill-building programs to empower rural communities in clean tech adoption." }
-                    ].map((item, i) => (
-                      <div key={i} className="impact-card" style={{ background: BG, border: `1px solid ${BORDER}`, borderTop: `4px solid ${ACCENT}`, borderRadius: 16, padding: 32, transition: 'transform 0.3s' }}>
-                        <div style={{ color: ACCENT, marginBottom: 20 }}>
-                          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d={item.icon}></path></svg>
+                        <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: '1rem', color: TEXT_DIM, lineHeight: 1.7, marginBottom: 20 }}>
+                          At Trio, our mission is to redefine the way people move and businesses operate. We are committed to:
+                        </p>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+                          {[
+                            "Developing electric cars that are eco-friendly, stylish, reliable, and affordable for everyday use.",
+                            "Revolutionizing logistics with 100% electric fleets that reduce congestion, minimize noise, and lower emissions.",
+                            "Supporting sustainability by adopting green practices in design, manufacturing, and operations for healthier cities.",
+                            "Driving innovation through smart technology, renewable energy integration, and continuous performance improvements.",
+                            "Empowering communities by raising awareness about eco-friendly mobility and promoting nature-first choices.",
+                            "Building a connected future where technology, people, and the environment coexist seamlessly."
+                          ].map((item, i) => (
+                            <div key={i} style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+                              <div style={{ width: 16, height: 16, borderRadius: '50%', border: `1px solid ${ACCENT}44`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: 4 }}>
+                                <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke={ACCENT} strokeWidth="4"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                              </div>
+                              <span style={{ fontFamily: "'Outfit', sans-serif", color: TEXT_DIM, fontSize: '0.9rem', lineHeight: 1.4 }}>{item}</span>
+                            </div>
+                          ))}
                         </div>
-                        <h4 style={{ fontFamily: "'Syne', sans-serif", fontSize: '1.2rem', fontWeight: 700, color: '#fff', marginBottom: 16 }}>{item.title}</h4>
-                        <p style={{ fontFamily: "'Outfit', sans-serif", color: TEXT_DIM, fontSize: '0.88rem', lineHeight: 1.6 }}>{item.desc}</p>
+                        <p style={{ fontFamily: "'Outfit', sans-serif", marginTop: 24, paddingLeft: 20, borderLeft: `2px solid ${ACCENT}33`, fontStyle: 'italic', color: TEXT_DIM, fontSize: '0.9rem' }}>
+                          Our purpose is clear: to protect nature, reduce pollution, and create a sustainable legacy where clean mobility becomes the heartbeat of modern living.
+                        </p>
                       </div>
-                    ))}
+                      <div className="mission-img" style={{ background: SURFACE, borderRadius: 32, overflow: 'hidden', border: `1px solid ${BORDER}`, height: 500 }}>
+                        <img src="/energy.png" alt="Energy" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      </div>
+                    </div>
+
+                    {/* 4. STORY */}
+                    <div className="story-block" style={{ maxWidth: 800, margin: '0 auto 160px', textAlign: 'center' }}>
+                      <h2 style={{ fontFamily: "'Syne', sans-serif", fontSize: '3rem', fontWeight: 800, color: '#fff', marginBottom: 12 }}>Our <span style={{ color: ACCENT }}>Story</span></h2>
+                      <div style={{ width: 60, height: 2, background: ACCENT, margin: '0 auto 60px' }} />
+                      <div style={{ fontFamily: "'Outfit', sans-serif", color: TEXT_DIM, fontSize: '1.15rem', lineHeight: 1.8, textAlign: 'left', display: 'flex', flexDirection: 'column', gap: 32 }}>
+                        <p>Our journey began in the world of IT and telecom, where one of our founders worked on designing revenue models for Vodafone across Greece, Albania, and the UK. While building systems that directly impacted millions of customers, a realization struck — technology was advancing, but the hidden cost was environmental damage caused by emissions, vibrations, and unsustainable operations.</p>
+                        <p>With a background in Computer Science and years of experience in telecom, the seed of an idea was planted: how can technology and business models be re-imagined to serve both people and the planet? This vision led to an entrepreneurial journey beginning in 2018, exploring eco-friendly solutions and sustainability-driven startups.</p>
+                        <p>In 2022, the concept of clean transportation took shape. Starting small in Pune with just two leased vehicles, we tested the market, even driving the cars ourselves to understand a driver's real challenges. Those early months gave us invaluable insights into operations, payment irregularities, and the struggles drivers face daily. From there, we expanded to Kolkata, scaling our fleet and building strong foundations.</p>
+
+                        <div style={{ padding: '60px 0', textAlign: 'center' }}>
+                          <h3 className="story-quote" style={{ fontFamily: "'Outfit', sans-serif", fontSize: '2.2rem', fontWeight: 500, color: ACCENT, fontStyle: 'italic', lineHeight: 1.4, letterSpacing: '-0.01em' }}>
+                            "We're not just offering transport — we're driving a transition to greener, smarter mobility for all."
+                          </h3>
+                        </div>
+
+                        <p>In July 2024, after two years of groundwork, we officially registered Trio Evolution India Pvt. Ltd. — named to represent the three founders who came together from IT, transportation, and mechanical engineering backgrounds. Though one co-founder eventually moved on, the vision remained strong: to revolutionize mobility through sustainability.</p>
+                        <p>We shifted from B2C to a B2B model, partnering with Mahindra Logistics to deploy EV fleets for large enterprises. Soon after, we began serving industry leaders like TCS, Capgemini, Cognizant, KPMG, and Indigo — expanding our fleet and proving that sustainable transport can meet the toughest corporate demands.</p>
+                        <p>Recognizing that fleet growth is incomplete without infrastructure, we took the bold step of becoming Kolkata's first fleet owner to build a private EV charging hub in New Town, right at the heart of the city's IT corridor. This hub, set to be completed by August 2025, not only powers our fleet but also supports smaller operators, ensuring accessibility and affordability for all.</p>
+                        <p>Today, our services span electric vehicle leasing, fleet management, smart charging infrastructure, and employee transportation solutions. From humble beginnings to city-wide impact, our story is proof that a vision backed by persistence can shape the future of mobility. As we move forward, our commitment remains the same: to empower businesses and communities to progress without compromising our planet. This is our story — and we're just getting started.</p>
+                      </div>
+                    </div>
+
+                    {/* 5. LEADERSHIP */}
+                    <div className="leadership-block" style={{ marginBottom: 160 }}>
+                      <div style={{ textAlign: 'center', marginBottom: 80 }}>
+                        <h2 style={{ fontFamily: "'Syne', sans-serif", fontSize: '3rem', fontWeight: 800, color: '#fff', marginBottom: 20 }}>Leadership <span style={{ color: ACCENT }}>Team</span></h2>
+                        <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: '1.2rem', color: TEXT_DIM, maxWidth: 640, margin: '0 auto' }}>
+                          The minds behind our mission to transform transportation through clean energy and community-driven innovation.
+                        </p>
+                      </div>
+                      <div className="leadership-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 40, maxWidth: 1000, margin: '0 auto' }}>
+                        {[
+                          {
+                            name: "Subhash Kumar",
+                            role: "Founder & CEO",
+                            bio: "B.Tech in Computer Science. Former employee at Vodafone. Currently leading Trio as Founder & CEO, driving innovation and sustainable solutions.",
+                            img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1974&auto=format&fit=crop"
+                          },
+                          {
+                            name: "Somnath Das",
+                            role: "Founder & COO",
+                            bio: "M.A. graduate. Former employee at Uber. Now serving as Founder & COO of Trio, ensuring smooth operations and impactful strategies.",
+                            img: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=2070&auto=format&fit=crop"
+                          }
+                        ].map(leader => (
+                          <div key={leader.name} className="leadership-card" style={{ background: '#121915', border: `1px solid ${BORDER}`, borderRadius: 40, padding: 60, textAlign: 'center', transition: 'all 0.3s' }}>
+                            <div className="leader-avatar" style={{ width: 120, height: 120, borderRadius: '50%', overflow: 'hidden', margin: '0 auto 32px', border: `4px solid ${ACCENT}22` }}>
+                              <img src={leader.img} alt={leader.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                            </div>
+                            <h3 style={{ fontFamily: "'Syne', sans-serif", fontSize: '1.75rem', fontWeight: 700, color: '#fff', marginBottom: 8 }}>{leader.name}</h3>
+                            <div style={{ fontFamily: "'Outfit', sans-serif", color: ACCENT, fontSize: '0.9rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 24 }}>{leader.role}</div>
+                            <p style={{ fontFamily: "'Outfit', sans-serif", color: TEXT_DIM, fontSize: '0.95rem', lineHeight: 1.6 }}>{leader.bio}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* 6. IMPACT */}
+                    <div>
+                      <div style={{ textAlign: 'center', marginBottom: 80 }}>
+                        <h2 style={{ fontFamily: "'Syne', sans-serif", fontSize: '3rem', fontWeight: 800, color: '#fff', marginBottom: 20 }}>Our <span style={{ color: ACCENT }}>Impact</span></h2>
+                        <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: '1.2rem', color: TEXT_DIM, maxWidth: 640, margin: '0 auto' }}>
+                          We are dedicated to accelerating a clean, equitable future by integrating technology and sustainability in every journey.
+                        </p>
+                      </div>
+                      <div className="impact-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 24 }}>
+                        {[
+                          { icon: 'M23 6l-9.5 9.5-5-5L1 18', title: "EV-First Fleet", desc: "Deploying electric vehicles and hybrid transport solutions across all regions by 2026." },
+                          { icon: 'M12 2L5 9h4v12h6V9h4L12 2z', title: "Commitment to Nature", desc: "Investing in reforestation and renewable projects to exceed net-zero impact by 2030." },
+                          { icon: 'M13 2L3 14h9l-1 8 10-12h-9l1-8z', title: "Sustainable Smart Roads", desc: "Implementing road-based energy harvesting to power streetlights and EV charging stations." },
+                          { icon: 'M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2 M9 7a4 4 0 1 0 0-8 4 4 0 0 0 0 8z M23 21v-2a4 4 0 0 0-3-3.87 M16 3.13a4 4 0 0 1 0 7.75', title: "Innovation & Inclusion", desc: "Fostering R&D and skill-building programs to empower rural communities in clean tech adoption." }
+                        ].map((item, i) => (
+                          <div key={i} className="impact-card" style={{ background: BG, border: `1px solid ${BORDER}`, borderTop: `4px solid ${ACCENT}`, borderRadius: 16, padding: 32, transition: 'transform 0.3s' }}>
+                            <div style={{ color: ACCENT, marginBottom: 20 }}>
+                              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d={item.icon}></path></svg>
+                            </div>
+                            <h4 style={{ fontFamily: "'Syne', sans-serif", fontSize: '1.2rem', fontWeight: 700, color: '#fff', marginBottom: 16 }}>{item.title}</h4>
+                            <p style={{ fontFamily: "'Outfit', sans-serif", color: TEXT_DIM, fontSize: '0.88rem', lineHeight: 1.6 }}>{item.desc}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-              </>
-            )}
+                </>
+              )}
             </section>
           </motion.div>
         )}
@@ -3690,7 +3819,7 @@ export default function App() {
             <div>
               {/* Brand */}
               <div style={{ marginBottom: 28 }}>
-                <img src={logo} alt="TRIO" style={{ height: 64, marginBottom: 14, display: 'block' }} />
+                <img src={logo} alt="TRIO" style={{ height: 96, display: 'block', marginTop: -16, marginBottom: -14 }} />
                 <div style={{ color: ACCENT, fontSize: '1rem', fontWeight: 700, marginBottom: 10 }}>Drive Smart. Go Green.</div>
                 <p style={{ color: TEXT_DIM, fontSize: '0.86rem', lineHeight: 1.6, marginBottom: 18 }}>
                   TRIO EV is Kolkata's premier electric mobility company, delivering clean, green, and smart transportation solutions for businesses and individuals.
@@ -3792,97 +3921,97 @@ export default function App() {
               </div>
             </div>
           ) : (
-          <>
-          <div className="footer-grid" style={{ display: 'grid', gridTemplateColumns: '1.2fr 0.8fr 0.8fr 1.2fr 1.2fr', gap: 32, marginBottom: 32, alignItems: 'start' }}>
-            {/* Column 1: Brand */}
-            <div>
-              <img className="footer-logo" src={logo} alt="TRIO" style={{ height: '60px', marginBottom: 14 }} />
-              <div style={{ color: ACCENT, fontSize: '1rem', fontWeight: 700, marginBottom: 8, fontFamily: "'Inter', sans-serif" }}>Drive Smart. Go Green.</div>
-              <p style={{ color: TEXT_DIM, fontSize: '0.82rem', lineHeight: 1.55, marginBottom: 14, maxWidth: 240 }}>
-                TRIO EV is Kolkata's premier electric mobility company, delivering clean, green, and smart transportation solutions for businesses and individuals.
-              </p>
-              <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-                {siteSettings.socials.map((s, i) => (
-                  <a
-                    key={`${s.platform}-${i}`}
-                    href={s.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={s.label ?? s.platform}
-                    style={{ width: 32, height: 32, borderRadius: '50%', background: 'rgba(255,255,255,0.03)', border: `1px solid ${BORDER}`, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'all 0.2s', textDecoration: 'none' }}
+            <>
+              <div className="footer-grid" style={{ display: 'grid', gridTemplateColumns: '1.2fr 0.8fr 0.8fr 1.2fr 1.2fr', gap: 32, marginBottom: 32, alignItems: 'start' }}>
+                {/* Column 1: Brand */}
+                <div>
+                  <img className="footer-logo" src={logo} alt="TRIO" style={{ height: '110px', display: 'block', marginTop: -25, marginBottom: -11 }} />
+                  <div style={{ color: ACCENT, fontSize: '1rem', fontWeight: 700, marginBottom: 8, fontFamily: "'Inter', sans-serif" }}>Drive Smart. Go Green.</div>
+                  <p style={{ color: TEXT_DIM, fontSize: '0.82rem', lineHeight: 1.55, marginBottom: 14, maxWidth: 240 }}>
+                    TRIO EV is Kolkata's premier electric mobility company, delivering clean, green, and smart transportation solutions for businesses and individuals.
+                  </p>
+                  <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+                    {siteSettings.socials.map((s, i) => (
+                      <a
+                        key={`${s.platform}-${i}`}
+                        href={s.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={s.label ?? s.platform}
+                        style={{ width: 32, height: 32, borderRadius: '50%', background: 'rgba(255,255,255,0.03)', border: `1px solid ${BORDER}`, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'all 0.2s', textDecoration: 'none' }}
+                      >
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill={TEXT_DIM}><path d={SOCIAL_ICONS[s.platform] ?? SOCIAL_ICONS.other}></path></svg>
+                      </a>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Column 2: Categories */}
+                <div>
+                  <div style={{ color: ACCENT, fontWeight: 800, fontSize: '0.7rem', marginBottom: 16, textTransform: 'uppercase', letterSpacing: '0.2em', fontFamily: "'Inter', sans-serif" }}>CATEGORIES</div>
+                  {[
+                    { label: 'Find stations', target: 'find-stations' },
+                    { label: 'About us', target: 'about-us' },
+                    { label: 'Blog', target: 'blog' }
+                  ].map(l => (
+                    <a key={l.label} href="#" onClick={(e) => { e.preventDefault(); navigate(l.target); }} style={{ display: 'block', color: TEXT, textDecoration: 'none', marginBottom: 10, fontSize: '0.9rem', fontWeight: 500, transition: 'color 200ms' }} onMouseEnter={(e: any) => e.target.style.color = ACCENT} onMouseLeave={(e: any) => e.target.style.color = TEXT}>{l.label}</a>
+                  ))}
+                </div>
+
+                {/* Column 3: Policies */}
+                <div>
+                  <div style={{ color: ACCENT, fontWeight: 800, fontSize: '0.7rem', marginBottom: 16, textTransform: 'uppercase', letterSpacing: '0.2em', fontFamily: "'Inter', sans-serif" }}>POLICIES</div>
+                  {[
+                    { label: 'Privacy Policy', target: 'privacy-policy' },
+                    { label: 'Terms & Conditions', target: 'terms-conditions' },
+                    { label: 'Refund Policy', target: 'refund-policy' }
+                  ].map(l => (
+                    <a key={l.label} href="#" onClick={(e) => { e.preventDefault(); navigate(l.target); }} style={{ display: 'block', color: TEXT, textDecoration: 'none', marginBottom: 10, fontSize: '0.9rem', fontWeight: 500, transition: 'color 200ms' }} onMouseEnter={(e: any) => e.target.style.color = ACCENT} onMouseLeave={(e: any) => e.target.style.color = TEXT}>{l.label}</a>
+                  ))}
+                </div>
+
+                {/* Column 4: Registered Address */}
+                <div>
+                  <div style={{ color: ACCENT, fontWeight: 800, fontSize: '0.7rem', marginBottom: 16, textTransform: 'uppercase', letterSpacing: '0.2em', fontFamily: "'Inter', sans-serif" }}>REGISTERED ADDRESS</div>
+                  <div style={{ display: 'flex', gap: 12, marginBottom: 12 }}>
+                    <div style={{ color: ACCENT, marginTop: 2 }}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg></div>
+                    <div style={{ color: TEXT_DIM, fontSize: '0.82rem', lineHeight: 1.5 }}>
+                      {siteSettings.registeredAddress}
+                    </div>
+                  </div>
+                  <div style={{ display: 'flex', gap: 12, marginBottom: 10 }}>
+                    <div style={{ color: ACCENT }}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg></div>
+                    <a href={`tel:${siteSettings.phone.replace(/\s+/g, '')}`} style={{ color: TEXT_DIM, fontSize: '0.82rem', textDecoration: 'none' }}>{siteSettings.phone}</a>
+                  </div>
+                  <div style={{ display: 'flex', gap: 12 }}>
+                    <div style={{ color: ACCENT }}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></div>
+                    <a href={`mailto:${siteSettings.email}`} style={{ color: TEXT_DIM, fontSize: '0.82rem', textDecoration: 'none' }}>{siteSettings.email}</a>
+                  </div>
+                </div>
+
+                {/* Column 5: Office Address + Button */}
+                <div>
+                  <div style={{ color: ACCENT, fontWeight: 800, fontSize: '0.7rem', marginBottom: 16, textTransform: 'uppercase', letterSpacing: '0.2em', fontFamily: "'Inter', sans-serif" }}>OFFICE ADDRESS</div>
+                  <div style={{ display: 'flex', gap: 12, marginBottom: 16 }}>
+                    <div style={{ color: ACCENT, marginTop: 2 }}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg></div>
+                    <div style={{ color: TEXT_DIM, fontSize: '0.82rem', lineHeight: 1.5 }}>
+                      {siteSettings.officeAddress}
+                    </div>
+                  </div>
+                  <button
+                    className="btn-accent"
+                    style={{ width: '100%', padding: '12px 20px', fontSize: '0.8rem', fontWeight: 800, borderRadius: 8, background: '#5AF59F', color: '#000', boxShadow: '0 4px 14px rgba(90, 245, 159, 0.3)' }}
+                    onClick={() => setShowContactForm(true)}
                   >
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill={TEXT_DIM}><path d={SOCIAL_ICONS[s.platform] ?? SOCIAL_ICONS.other}></path></svg>
-                  </a>
-                ))}
-              </div>
-            </div>
-
-            {/* Column 2: Categories */}
-            <div>
-              <div style={{ color: ACCENT, fontWeight: 800, fontSize: '0.7rem', marginBottom: 16, textTransform: 'uppercase', letterSpacing: '0.2em', fontFamily: "'Inter', sans-serif" }}>CATEGORIES</div>
-              {[
-                { label: 'Find stations', target: 'find-stations' },
-                { label: 'About us', target: 'about-us' },
-                { label: 'Blog', target: 'blog' }
-              ].map(l => (
-                <a key={l.label} href="#" onClick={(e) => { e.preventDefault(); navigate(l.target); }} style={{ display: 'block', color: TEXT, textDecoration: 'none', marginBottom: 10, fontSize: '0.9rem', fontWeight: 500, transition: 'color 200ms' }} onMouseEnter={(e: any) => e.target.style.color = ACCENT} onMouseLeave={(e: any) => e.target.style.color = TEXT}>{l.label}</a>
-              ))}
-            </div>
-
-            {/* Column 3: Policies */}
-            <div>
-              <div style={{ color: ACCENT, fontWeight: 800, fontSize: '0.7rem', marginBottom: 16, textTransform: 'uppercase', letterSpacing: '0.2em', fontFamily: "'Inter', sans-serif" }}>POLICIES</div>
-              {[
-                { label: 'Privacy Policy', target: 'privacy-policy' },
-                { label: 'Terms & Conditions', target: 'terms-conditions' },
-                { label: 'Refund Policy', target: 'refund-policy' }
-              ].map(l => (
-                <a key={l.label} href="#" onClick={(e) => { e.preventDefault(); navigate(l.target); }} style={{ display: 'block', color: TEXT, textDecoration: 'none', marginBottom: 10, fontSize: '0.9rem', fontWeight: 500, transition: 'color 200ms' }} onMouseEnter={(e: any) => e.target.style.color = ACCENT} onMouseLeave={(e: any) => e.target.style.color = TEXT}>{l.label}</a>
-              ))}
-            </div>
-
-            {/* Column 4: Registered Address */}
-            <div>
-              <div style={{ color: ACCENT, fontWeight: 800, fontSize: '0.7rem', marginBottom: 16, textTransform: 'uppercase', letterSpacing: '0.2em', fontFamily: "'Inter', sans-serif" }}>REGISTERED ADDRESS</div>
-              <div style={{ display: 'flex', gap: 12, marginBottom: 12 }}>
-                <div style={{ color: ACCENT, marginTop: 2 }}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg></div>
-                <div style={{ color: TEXT_DIM, fontSize: '0.82rem', lineHeight: 1.5 }}>
-                  {siteSettings.registeredAddress}
+                    CONTACT US
+                  </button>
                 </div>
               </div>
-              <div style={{ display: 'flex', gap: 12, marginBottom: 10 }}>
-                <div style={{ color: ACCENT }}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg></div>
-                <a href={`tel:${siteSettings.phone.replace(/\s+/g, '')}`} style={{ color: TEXT_DIM, fontSize: '0.82rem', textDecoration: 'none' }}>{siteSettings.phone}</a>
+              <div className="footer-bottom" style={{ color: TEXT_DIM, fontSize: '0.72rem', borderTop: `1px solid rgba(255,255,255,0.05)`, paddingTop: 16, display: 'flex', justifyContent: 'space-between' }}>
+                <span>© 2026 Trio Inc. All rights reserved.</span>
+                <span style={{ fontStyle: 'italic' }}>Clean. Green. Smart.</span>
               </div>
-              <div style={{ display: 'flex', gap: 12 }}>
-                <div style={{ color: ACCENT }}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></div>
-                <a href={`mailto:${siteSettings.email}`} style={{ color: TEXT_DIM, fontSize: '0.82rem', textDecoration: 'none' }}>{siteSettings.email}</a>
-              </div>
-            </div>
-
-            {/* Column 5: Office Address + Button */}
-            <div>
-              <div style={{ color: ACCENT, fontWeight: 800, fontSize: '0.7rem', marginBottom: 16, textTransform: 'uppercase', letterSpacing: '0.2em', fontFamily: "'Inter', sans-serif" }}>OFFICE ADDRESS</div>
-              <div style={{ display: 'flex', gap: 12, marginBottom: 16 }}>
-                <div style={{ color: ACCENT, marginTop: 2 }}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg></div>
-                <div style={{ color: TEXT_DIM, fontSize: '0.82rem', lineHeight: 1.5 }}>
-                  {siteSettings.officeAddress}
-                </div>
-              </div>
-              <button
-                className="btn-accent"
-                style={{ width: '100%', padding: '12px 20px', fontSize: '0.8rem', fontWeight: 800, borderRadius: 8, background: '#5AF59F', color: '#000', boxShadow: '0 4px 14px rgba(90, 245, 159, 0.3)' }}
-                onClick={() => setShowContactForm(true)}
-              >
-                CONTACT US
-              </button>
-            </div>
-          </div>
-          <div className="footer-bottom" style={{ color: TEXT_DIM, fontSize: '0.72rem', borderTop: `1px solid rgba(255,255,255,0.05)`, paddingTop: 16, display: 'flex', justifyContent: 'space-between' }}>
-            <span>© 2026 Trio Inc. All rights reserved.</span>
-            <span style={{ fontStyle: 'italic' }}>Clean. Green. Smart.</span>
-          </div>
-          </>
+            </>
           )}
         </div>
       </footer>

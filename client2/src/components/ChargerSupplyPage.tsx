@@ -282,6 +282,8 @@ const BOM: BomGroup[] = [
 ];
 
 export function ChargerSupplyPage({ isMobile, onPrimaryCta, onSecondaryCta }: Props) {
+    const [activeGroupId, setActiveGroupId] = React.useState('core');
+
     return (
         <motion.div
             key="charger-supply"
@@ -326,9 +328,17 @@ export function ChargerSupplyPage({ isMobile, onPrimaryCta, onSecondaryCta }: Pr
             >
                 <Hero isMobile={isMobile} onPrimaryCta={onPrimaryCta} onSecondaryCta={onSecondaryCta} />
 
-                <SiteDiagram isMobile={isMobile} />
+                <SiteDiagram
+                    isMobile={isMobile}
+                    activeGroupId={activeGroupId}
+                    setActiveGroupId={setActiveGroupId}
+                />
 
-                <BomLedger isMobile={isMobile} />
+                <BomLedger
+                    isMobile={isMobile}
+                    activeGroupId={activeGroupId}
+                    setActiveGroupId={setActiveGroupId}
+                />
 
                 <WhyIntegrated isMobile={isMobile} />
 
@@ -371,14 +381,12 @@ function Hero({
                         marginBottom: 28,
                     }}
                 >
-                    <span>SERVICE / 03</span>
-                    <span style={{ width: 36, height: 1, background: BORDER_STRONG }} />
                     <span>SUPPLY · INSTALLATION · COMMISSIONING</span>
                 </div>
 
                 <h1
                     style={{
-                        fontSize: isMobile ? '2.2rem' : 'clamp(2.6rem, 5.4vw, 4.8rem)',
+                        fontSize: isMobile ? '2rem' : 'clamp(2.6rem, 5.4vw, 4.8rem)',
                         fontWeight: 800,
                         color: '#fff',
                         margin: 0,
@@ -422,13 +430,6 @@ function Hero({
                     >
                         Request a BOM <ArrowRight size={16} />
                     </button>
-                    <button
-                        className="btn-ghost"
-                        onClick={onSecondaryCta}
-                        style={{ cursor: 'pointer', fontSize: '0.92rem' }}
-                    >
-                        Talk to engineering
-                    </button>
                 </div>
 
                 {/* Datasheet metadata row */}
@@ -451,7 +452,7 @@ function Hero({
                     ].map(([k, v], i) => (
                         <div key={i} className="mono" style={{ fontSize: '0.6rem', letterSpacing: '0.22em', fontWeight: 700 }}>
                             <div style={{ color: TEXT_DIM, marginBottom: 4 }}>{k}</div>
-                            <div style={{ color: ACCENT, fontFamily: "'Orbitron', sans-serif", fontSize: '0.78rem', letterSpacing: '0.04em' }}>
+                            <div style={{ color: ACCENT, fontFamily: "'Inter', sans-serif", fontSize: '0.78rem', letterSpacing: '0.04em' }}>
                                 {v}
                             </div>
                         </div>
@@ -465,8 +466,25 @@ function Hero({
 /* =================================================================== */
 /* SITE DIAGRAM — annotated SVG showing all 5 subsystems               */
 /* =================================================================== */
+function SiteDiagram({
+    isMobile,
+    activeGroupId,
+    setActiveGroupId,
+}: {
+    isMobile: boolean;
+    activeGroupId: string;
+    setActiveGroupId: (id: string) => void;
+}) {
+    const isSelected = (id: string) => activeGroupId === id;
 
-function SiteDiagram({ isMobile }: { isMobile: boolean }) {
+    const handleSubsystemClick = (id: string) => {
+        setActiveGroupId(id);
+        const element = document.getElementById('bom-ledger');
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    };
+
     return (
         <motion.section
             initial={{ opacity: 0, y: 20 }}
@@ -483,7 +501,7 @@ function SiteDiagram({ isMobile }: { isMobile: boolean }) {
                     background: SURFACE,
                     border: `1px solid ${BORDER}`,
                     borderRadius: 16,
-                    padding: isMobile ? '24px 16px' : '36px 32px',
+                    padding: isMobile ? '20px 0' : '36px 32px',
                     position: 'relative',
                     overflow: 'hidden',
                 }}
@@ -503,209 +521,515 @@ function SiteDiagram({ isMobile }: { isMobile: boolean }) {
                     }}
                 />
 
-                <svg
-                    viewBox="-220 -10 1340 470"
-                    style={{ width: '100%', height: 'auto', position: 'relative', zIndex: 1 }}
-                    aria-hidden
-                >
+                {/* MOBILE — compact portrait diagram, fits screen, no scroll */}
+                {isMobile && (
+                    <MobilePortraitDiagram
+                        activeGroupId={activeGroupId}
+                        setActiveGroupId={setActiveGroupId}
+                    />
+                )}
+
+                {/* DESKTOP — wide annotated SVG diagram */}
+                {!isMobile && (
+                    <div style={{ position: 'relative', zIndex: 1 }}>
+                        <svg
+                            viewBox="-280 -10 1400 470"
+                            style={{ width: '100%', height: 'auto', display: 'block' }}
+                            aria-hidden
+                        >
+                            <defs>
+                                <linearGradient id="canopyGrad" x1="0" x2="0" y1="0" y2="1">
+                                    <stop offset="0%" stopColor={ACCENT} stopOpacity="0.4" />
+                                    <stop offset="100%" stopColor={ACCENT} stopOpacity="0" />
+                                </linearGradient>
+                                <filter id="diagramGlow" x="-50%" y="-50%" width="200%" height="200%">
+                                    <feGaussianBlur stdDeviation="2.2" result="blur" />
+                                    <feMerge>
+                                        <feMergeNode in="blur" />
+                                        <feMergeNode in="SourceGraphic" />
+                                    </feMerge>
+                                </filter>
+                                <filter id="textGlow" x="-50%" y="-50%" width="200%" height="200%">
+                                    <feGaussianBlur stdDeviation="1.4" result="blur" />
+                                    <feMerge>
+                                        <feMergeNode in="blur" />
+                                        <feMergeNode in="SourceGraphic" />
+                                    </feMerge>
+                                </filter>
+                                <style>{`
+                                    @keyframes pulseDot { 0%, 100% { opacity: 0.9; transform-origin: center; } 50% { opacity: 0.4; } }
+                                    @keyframes flowDash { to { stroke-dashoffset: -24; } }
+                                    @keyframes labelFlicker { 0%, 100% { opacity: 1; } 50% { opacity: 0.78; } }
+                                    @keyframes chargeBar { 0% { opacity: 0.15; } 50% { opacity: 1; } 100% { opacity: 0.15; } }
+                                    @keyframes chargeFill { 0% { width: 0; } 90%, 100% { width: 44px; } }
+                                    .anchor-dot { animation: pulseDot 1.8s ease-in-out infinite; }
+                                    .anchor-dot-2 { animation-delay: 0.3s; }
+                                    .anchor-dot-3 { animation-delay: 0.6s; }
+                                    .anchor-dot-4 { animation-delay: 0.9s; }
+                                    .anchor-dot-5 { animation-delay: 1.2s; }
+                                    .flow-line { stroke-dasharray: 6 6; animation: flowDash 1.4s linear infinite; }
+                                    .ground-flow { stroke-dasharray: 3 5; animation: flowDash 2.2s linear infinite; }
+                                    .callout-label { animation: labelFlicker 3.2s ease-in-out infinite; }
+                                    .charge-bar { animation: chargeBar 1.6s ease-in-out infinite; }
+                                    .charge-fill { animation: chargeFill 3.2s ease-out infinite; transform-origin: left center; }
+                                    
+                                    .diagram-group {
+                                        transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+                                        cursor: pointer;
+                                        opacity: 0.7;
+                                    }
+                                    .diagram-group:hover, .diagram-group.active {
+                                        opacity: 1;
+                                    }
+                                    .diagram-group.active {
+                                        filter: drop-shadow(0 0 10px rgba(0, 255, 136, 0.65)) drop-shadow(0 0 3px rgba(0, 255, 136, 0.45));
+                                    }
+                                `}</style>
+                            </defs>
+
+                            {/* === STRUCTURE === */}
+
+                            {/* Group 5: Canopy */}
+                            <g className={`diagram-group ${isSelected('canopy') ? 'active' : ''}`} onClick={() => handleSubsystemClick('canopy')}>
+                                <path
+                                    d="M170,150 Q450,100 730,150 L730,168 Q450,118 170,168 Z"
+                                    fill={isSelected('canopy') ? 'url(#canopyGrad)' : 'rgba(255, 255, 255, 0.015)'}
+                                    stroke={isSelected('canopy') ? ACCENT : 'rgba(0, 255, 136, 0.25)'}
+                                    strokeOpacity={isSelected('canopy') ? 0.95 : 0.5}
+                                    strokeWidth={isSelected('canopy') ? 1.8 : 1.2}
+                                    style={{ transition: 'all 0.3s ease' }}
+                                />
+                                <line x1="180" y1="168" x2="180" y2="340" stroke={ACCENT} strokeOpacity={isSelected('canopy') ? 0.7 : 0.3} strokeWidth="1.2" strokeDasharray="4 4" style={{ transition: 'all 0.3s ease' }} />
+                                <line x1="720" y1="168" x2="720" y2="340" stroke={ACCENT} strokeOpacity={isSelected('canopy') ? 0.7 : 0.3} strokeWidth="1.2" strokeDasharray="4 4" style={{ transition: 'all 0.3s ease' }} />
+                                <CalloutOrthogonal
+                                    index={5}
+                                    anchor={[450, 110]}
+                                    bend={[180, 50]}
+                                    labelAnchor="end"
+                                    labelXOffset={-10}
+                                    label="05 · CANOPY + LIGHTING"
+                                    isActive={isSelected('canopy')}
+                                />
+                            </g>
+
+                            {/* Ground line & hatches (static decorative elements) */}
+                            <line x1="60" y1="340" x2="840" y2="340" stroke={ACCENT} strokeOpacity="0.55" strokeWidth="1.2" />
+                            {Array.from({ length: 16 }).map((_, i) => (
+                                <line
+                                    key={i}
+                                    x1={70 + i * 50}
+                                    y1={340}
+                                    x2={62 + i * 50}
+                                    y2={348}
+                                    stroke={ACCENT}
+                                    strokeOpacity="0.3"
+                                    strokeWidth="0.8"
+                                />
+                            ))}
+
+                            {/* Group 1: DC Charger */}
+                            <g className={`diagram-group ${isSelected('core') ? 'active' : ''}`} onClick={() => handleSubsystemClick('core')}>
+                                <rect
+                                    x="400"
+                                    y="240"
+                                    width="80"
+                                    height="100"
+                                    fill={isSelected('core') ? 'rgba(0, 255, 136, 0.08)' : 'rgba(255, 255, 255, 0.015)'}
+                                    stroke={isSelected('core') ? ACCENT : 'rgba(0, 255, 136, 0.25)'}
+                                    strokeOpacity={isSelected('core') ? 0.95 : 0.55}
+                                    strokeWidth={isSelected('core') ? 1.8 : 1.2}
+                                    rx="4"
+                                    style={{ transition: 'all 0.3s ease' }}
+                                    filter={isSelected('core') ? 'url(#diagramGlow)' : undefined}
+                                />
+                                <rect x="414" y="258" width="52" height="14" fill="rgba(0,0,0,0.4)" stroke={ACCENT} strokeOpacity={isSelected('core') ? 0.75 : 0.4} strokeWidth="1" rx="1" style={{ transition: 'all 0.3s ease' }} />
+                                {[0, 1, 2, 3, 4, 5].map((i) => (
+                                    <rect
+                                        key={i}
+                                        className="charge-bar"
+                                        x={417 + i * 8}
+                                        y={261}
+                                        width={6}
+                                        height={8}
+                                        fill={ACCENT}
+                                        fillOpacity={isSelected('core') ? 1 : 0.35}
+                                        style={{ animationDelay: `${i * 0.18}s` }}
+                                    />
+                                ))}
+                                <rect
+                                    className="charge-fill"
+                                    x={416}
+                                    y={261}
+                                    height={8}
+                                    fill={ACCENT}
+                                    fillOpacity={isSelected('core') ? 0.18 : 0.05}
+                                    filter="url(#diagramGlow)"
+                                />
+                                <circle cx="422" cy="288" r="5" fill={ACCENT} fillOpacity={isSelected('core') ? 0.75 : 0.3} style={{ transition: 'all 0.3s ease' }} />
+                                <circle cx="458" cy="288" r="5" fill={ACCENT} fillOpacity={isSelected('core') ? 0.75 : 0.3} style={{ transition: 'all 0.3s ease' }} />
+                                <text
+                                    x="440"
+                                    y="322"
+                                    textAnchor="middle"
+                                    fontFamily="'Inter', sans-serif"
+                                    fontSize="15"
+                                    fill={ACCENT}
+                                    fillOpacity={isSelected('core') ? 1 : 0.5}
+                                    fontWeight="700"
+                                    filter={isSelected('core') ? 'url(#textGlow)' : undefined}
+                                    style={{ transition: 'all 0.3s ease' }}
+                                >
+                                    60kW
+                                </text>
+                                <CalloutOrthogonal
+                                    index={1}
+                                    anchor={[480, 250]}
+                                    bend={[720, 200]}
+                                    labelAnchor="start"
+                                    labelXOffset={10}
+                                    label="01 · DC CHARGER"
+                                    isActive={isSelected('core')}
+                                />
+                            </g>
+
+                            {/* Group 2: ACDB Panel */}
+                            <g className={`diagram-group ${isSelected('power') ? 'active' : ''}`} onClick={() => handleSubsystemClick('power')}>
+                                <rect
+                                    x="600"
+                                    y="262"
+                                    width="68"
+                                    height="78"
+                                    fill={isSelected('power') ? 'rgba(0, 255, 136, 0.08)' : 'rgba(255, 255, 255, 0.015)'}
+                                    stroke={isSelected('power') ? ACCENT : 'rgba(0, 255, 136, 0.25)'}
+                                    strokeOpacity={isSelected('power') ? 0.95 : 0.55}
+                                    strokeWidth={isSelected('power') ? 1.8 : 1.2}
+                                    rx="3"
+                                    style={{ transition: 'all 0.3s ease' }}
+                                    filter={isSelected('power') ? 'url(#diagramGlow)' : undefined}
+                                />
+                                <line x1="600" y1="282" x2="668" y2="282" stroke={ACCENT} strokeOpacity={isSelected('power') ? 0.7 : 0.3} strokeWidth="1" style={{ transition: 'all 0.3s ease' }} />
+                                <line x1="600" y1="302" x2="668" y2="302" stroke={ACCENT} strokeOpacity={isSelected('power') ? 0.7 : 0.3} strokeWidth="1" style={{ transition: 'all 0.3s ease' }} />
+                                <line x1="600" y1="322" x2="668" y2="322" stroke={ACCENT} strokeOpacity={isSelected('power') ? 0.7 : 0.3} strokeWidth="1" style={{ transition: 'all 0.3s ease' }} />
+                                <CalloutOrthogonal
+                                    index={2}
+                                    anchor={[668, 300]}
+                                    bend={[840, 300]}
+                                    labelAnchor="start"
+                                    labelXOffset={10}
+                                    label="02 · ACDB PANEL"
+                                    isActive={isSelected('power')}
+                                />
+                            </g>
+
+                            {/* Group 3: Cabling */}
+                            <g className={`diagram-group ${isSelected('cabling') ? 'active' : ''}`} onClick={() => handleSubsystemClick('cabling')}>
+                                <path
+                                    className="flow-line"
+                                    d="M480,310 Q540,322 600,310"
+                                    stroke={ACCENT}
+                                    strokeOpacity={isSelected('cabling') ? 0.95 : 0.45}
+                                    strokeWidth={isSelected('cabling') ? 2.2 : 1.5}
+                                    fill="none"
+                                    filter={isSelected('cabling') ? 'url(#diagramGlow)' : undefined}
+                                    style={{ transition: 'all 0.3s ease' }}
+                                />
+                                <path
+                                    className="ground-flow"
+                                    d="M250,345 L320,345 L380,320 L400,320"
+                                    stroke={ACCENT}
+                                    strokeOpacity={isSelected('cabling') ? 0.9 : 0.4}
+                                    strokeWidth={isSelected('cabling') ? 1.8 : 1.2}
+                                    fill="none"
+                                    style={{ transition: 'all 0.3s ease' }}
+                                />
+                                <CalloutOrthogonal
+                                    index={3}
+                                    anchor={[540, 320]}
+                                    bend={[760, 410]}
+                                    labelAnchor="start"
+                                    labelXOffset={10}
+                                    label="03 · CABLING"
+                                    isActive={isSelected('cabling')}
+                                />
+                            </g>
+
+                            {/* Group 4: Earthing */}
+                            <g className={`diagram-group ${isSelected('earthing') ? 'active' : ''}`} onClick={() => handleSubsystemClick('earthing')}>
+                                <circle
+                                    cx="250"
+                                    cy="355"
+                                    r="10"
+                                    fill={isSelected('earthing') ? 'rgba(0, 255, 136, 0.1)' : 'rgba(255, 255, 255, 0.015)'}
+                                    stroke={isSelected('earthing') ? ACCENT : 'rgba(0, 255, 136, 0.25)'}
+                                    strokeOpacity={isSelected('earthing') ? 0.95 : 0.55}
+                                    strokeWidth="1.2"
+                                    style={{ transition: 'all 0.3s ease' }}
+                                />
+                                <line x1="250" y1="365" x2="250" y2="395" stroke={ACCENT} strokeOpacity={isSelected('earthing') ? 0.95 : 0.55} strokeWidth="1.4" style={{ transition: 'all 0.3s ease' }} />
+                                <line x1="240" y1="395" x2="260" y2="395" stroke={ACCENT} strokeOpacity={isSelected('earthing') ? 0.95 : 0.55} strokeWidth="1.4" style={{ transition: 'all 0.3s ease' }} />
+                                <line x1="244" y1="400" x2="256" y2="400" stroke={ACCENT} strokeOpacity={isSelected('earthing') ? 0.75 : 0.4} strokeWidth="1.2" style={{ transition: 'all 0.3s ease' }} />
+                                <line x1="248" y1="405" x2="252" y2="405" stroke={ACCENT} strokeOpacity={isSelected('earthing') ? 0.6 : 0.3} strokeWidth="1.2" style={{ transition: 'all 0.3s ease' }} />
+                                <CalloutOrthogonal
+                                    index={4}
+                                    anchor={[250, 395]}
+                                    bend={[180, 425]}
+                                    labelAnchor="end"
+                                    labelXOffset={-10}
+                                    label="04 · EARTHING"
+                                    isActive={isSelected('earthing')}
+                                />
+                            </g>
+                        </svg>
+                    </div>
+                )}
+            </div>
+        </motion.section>
+    );
+}
+
+/* MOBILE — portrait diagram that fits a phone screen with no scrolling */
+function MobilePortraitDiagram({
+    activeGroupId,
+    setActiveGroupId,
+}: {
+    activeGroupId: string;
+    setActiveGroupId: (id: string) => void;
+}) {
+    const isSelected = (id: string) => activeGroupId === id;
+
+    const handleSubsystemClick = (id: string) => {
+        setActiveGroupId(id);
+        const element = document.getElementById('bom-ledger');
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    };
+
+    return (
+        <div style={{ position: 'relative', zIndex: 1, padding: '0 8px' }}>
+            {/* SVG Visual Explorer */}
+            <div
+                style={{
+                    position: 'relative',
+                    background: 'rgba(0, 0, 0, 0.25)',
+                    borderRadius: 12,
+                    border: `1px solid rgba(0, 255, 136, 0.04)`,
+                    padding: '8px',
+                    marginBottom: 12,
+                    boxShadow: 'inset 0 0 16px rgba(0, 255, 136, 0.02)',
+                }}
+            >
+                <svg viewBox="0 0 360 260" style={{ width: '100%', height: 'auto', display: 'block' }} aria-hidden>
                     <defs>
-                        <linearGradient id="canopyGrad" x1="0" x2="0" y1="0" y2="1">
+                        <linearGradient id="mCanopyGrad" x1="0" x2="0" y1="0" y2="1">
                             <stop offset="0%" stopColor={ACCENT} stopOpacity="0.4" />
                             <stop offset="100%" stopColor={ACCENT} stopOpacity="0" />
                         </linearGradient>
-                        <filter id="diagramGlow" x="-50%" y="-50%" width="200%" height="200%">
+                        <filter id="mDiagramGlow" x="-50%" y="-50%" width="200%" height="200%">
                             <feGaussianBlur stdDeviation="2.2" result="blur" />
                             <feMerge>
                                 <feMergeNode in="blur" />
                                 <feMergeNode in="SourceGraphic" />
                             </feMerge>
                         </filter>
-                        <filter id="textGlow" x="-50%" y="-50%" width="200%" height="200%">
-                            <feGaussianBlur stdDeviation="1.4" result="blur" />
-                            <feMerge>
-                                <feMergeNode in="blur" />
-                                <feMergeNode in="SourceGraphic" />
-                            </feMerge>
-                        </filter>
                         <style>{`
-                            @keyframes pulseDot { 0%, 100% { opacity: 0.9; transform-origin: center; } 50% { opacity: 0.4; } }
-                            @keyframes flowDash { to { stroke-dashoffset: -24; } }
-                            @keyframes labelFlicker { 0%, 100% { opacity: 1; } 50% { opacity: 0.78; } }
-                            @keyframes chargeBar { 0% { opacity: 0.15; } 50% { opacity: 1; } 100% { opacity: 0.15; } }
-                            @keyframes chargeFill { 0% { width: 0; } 90%, 100% { width: 44px; } }
-                            .anchor-dot { animation: pulseDot 1.8s ease-in-out infinite; }
-                            .anchor-dot-2 { animation-delay: 0.3s; }
-                            .anchor-dot-3 { animation-delay: 0.6s; }
-                            .anchor-dot-4 { animation-delay: 0.9s; }
-                            .anchor-dot-5 { animation-delay: 1.2s; }
-                            .flow-line { stroke-dasharray: 6 6; animation: flowDash 1.4s linear infinite; }
-                            .ground-flow { stroke-dasharray: 3 5; animation: flowDash 2.2s linear infinite; }
-                            .callout-label { animation: labelFlicker 3.2s ease-in-out infinite; }
-                            .charge-bar { animation: chargeBar 1.6s ease-in-out infinite; }
-                            .charge-fill { animation: chargeFill 3.2s ease-out infinite; transform-origin: left center; }
+                            @keyframes mFlowDash { to { stroke-dashoffset: -12; } }
+                            @keyframes mPulseEarthing { 0% { r: 9; opacity: 0.9; } 100% { r: 18; opacity: 0; } }
+                            @keyframes mChargeBar { 0% { opacity: 0.15; } 50% { opacity: 1; } 100% { opacity: 0.15; } }
+                            .m-flow-line { stroke-dasharray: 4 4; animation: mFlowDash 0.8s linear infinite; }
+                            .m-pulse-ring { animation: mPulseEarthing 1.5s ease-out infinite; transform-origin: 90px 210px; }
+                            .m-charge-bar { animation: mChargeBar 1.2s ease-in-out infinite; }
+                            
+                            .m-diagram-group {
+                                transition: all 0.3s ease;
+                                cursor: pointer;
+                                opacity: 0.55;
+                            }
+                            .m-diagram-group:hover, .m-diagram-group.active {
+                                opacity: 1;
+                            }
+                            .m-diagram-group.active {
+                                filter: drop-shadow(0 0 7px rgba(0, 255, 136, 0.75)) drop-shadow(0 0 2px rgba(0, 255, 136, 0.5));
+                            }
                         `}</style>
                     </defs>
 
-                    {/* === STRUCTURE === */}
-
-                    {/* Canopy */}
-                    <path
-                        d="M170,150 Q450,100 730,150 L730,168 Q450,118 170,168 Z"
-                        fill="url(#canopyGrad)"
-                        stroke={ACCENT}
-                        strokeOpacity="0.75"
-                        strokeWidth="1.2"
-                    />
-                    {/* Canopy pillars */}
-                    <line x1="180" y1="168" x2="180" y2="340" stroke={ACCENT} strokeOpacity="0.4" strokeWidth="1.2" strokeDasharray="4 4" />
-                    <line x1="720" y1="168" x2="720" y2="340" stroke={ACCENT} strokeOpacity="0.4" strokeWidth="1.2" strokeDasharray="4 4" />
-
                     {/* Ground line */}
-                    <line x1="60" y1="340" x2="840" y2="340" stroke={ACCENT} strokeOpacity="0.55" strokeWidth="1.2" />
-                    {/* Ground hatches */}
-                    {Array.from({ length: 16 }).map((_, i) => (
-                        <line
-                            key={i}
-                            x1={70 + i * 50}
-                            y1={340}
-                            x2={62 + i * 50}
-                            y2={348}
-                            stroke={ACCENT}
-                            strokeOpacity="0.3"
-                            strokeWidth="0.8"
-                        />
+                    <line x1="20" y1="200" x2="340" y2="200" stroke={ACCENT} strokeOpacity="0.5" strokeWidth="1.2" />
+                    {Array.from({ length: 9 }).map((_, i) => (
+                        <line key={i} x1={36 + i * 36} y1={200} x2={28 + i * 36} y2={208} stroke={ACCENT} strokeOpacity="0.25" strokeWidth="0.8" />
                     ))}
 
-                    {/* Charger pedestal */}
-                    <rect x="400" y="240" width="80" height="100" fill={BG} stroke={ACCENT} strokeOpacity="0.9" strokeWidth="1.5" rx="4" />
-                    {/* Display housing */}
-                    <rect x="414" y="258" width="52" height="14" fill={BG} stroke={ACCENT} strokeOpacity="0.55" strokeWidth="1" rx="1" />
-                    {/* Animated charging bars inside the display — 5 segments lighting in sequence */}
-                    {[0, 1, 2, 3, 4, 5].map((i) => (
+                    {/* === GROUP 5: CANOPY & PILLARS === */}
+                    <g className={`m-diagram-group ${isSelected('canopy') ? 'active' : ''}`} onClick={() => handleSubsystemClick('canopy')}>
+                        {/* Interactive transparent tap helper */}
+                        <rect x="40" y="20" width="280" height="60" fill="transparent" />
+                        {/* Structural canopy roof */}
+                        <path
+                            d="M50,55 Q180,25 310,55 L310,67 Q180,37 50,67 Z"
+                            fill={isSelected('canopy') ? 'url(#mCanopyGrad)' : 'rgba(255, 255, 255, 0.025)'}
+                            stroke={isSelected('canopy') ? ACCENT : 'rgba(0, 255, 136, 0.25)'}
+                            strokeWidth={isSelected('canopy') ? 1.8 : 1.2}
+                            filter={isSelected('canopy') ? 'url(#mDiagramGlow)' : undefined}
+                            style={{ transition: 'all 0.3s ease' }}
+                        />
+                        {/* Canopy pillars */}
+                        <line x1="62" y1="67" x2="62" y2="200" stroke={ACCENT} strokeOpacity={isSelected('canopy') ? 0.7 : 0.3} strokeWidth="1" strokeDasharray="3 3" style={{ transition: 'all 0.3s ease' }} />
+                        <line x1="298" y1="67" x2="298" y2="200" stroke={ACCENT} strokeOpacity={isSelected('canopy') ? 0.7 : 0.3} strokeWidth="1" strokeDasharray="3 3" style={{ transition: 'all 0.3s ease' }} />
+                    </g>
+
+                    {/* === GROUP 1: DC CHARGER === */}
+                    <g className={`m-diagram-group ${isSelected('core') ? 'active' : ''}`} onClick={() => handleSubsystemClick('core')}>
+                        {/* Interactive transparent tap helper */}
+                        <rect x="128" y="105" width="82" height="105" fill="transparent" />
+                        {/* Main cabinet */}
                         <rect
-                            key={i}
-                            className="charge-bar"
-                            x={417 + i * 8}
-                            y={261}
-                            width={6}
-                            height={8}
-                            fill={ACCENT}
-                            style={{ animationDelay: `${i * 0.18}s` }}
+                            x="138"
+                            y="115"
+                            width="62"
+                            height="85"
+                            fill={isSelected('core') ? 'rgba(0, 255, 136, 0.08)' : 'rgba(255, 255, 255, 0.025)'}
+                            stroke={isSelected('core') ? ACCENT : 'rgba(0, 255, 136, 0.25)'}
+                            strokeWidth={isSelected('core') ? 1.8 : 1.2}
+                            rx="4"
+                            filter={isSelected('core') ? 'url(#mDiagramGlow)' : undefined}
+                            style={{ transition: 'all 0.3s ease' }}
                         />
-                    ))}
-                    {/* Sweeping charge fill overlay — gives a "level rising" feel under the bars */}
-                    <rect
-                        className="charge-fill"
-                        x={416}
-                        y={261}
-                        height={8}
-                        fill={ACCENT}
-                        fillOpacity="0.18"
-                        filter="url(#diagramGlow)"
-                    />
-                    <circle cx="422" cy="288" r="5" fill={ACCENT} fillOpacity="0.6" />
-                    <circle cx="458" cy="288" r="5" fill={ACCENT} fillOpacity="0.6" />
-                    <text
-                        x="440"
-                        y="322"
-                        textAnchor="middle"
-                        fontFamily="Orbitron, sans-serif"
-                        fontSize="11"
-                        fill={ACCENT}
-                        fontWeight="700"
-                        filter="url(#textGlow)"
-                    >
-                        60kW
-                    </text>
+                        {/* Display frame */}
+                        <rect x="150" y="128" width="38" height="12" fill="rgba(0, 0, 0, 0.4)" stroke={ACCENT} strokeOpacity={isSelected('core') ? 0.75 : 0.4} strokeWidth="0.8" rx="1" style={{ transition: 'all 0.3s ease' }} />
+                        {/* Staggered LED charging indicator lights */}
+                        {isSelected('core') ? (
+                            [0, 1, 2, 3].map((i) => (
+                                <rect
+                                    key={i}
+                                    className="m-charge-bar"
+                                    x={154 + i * 5}
+                                    y={131}
+                                    width={3}
+                                    height={6}
+                                    fill={ACCENT}
+                                    style={{ animationDelay: `${i * 0.15}s` }}
+                                />
+                            ))
+                        ) : (
+                            <rect x="154" y="131" width="30" height="6" fill={ACCENT} fillOpacity="0.2" />
+                        )}
+                        <circle cx="157" cy="154" r="3.5" fill={ACCENT} fillOpacity={isSelected('core') ? 0.75 : 0.3} style={{ transition: 'all 0.3s ease' }} />
+                        <circle cx="181" cy="154" r="3.5" fill={ACCENT} fillOpacity={isSelected('core') ? 0.75 : 0.3} style={{ transition: 'all 0.3s ease' }} />
+                        <text
+                            x="169"
+                            y="182"
+                            textAnchor="middle"
+                            fontFamily="'Inter', sans-serif"
+                            fontSize="10"
+                            fill={ACCENT}
+                            fontWeight="700"
+                            style={{ letterSpacing: '0.02em', transition: 'all 0.3s ease' }}
+                            fillOpacity={isSelected('core') ? 1 : 0.5}
+                        >
+                            60kW
+                        </text>
+                    </g>
 
-                    {/* ACDB box */}
-                    <rect x="600" y="262" width="68" height="78" fill={BG} stroke={ACCENT} strokeOpacity="0.9" strokeWidth="1.5" rx="3" />
-                    <line x1="600" y1="282" x2="668" y2="282" stroke={ACCENT} strokeOpacity="0.5" strokeWidth="1" />
-                    <line x1="600" y1="302" x2="668" y2="302" stroke={ACCENT} strokeOpacity="0.5" strokeWidth="1" />
-                    <line x1="600" y1="322" x2="668" y2="322" stroke={ACCENT} strokeOpacity="0.5" strokeWidth="1" />
+                    {/* === GROUP 2: ACDB PANEL === */}
+                    <g className={`m-diagram-group ${isSelected('power') ? 'active' : ''}`} onClick={() => handleSubsystemClick('power')}>
+                        {/* Interactive transparent tap helper */}
+                        <rect x="210" y="120" width="74" height="90" fill="transparent" />
+                        <rect
+                            x="220"
+                            y="130"
+                            width="54"
+                            height="70"
+                            fill={isSelected('power') ? 'rgba(0, 255, 136, 0.08)' : 'rgba(255, 255, 255, 0.025)'}
+                            stroke={isSelected('power') ? ACCENT : 'rgba(0, 255, 136, 0.25)'}
+                            strokeWidth={isSelected('power') ? 1.8 : 1.2}
+                            rx="3"
+                            filter={isSelected('power') ? 'url(#mDiagramGlow)' : undefined}
+                            style={{ transition: 'all 0.3s ease' }}
+                        />
+                        <line x1="220" y1="147" x2="274" y2="147" stroke={ACCENT} strokeOpacity={isSelected('power') ? 0.75 : 0.4} strokeWidth="0.8" style={{ transition: 'all 0.3s ease' }} />
+                        <line x1="220" y1="164" x2="274" y2="164" stroke={ACCENT} strokeOpacity={isSelected('power') ? 0.75 : 0.4} strokeWidth="0.8" style={{ transition: 'all 0.3s ease' }} />
+                        <line x1="220" y1="181" x2="274" y2="181" stroke={ACCENT} strokeOpacity={isSelected('power') ? 0.75 : 0.4} strokeWidth="0.8" style={{ transition: 'all 0.3s ease' }} />
+                    </g>
 
-                    {/* Earthing pit */}
-                    <circle cx="250" cy="355" r="10" fill="none" stroke={ACCENT} strokeOpacity="0.8" strokeWidth="1.2" />
-                    <line x1="250" y1="365" x2="250" y2="395" stroke={ACCENT} strokeOpacity="0.9" strokeWidth="1.4" />
-                    <line x1="240" y1="395" x2="260" y2="395" stroke={ACCENT} strokeOpacity="0.9" strokeWidth="1.4" />
-                    <line x1="244" y1="400" x2="256" y2="400" stroke={ACCENT} strokeOpacity="0.75" strokeWidth="1.2" />
-                    <line x1="248" y1="405" x2="252" y2="405" stroke={ACCENT} strokeOpacity="0.6" strokeWidth="1.2" />
+                    {/* === GROUP 4: EARTHING === */}
+                    <g className={`m-diagram-group ${isSelected('earthing') ? 'active' : ''}`} onClick={() => handleSubsystemClick('earthing')}>
+                        {/* Interactive transparent tap helper */}
+                        <rect x="70" y="195" width="40" height="65" fill="transparent" />
+                        {/* Pulsing ring under ground */}
+                        {isSelected('earthing') && (
+                            <circle cx="90" cy="210" className="m-pulse-ring" fill="none" stroke={ACCENT} strokeOpacity="0.85" strokeWidth="1.2" />
+                        )}
+                        <circle
+                            cx="90"
+                            cy="210"
+                            r="9"
+                            fill={isSelected('earthing') ? 'rgba(0, 255, 136, 0.1)' : 'rgba(255, 255, 255, 0.025)'}
+                            stroke={isSelected('earthing') ? ACCENT : 'rgba(0, 255, 136, 0.25)'}
+                            strokeWidth={isSelected('earthing') ? 1.8 : 1.2}
+                            filter={isSelected('earthing') ? 'url(#mDiagramGlow)' : undefined}
+                            style={{ transition: 'all 0.3s ease' }}
+                        />
+                        <line x1="90" y1="219" x2="90" y2="242" stroke={ACCENT} strokeOpacity={isSelected('earthing') ? 0.95 : 0.55} strokeWidth="1.2" style={{ transition: 'all 0.3s ease' }} />
+                        <line x1="81" y1="242" x2="99" y2="242" stroke={ACCENT} strokeOpacity={isSelected('earthing') ? 0.95 : 0.55} strokeWidth="1.2" style={{ transition: 'all 0.3s ease' }} />
+                        <line x1="84" y1="246" x2="96" y2="246" stroke={ACCENT} strokeOpacity={isSelected('earthing') ? 0.75 : 0.4} strokeWidth="1" style={{ transition: 'all 0.3s ease' }} />
+                    </g>
 
-                    {/* Cable: charger ↔ ACDB — animated power flow */}
-                    <path
-                        className="flow-line"
-                        d="M480,310 Q540,322 600,310"
-                        stroke={ACCENT}
-                        strokeOpacity="0.9"
-                        strokeWidth="1.8"
-                        fill="none"
-                        filter="url(#diagramGlow)"
-                    />
-                    {/* Cable: earthing ↔ charger — slower animated ground line */}
-                    <path
-                        className="ground-flow"
-                        d="M250,345 L320,345 L380,320 L400,320"
-                        stroke={ACCENT}
-                        strokeOpacity="0.7"
-                        strokeWidth="1.4"
-                        fill="none"
-                    />
-
-                    {/* === CALLOUTS === */}
-                    {/* Each callout: anchor point on the element, an L-shaped leader line, then a horizontal segment under the label */}
-
-                    {/* 05 · CANOPY — label top-left, extends out into negative-x padding */}
-                    <CalloutOrthogonal
-                        index={5}
-                        anchor={[450, 110]}
-                        bend={[120, 50]}
-                        labelAnchor="end"
-                        labelXOffset={-10}
-                        label="05 · CANOPY + LIGHTING"
-                    />
-
-                    {/* 01 · DC CHARGER — label top-right */}
-                    <CalloutOrthogonal
-                        index={1}
-                        anchor={[480, 250]}
-                        bend={[720, 200]}
-                        labelAnchor="start"
-                        labelXOffset={10}
-                        label="01 · DC CHARGER"
-                    />
-
-                    {/* 02 · ACDB PANEL — label right */}
-                    <CalloutOrthogonal
-                        index={2}
-                        anchor={[668, 300]}
-                        bend={[840, 300]}
-                        labelAnchor="start"
-                        labelXOffset={10}
-                        label="02 · ACDB PANEL"
-                    />
-
-                    {/* 03 · CABLING — label bottom-right under cable curve */}
-                    <CalloutOrthogonal
-                        index={3}
-                        anchor={[540, 320]}
-                        bend={[760, 410]}
-                        labelAnchor="start"
-                        labelXOffset={10}
-                        label="03 · CABLING"
-                    />
-
-                    {/* 04 · EARTHING — label bottom-left, extends out into negative-x padding */}
-                    <CalloutOrthogonal
-                        index={4}
-                        anchor={[250, 395]}
-                        bend={[100, 425]}
-                        labelAnchor="end"
-                        labelXOffset={-10}
-                        label="04 · EARTHING"
-                    />
+                    {/* === GROUP 3: CABLING === */}
+                    <g className={`m-diagram-group ${isSelected('cabling') ? 'active' : ''}`} onClick={() => handleSubsystemClick('cabling')}>
+                        {/* Transparent touch lines to capture click */}
+                        <path d="M200,165 Q210,172 220,165" stroke="transparent" strokeWidth="20" fill="none" />
+                        <path d="M90,210 L120,210 L132,185 L138,185" stroke="transparent" strokeWidth="20" fill="none" />
+                        <path d="M260,130 L260,95 L285,95 L285,62" stroke="transparent" strokeWidth="20" fill="none" />
+                        
+                        {/* Cable charger <-> ACDB */}
+                        <path
+                            className={isSelected('cabling') ? 'm-flow-line' : undefined}
+                            d="M200,165 Q210,172 220,165"
+                            stroke={ACCENT}
+                            strokeWidth={isSelected('cabling') ? 2 : 1.3}
+                            strokeOpacity={isSelected('cabling') ? 0.95 : 0.55}
+                            fill="none"
+                            filter={isSelected('cabling') ? 'url(#mDiagramGlow)' : undefined}
+                            style={{ transition: 'all 0.3s ease' }}
+                        />
+                        {/* Cable earthing <-> charger */}
+                        <path
+                            d="M90,210 L120,210 L132,185 L138,185"
+                            stroke={ACCENT}
+                            strokeWidth={isSelected('cabling') ? 1.8 : 1.1}
+                            strokeOpacity={isSelected('cabling') ? 0.9 : 0.45}
+                            strokeDasharray="2 3"
+                            fill="none"
+                            style={{ transition: 'all 0.3s ease' }}
+                        />
+                        {/* Cable ACDB <-> Canopy lighting */}
+                        <path
+                            d="M260,130 L260,95 L285,95 L285,62"
+                            stroke={ACCENT}
+                            strokeWidth={isSelected('cabling') ? 1.8 : 1.1}
+                            strokeOpacity={isSelected('cabling') ? 0.9 : 0.45}
+                            strokeDasharray="3 3"
+                            fill="none"
+                            style={{ transition: 'all 0.3s ease' }}
+                        />
+                    </g>
                 </svg>
             </div>
-        </motion.section>
+            {/* Caption */}
+            <div
+                style={{
+                    textAlign: 'center',
+                    fontSize: '0.82rem',
+                    color: TEXT_DIM,
+                    marginTop: 10,
+                    marginBottom: 6,
+                    fontStyle: 'italic',
+                }}
+            >
+                Tap diagram components to view detailed specifications below.
+            </div>
+        </div>
     );
 }
 
@@ -716,6 +1040,7 @@ function CalloutOrthogonal({
     labelXOffset,
     label,
     index = 1,
+    isActive = false,
 }: {
     anchor: [number, number];
     bend: [number, number];
@@ -723,6 +1048,7 @@ function CalloutOrthogonal({
     labelXOffset: number;
     label: string;
     index?: number;
+    isActive?: boolean;
 }) {
     const [ax, ay] = anchor;
     const [bx, by] = bend;
@@ -734,27 +1060,28 @@ function CalloutOrthogonal({
             <polyline
                 points={`${ax},${ay} ${bx},${by} ${stubX},${by}`}
                 fill="none"
-                stroke={ACCENT}
-                strokeOpacity="0.6"
+                stroke={isActive ? ACCENT : 'rgba(0, 255, 136, 0.35)'}
                 strokeWidth="1"
+                style={{ transition: 'all 0.3s ease' }}
             />
             <circle
                 className={`anchor-dot anchor-dot-${index}`}
                 cx={ax}
                 cy={ay}
-                r="3.5"
-                fill={ACCENT}
+                r={isActive ? 4.5 : 3.5}
+                fill={isActive ? ACCENT : 'rgba(0, 255, 136, 0.6)'}
+                style={{ transition: 'all 0.3s ease' }}
             />
             <text
                 className="callout-label"
                 x={labelX}
                 y={by + 4}
                 textAnchor={labelAnchor}
-                fontFamily="'JetBrains Mono', monospace"
-                fontSize="12"
-                fill={ACCENT}
-                fontWeight="700"
-                style={{ letterSpacing: '0.16em' }}
+                fontFamily="'Inter', sans-serif"
+                fontSize="16"
+                fill={isActive ? ACCENT : TEXT_DIM}
+                fontWeight={isActive ? '800' : '500'}
+                style={{ letterSpacing: '0.08em', transition: 'all 0.3s ease' }}
             >
                 {label}
             </text>
@@ -766,8 +1093,15 @@ function CalloutOrthogonal({
 /* BOM LEDGER — the 5 groups + their line items                        */
 /* =================================================================== */
 
-function BomLedger({ isMobile }: { isMobile: boolean }) {
-    const [activeGroupId, setActiveGroupId] = React.useState('core');
+function BomLedger({
+    isMobile,
+    activeGroupId,
+    setActiveGroupId,
+}: {
+    isMobile: boolean;
+    activeGroupId: string;
+    setActiveGroupId: (id: string) => void;
+}) {
     const activeGroup = BOM.find((g) => g.id === activeGroupId) || BOM[0];
 
     const groupIcons: Record<string, React.ComponentType<any>> = {
@@ -780,6 +1114,7 @@ function BomLedger({ isMobile }: { isMobile: boolean }) {
 
     return (
         <motion.section
+            id="bom-ledger"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-60px' }}
@@ -792,7 +1127,7 @@ function BomLedger({ isMobile }: { isMobile: boolean }) {
                 style={{
                     marginTop: 24,
                     marginBottom: isMobile ? 32 : 48,
-                    fontSize: isMobile ? '1.9rem' : 'clamp(2.2rem, 4vw, 3.4rem)',
+                    fontSize: isMobile ? '1.6rem' : 'clamp(2.2rem, 4vw, 3.4rem)',
                     fontWeight: 800,
                     color: '#fff',
                     letterSpacing: '-0.035em',
@@ -1402,7 +1737,7 @@ function WhyIntegrated({ isMobile }: { isMobile: boolean }) {
                     >
                         <div
                             style={{
-                                fontFamily: "'Orbitron', sans-serif",
+                                fontFamily: "'Inter', sans-serif",
                                 fontSize: isMobile ? '1rem' : '1.4rem',
                                 color: ACCENT,
                                 fontWeight: 800,
@@ -1496,7 +1831,7 @@ function Closing({
                 </div>
                 <h2
                     style={{
-                        fontSize: isMobile ? '1.9rem' : 'clamp(2.2rem, 4.2vw, 3.6rem)',
+                        fontSize: isMobile ? '1.6rem' : 'clamp(2.2rem, 4.2vw, 3.6rem)',
                         fontWeight: 800,
                         color: '#fff',
                         letterSpacing: '-0.04em',
@@ -1532,13 +1867,6 @@ function Closing({
                         }}
                     >
                         Request a BOM <ArrowRight size={16} />
-                    </button>
-                    <button
-                        className="btn-ghost"
-                        onClick={onSecondaryCta}
-                        style={{ cursor: 'pointer', fontSize: '0.92rem' }}
-                    >
-                        Email engineering
                     </button>
                 </div>
             </div>
