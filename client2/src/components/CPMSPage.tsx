@@ -119,14 +119,12 @@ function Hero({
                             marginBottom: 28,
                         }}
                     >
-                        <span>SERVICE / 04</span>
-                        <span style={{ width: 36, height: 1, background: BORDER_STRONG }} />
                         <span>CHARGE POINT MANAGEMENT</span>
                     </div>
 
                     <h1
                         style={{
-                            fontSize: isMobile ? '2.3rem' : 'clamp(2.6rem, 5.4vw, 4.8rem)',
+                            fontSize: isMobile ? '2rem' : 'clamp(2.6rem, 5.4vw, 4.8rem)',
                             fontWeight: 800,
                             color: '#fff',
                             margin: 0,
@@ -167,13 +165,6 @@ function Hero({
                             }}
                         >
                             Request a demo <ArrowRight size={16} />
-                        </button>
-                        <button
-                            className="btn-ghost"
-                            onClick={onSecondaryCta}
-                            style={{ cursor: 'pointer', fontSize: '0.92rem' }}
-                        >
-                            Talk to ops
                         </button>
                     </div>
                 </motion.div>
@@ -522,7 +513,7 @@ function CapabilityConsole({ isMobile }: { isMobile: boolean }) {
                 style={{
                     marginTop: 24,
                     marginBottom: isMobile ? 28 : 40,
-                    fontSize: isMobile ? '1.9rem' : 'clamp(2.2rem, 4vw, 3.4rem)',
+                    fontSize: isMobile ? '1.6rem' : 'clamp(2.2rem, 4vw, 3.4rem)',
                     fontWeight: 800,
                     color: '#fff',
                     letterSpacing: '-0.035em',
@@ -1005,7 +996,7 @@ function Compliance({ isMobile }: { isMobile: boolean }) {
                 style={{
                     marginTop: 24,
                     marginBottom: isMobile ? 24 : 36,
-                    fontSize: isMobile ? '1.9rem' : 'clamp(2.2rem, 4vw, 3.4rem)',
+                    fontSize: isMobile ? '1.6rem' : 'clamp(2.2rem, 4vw, 3.4rem)',
                     fontWeight: 800,
                     color: '#fff',
                     letterSpacing: '-0.035em',
@@ -1222,7 +1213,7 @@ function Closing({
                 </div>
                 <h2
                     style={{
-                        fontSize: isMobile ? '1.9rem' : 'clamp(2.2rem, 4.2vw, 3.6rem)',
+                        fontSize: isMobile ? '1.6rem' : 'clamp(2.2rem, 4.2vw, 3.6rem)',
                         fontWeight: 800,
                         color: '#fff',
                         letterSpacing: '-0.04em',
@@ -1258,13 +1249,6 @@ function Closing({
                         }}
                     >
                         Book a demo <ArrowRight size={16} />
-                    </button>
-                    <button
-                        className="btn-ghost"
-                        onClick={onSecondaryCta}
-                        style={{ cursor: 'pointer', fontSize: '0.92rem' }}
-                    >
-                        Email the team
                     </button>
                 </div>
             </div>

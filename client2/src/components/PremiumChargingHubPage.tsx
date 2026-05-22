@@ -126,15 +126,13 @@ function Hero({
                             marginBottom: 28,
                         }}
                     >
-                        <span>SERVICE / 01</span>
-                        <span style={{ width: 36, height: 1, background: BORDER_STRONG }} />
                         <span>PREMIUM CHARGING</span>
                     </div>
 
                     <h1
                         style={{
                             fontFamily: "'Inter', sans-serif",
-                            fontSize: isMobile ? '2.4rem' : 'clamp(2.8rem, 6vw, 5.2rem)',
+                            fontSize: isMobile ? '2rem' : 'clamp(2.8rem, 6vw, 5.2rem)',
                             fontWeight: 800,
                             color: '#fff',
                             margin: 0,
@@ -216,7 +214,7 @@ function Hero({
                     <div
                         style={{
                             fontFamily: "'Orbitron', sans-serif",
-                            fontSize: isMobile ? '5rem' : 'clamp(5rem, 9vw, 9rem)',
+                            fontSize: isMobile ? '3.4rem' : 'clamp(5rem, 9vw, 9rem)',
                             fontWeight: 800,
                             color: '#fff',
                             lineHeight: 0.9,
@@ -361,7 +359,7 @@ function DedicatedBays({ isMobile }: { isMobile: boolean }) {
                 <h2
                     style={{
                         fontFamily: "'Inter', sans-serif",
-                        fontSize: isMobile ? '1.9rem' : 'clamp(2.2rem, 4vw, 3.4rem)',
+                        fontSize: isMobile ? '1.6rem' : 'clamp(2.2rem, 4vw, 3.4rem)',
                         fontWeight: 800,
                         color: '#fff',
                         margin: 0,
@@ -560,7 +558,7 @@ function CanopyBand({ isMobile }: { isMobile: boolean }) {
                     <h2
                         style={{
                             fontFamily: "'Inter', sans-serif",
-                            fontSize: isMobile ? '1.9rem' : 'clamp(2.2rem, 4vw, 3.4rem)',
+                            fontSize: isMobile ? '1.6rem' : 'clamp(2.2rem, 4vw, 3.4rem)',
                             fontWeight: 800,
                             color: '#fff',
                             margin: 0,
@@ -724,7 +722,7 @@ function AmenitiesManifest({ isMobile }: { isMobile: boolean }) {
                 <h2
                     style={{
                         fontFamily: "'Inter', sans-serif",
-                        fontSize: isMobile ? '1.9rem' : 'clamp(2.2rem, 4vw, 3.4rem)',
+                        fontSize: isMobile ? '1.6rem' : 'clamp(2.2rem, 4vw, 3.4rem)',
                         fontWeight: 800,
                         color: '#fff',
                         margin: 0,
@@ -884,7 +882,7 @@ function SafetyTriptych({ isMobile }: { isMobile: boolean }) {
                     marginTop: 24,
                     marginBottom: isMobile ? 28 : 48,
                     fontFamily: "'Inter', sans-serif",
-                    fontSize: isMobile ? '1.9rem' : 'clamp(2.2rem, 4vw, 3.4rem)',
+                    fontSize: isMobile ? '1.6rem' : 'clamp(2.2rem, 4vw, 3.4rem)',
                     fontWeight: 800,
                     color: '#fff',
                     letterSpacing: '-0.035em',
@@ -1044,7 +1042,7 @@ function Closing({
                 <h2
                     style={{
                         fontFamily: "'Inter', sans-serif",
-                        fontSize: isMobile ? '1.9rem' : 'clamp(2.2rem, 4.2vw, 3.6rem)',
+                        fontSize: isMobile ? '1.6rem' : 'clamp(2.2rem, 4.2vw, 3.6rem)',
                         fontWeight: 800,
                         color: '#fff',
                         letterSpacing: '-0.04em',

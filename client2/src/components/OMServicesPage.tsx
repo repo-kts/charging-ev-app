@@ -119,14 +119,12 @@ function Hero({
                             marginBottom: 28,
                         }}
                     >
-                        <span>SERVICE / 05</span>
-                        <span style={{ width: 36, height: 1, background: BORDER_STRONG }} />
                         <span>OPERATIONS & MAINTENANCE</span>
                     </div>
 
                     <h1
                         style={{
-                            fontSize: isMobile ? '2.3rem' : 'clamp(2.6rem, 5.4vw, 4.8rem)',
+                            fontSize: isMobile ? '2rem' : 'clamp(2.6rem, 5.4vw, 4.8rem)',
                             fontWeight: 800,
                             color: '#fff',
                             margin: 0,
@@ -167,13 +165,6 @@ function Hero({
                             }}
                         >
                             Request an SLA <ArrowRight size={16} />
-                        </button>
-                        <button
-                            className="btn-ghost"
-                            onClick={onSecondaryCta}
-                            style={{ cursor: 'pointer', fontSize: '0.92rem' }}
-                        >
-                            Talk to support
                         </button>
                     </div>
                 </motion.div>
@@ -363,7 +354,7 @@ function TierFlow({ isMobile }: { isMobile: boolean }) {
                 style={{
                     marginTop: 24,
                     marginBottom: isMobile ? 28 : 48,
-                    fontSize: isMobile ? '1.9rem' : 'clamp(2.2rem, 4vw, 3.4rem)',
+                    fontSize: isMobile ? '1.6rem' : 'clamp(2.2rem, 4vw, 3.4rem)',
                     fontWeight: 800,
                     color: '#fff',
                     letterSpacing: '-0.035em',
@@ -586,7 +577,7 @@ function CoreOfferings({ isMobile }: { isMobile: boolean }) {
                 style={{
                     marginTop: 24,
                     marginBottom: isMobile ? 28 : 40,
-                    fontSize: isMobile ? '1.9rem' : 'clamp(2.2rem, 4vw, 3.4rem)',
+                    fontSize: isMobile ? '1.6rem' : 'clamp(2.2rem, 4vw, 3.4rem)',
                     fontWeight: 800,
                     color: '#fff',
                     letterSpacing: '-0.035em',
@@ -760,7 +751,7 @@ function SLAMatrix({ isMobile }: { isMobile: boolean }) {
                 style={{
                     marginTop: 24,
                     marginBottom: isMobile ? 28 : 40,
-                    fontSize: isMobile ? '1.9rem' : 'clamp(2.2rem, 4vw, 3.4rem)',
+                    fontSize: isMobile ? '1.6rem' : 'clamp(2.2rem, 4vw, 3.4rem)',
                     fontWeight: 800,
                     color: '#fff',
                     letterSpacing: '-0.035em',
@@ -772,24 +763,93 @@ function SLAMatrix({ isMobile }: { isMobile: boolean }) {
                 <span style={{ color: ACCENT }}>We contract it.</span>
             </h2>
 
-            <div
-                style={{
-                    border: `1px solid ${BORDER}`,
-                    borderRadius: 16,
-                    overflow: 'hidden',
-                    background: SURFACE,
-                }}
-            >
-                {/* Header row */}
+            {isMobile ? (
+                /* MOBILE — each metric is a stacked card with two labeled tiers */
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                    {rows.map((r, i) => (
+                        <motion.div
+                            key={r.metric}
+                            initial={{ opacity: 0, y: 10 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.4, delay: i * 0.05 }}
+                            style={{
+                                border: `1px solid ${BORDER}`,
+                                borderRadius: 14,
+                                overflow: 'hidden',
+                                background: SURFACE,
+                            }}
+                        >
+                            <div
+                                className="mono"
+                                style={{
+                                    padding: '12px 16px',
+                                    fontSize: '0.62rem',
+                                    color: TEXT,
+                                    letterSpacing: '0.18em',
+                                    fontWeight: 700,
+                                    textTransform: 'uppercase',
+                                    background: BG,
+                                    borderBottom: `1px solid ${BORDER}`,
+                                }}
+                            >
+                                {r.metric}
+                            </div>
+                            <div style={{ padding: '14px 16px', borderBottom: `1px solid ${BORDER}` }}>
+                                <div
+                                    className="mono"
+                                    style={{
+                                        fontSize: '0.55rem',
+                                        color: ACCENT,
+                                        letterSpacing: '0.2em',
+                                        fontWeight: 700,
+                                        marginBottom: 5,
+                                    }}
+                                >
+                                    CRITICAL · PUBLIC HUBS / FLEET
+                                </div>
+                                <div style={{ fontSize: '0.95rem', color: ACCENT, fontWeight: 600, lineHeight: 1.4 }}>
+                                    {r.critical}
+                                </div>
+                            </div>
+                            <div style={{ padding: '14px 16px' }}>
+                                <div
+                                    className="mono"
+                                    style={{
+                                        fontSize: '0.55rem',
+                                        color: TEXT_DIM,
+                                        letterSpacing: '0.2em',
+                                        fontWeight: 700,
+                                        marginBottom: 5,
+                                    }}
+                                >
+                                    STANDARD · COMMERCIAL / WORKPLACE
+                                </div>
+                                <div style={{ fontSize: '0.92rem', color: TEXT_DIM, lineHeight: 1.4 }}>
+                                    {r.commercial}
+                                </div>
+                            </div>
+                        </motion.div>
+                    ))}
+                </div>
+            ) : (
+                /* DESKTOP — 3-column comparison table */
                 <div
                     style={{
-                        display: 'grid',
-                        gridTemplateColumns: isMobile ? '1fr 1fr' : '1.1fr 1.2fr 1.2fr',
-                        background: BG,
-                        borderBottom: `1px solid ${BORDER}`,
+                        border: `1px solid ${BORDER}`,
+                        borderRadius: 16,
+                        overflow: 'hidden',
+                        background: SURFACE,
                     }}
                 >
-                    {!isMobile && (
+                    <div
+                        style={{
+                            display: 'grid',
+                            gridTemplateColumns: '1.1fr 1.2fr 1.2fr',
+                            background: BG,
+                            borderBottom: `1px solid ${BORDER}`,
+                        }}
+                    >
                         <div
                             className="mono"
                             style={{
@@ -802,106 +862,93 @@ function SLAMatrix({ isMobile }: { isMobile: boolean }) {
                         >
                             METRIC
                         </div>
-                    )}
-                    <div
-                        style={{
-                            padding: isMobile ? '14px 14px' : '16px 22px',
-                            borderLeft: !isMobile ? `1px solid ${BORDER}` : 'none',
-                        }}
-                    >
-                        <div
-                            className="mono"
-                            style={{
-                                fontSize: '0.58rem',
-                                color: ACCENT,
-                                letterSpacing: '0.22em',
-                                fontWeight: 700,
-                                marginBottom: 4,
-                            }}
-                        >
-                            TIER · CRITICAL
+                        <div style={{ padding: '16px 22px', borderLeft: `1px solid ${BORDER}` }}>
+                            <div
+                                className="mono"
+                                style={{
+                                    fontSize: '0.58rem',
+                                    color: ACCENT,
+                                    letterSpacing: '0.22em',
+                                    fontWeight: 700,
+                                    marginBottom: 4,
+                                }}
+                            >
+                                TIER · CRITICAL
+                            </div>
+                            <div style={{ fontSize: '0.95rem', color: TEXT, fontWeight: 700 }}>
+                                Public Hubs · Fleet Depots
+                            </div>
                         </div>
-                        <div style={{ fontSize: isMobile ? '0.88rem' : '0.95rem', color: TEXT, fontWeight: 700 }}>
-                            Public Hubs · Fleet Depots
-                        </div>
-                    </div>
-                    <div
-                        style={{
-                            padding: isMobile ? '14px 14px' : '16px 22px',
-                            borderLeft: `1px solid ${BORDER}`,
-                        }}
-                    >
-                        <div
-                            className="mono"
-                            style={{
-                                fontSize: '0.58rem',
-                                color: TEXT_DIM,
-                                letterSpacing: '0.22em',
-                                fontWeight: 700,
-                                marginBottom: 4,
-                            }}
-                        >
-                            TIER · STANDARD
-                        </div>
-                        <div style={{ fontSize: isMobile ? '0.88rem' : '0.95rem', color: TEXT, fontWeight: 700 }}>
-                            Commercial · Workplace Parking
+                        <div style={{ padding: '16px 22px', borderLeft: `1px solid ${BORDER}` }}>
+                            <div
+                                className="mono"
+                                style={{
+                                    fontSize: '0.58rem',
+                                    color: TEXT_DIM,
+                                    letterSpacing: '0.22em',
+                                    fontWeight: 700,
+                                    marginBottom: 4,
+                                }}
+                            >
+                                TIER · STANDARD
+                            </div>
+                            <div style={{ fontSize: '0.95rem', color: TEXT, fontWeight: 700 }}>
+                                Commercial · Workplace Parking
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                {/* Rows */}
-                {rows.map((r, i) => (
-                    <motion.div
-                        key={r.metric}
-                        initial={{ opacity: 0 }}
-                        whileInView={{ opacity: 1 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.4, delay: i * 0.05 }}
-                        style={{
-                            display: 'grid',
-                            gridTemplateColumns: isMobile ? '1fr' : '1.1fr 1.2fr 1.2fr',
-                            borderBottom: i < rows.length - 1 ? `1px solid ${BORDER}` : 'none',
-                        }}
-                    >
-                        <div
+                    {rows.map((r, i) => (
+                        <motion.div
+                            key={r.metric}
+                            initial={{ opacity: 0 }}
+                            whileInView={{ opacity: 1 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.4, delay: i * 0.05 }}
                             style={{
-                                padding: isMobile ? '16px 16px 6px' : '20px 22px',
-                                fontSize: isMobile ? '0.78rem' : '0.92rem',
-                                color: isMobile ? TEXT_DIM : '#fff',
-                                fontWeight: 700,
-                                letterSpacing: isMobile ? '0.18em' : '-0.015em',
-                                textTransform: isMobile ? 'uppercase' : 'none',
-                                fontFamily: isMobile ? "'JetBrains Mono', monospace" : "'Inter', sans-serif",
+                                display: 'grid',
+                                gridTemplateColumns: '1.1fr 1.2fr 1.2fr',
+                                borderBottom: i < rows.length - 1 ? `1px solid ${BORDER}` : 'none',
                             }}
                         >
-                            {r.metric}
-                        </div>
-                        <div
-                            style={{
-                                padding: isMobile ? '0 16px 8px' : '20px 22px',
-                                fontSize: isMobile ? '0.92rem' : '0.95rem',
-                                color: ACCENT,
-                                fontWeight: 600,
-                                borderLeft: !isMobile ? `1px solid ${BORDER}` : 'none',
-                                lineHeight: 1.4,
-                            }}
-                        >
-                            {r.critical}
-                        </div>
-                        <div
-                            style={{
-                                padding: isMobile ? '0 16px 16px' : '20px 22px',
-                                fontSize: isMobile ? '0.9rem' : '0.95rem',
-                                color: TEXT_DIM,
-                                borderLeft: !isMobile ? `1px solid ${BORDER}` : 'none',
-                                lineHeight: 1.4,
-                            }}
-                        >
-                            {r.commercial}
-                        </div>
-                    </motion.div>
-                ))}
-            </div>
+                            <div
+                                style={{
+                                    padding: '20px 22px',
+                                    fontSize: '0.92rem',
+                                    color: '#fff',
+                                    fontWeight: 700,
+                                    letterSpacing: '-0.015em',
+                                }}
+                            >
+                                {r.metric}
+                            </div>
+                            <div
+                                style={{
+                                    padding: '20px 22px',
+                                    fontSize: '0.95rem',
+                                    color: ACCENT,
+                                    fontWeight: 600,
+                                    borderLeft: `1px solid ${BORDER}`,
+                                    lineHeight: 1.4,
+                                }}
+                            >
+                                {r.critical}
+                            </div>
+                            <div
+                                style={{
+                                    padding: '20px 22px',
+                                    fontSize: '0.95rem',
+                                    color: TEXT_DIM,
+                                    borderLeft: `1px solid ${BORDER}`,
+                                    lineHeight: 1.4,
+                                }}
+                            >
+                                {r.commercial}
+                            </div>
+                        </motion.div>
+                    ))}
+                </div>
+            )}
         </motion.section>
     );
 }
@@ -1053,7 +1100,7 @@ function Closing({
                 </div>
                 <h2
                     style={{
-                        fontSize: isMobile ? '1.9rem' : 'clamp(2.2rem, 4.2vw, 3.6rem)',
+                        fontSize: isMobile ? '1.6rem' : 'clamp(2.2rem, 4.2vw, 3.6rem)',
                         fontWeight: 800,
                         color: '#fff',
                         letterSpacing: '-0.04em',
@@ -1089,13 +1136,6 @@ function Closing({
                         }}
                     >
                         Request an SLA <ArrowRight size={16} />
-                    </button>
-                    <button
-                        className="btn-ghost"
-                        onClick={onSecondaryCta}
-                        style={{ cursor: 'pointer', fontSize: '0.92rem' }}
-                    >
-                        Email support
                     </button>
                 </div>
             </div>
