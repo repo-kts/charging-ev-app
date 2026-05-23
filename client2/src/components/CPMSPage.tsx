@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTheme } from '../lib/theme';
 import {
     ArrowRight,
     Activity,
@@ -11,10 +12,12 @@ import {
     Globe,
 } from 'lucide-react';
 
+// Dark-theme fallback colours for module-scope code; theme-aware components destructure useTheme() and shadow these.
 const ACCENT = '#00FF88';
 const ACCENT_SOFT = '#00CC77';
 const BG = '#0B0F0D';
 const SURFACE = '#111715';
+const CARD = '#151B18';
 const BORDER = 'rgba(0,255,136,0.08)';
 const BORDER_STRONG = 'rgba(0,255,136,0.18)';
 const TEXT = '#F5F7F6';
@@ -27,6 +30,7 @@ type Props = {
 };
 
 export function CPMSPage({ isMobile, onPrimaryCta, onSecondaryCta }: Props) {
+    const { ACCENT, ACCENT_SOFT, BG, SURFACE, CARD, BORDER, BORDER_STRONG, TEXT, TEXT_DIM, HEADING, ACCENT_ON } = useTheme();
     return (
         <motion.div
             key="cpms"
@@ -91,6 +95,7 @@ function Hero({
     onPrimaryCta?: () => void;
     onSecondaryCta?: () => void;
 }) {
+    const { ACCENT, ACCENT_SOFT, BG, SURFACE, CARD, BORDER, BORDER_STRONG, TEXT, TEXT_DIM, HEADING, ACCENT_ON } = useTheme();
     return (
         <section style={{ marginBottom: isMobile ? 64 : 120 }}>
             <div
@@ -126,7 +131,7 @@ function Hero({
                         style={{
                             fontSize: isMobile ? '2rem' : 'clamp(2.6rem, 5.4vw, 4.8rem)',
                             fontWeight: 800,
-                            color: '#fff',
+                            color: HEADING,
                             margin: 0,
                             marginBottom: 22,
                             letterSpacing: '-0.04em',
@@ -210,6 +215,7 @@ function stateColor(s: ChargerState): string {
 }
 
 function LiveNetworkPanel({ isMobile }: { isMobile: boolean }) {
+    const { ACCENT, ACCENT_SOFT, BG, SURFACE, CARD, BORDER, BORDER_STRONG, TEXT, TEXT_DIM, HEADING, ACCENT_ON } = useTheme();
     const [chargers, setChargers] = useState(initialChargers);
     const [kw, setKw] = useState(284);
 
@@ -416,6 +422,7 @@ type Capability = {
 };
 
 function CapabilityConsole({ isMobile }: { isMobile: boolean }) {
+    const { ACCENT, ACCENT_SOFT, BG, SURFACE, CARD, BORDER, BORDER_STRONG, TEXT, TEXT_DIM, HEADING, ACCENT_ON } = useTheme();
     const [active, setActive] = useState(0);
 
     const caps: Capability[] = [
@@ -515,7 +522,7 @@ function CapabilityConsole({ isMobile }: { isMobile: boolean }) {
                     marginBottom: isMobile ? 28 : 40,
                     fontSize: isMobile ? '1.6rem' : 'clamp(2.2rem, 4vw, 3.4rem)',
                     fontWeight: 800,
-                    color: '#fff',
+                    color: HEADING,
                     letterSpacing: '-0.035em',
                     lineHeight: 1.02,
                     maxWidth: 860,
@@ -589,7 +596,7 @@ function CapabilityConsole({ isMobile }: { isMobile: boolean }) {
                             style={{
                                 fontSize: isMobile ? '1.6rem' : '2rem',
                                 fontWeight: 800,
-                                color: '#fff',
+                                color: HEADING,
                                 letterSpacing: '-0.03em',
                                 lineHeight: 1.05,
                                 margin: 0,
@@ -649,6 +656,7 @@ function CapabilityConsole({ isMobile }: { isMobile: boolean }) {
 /* ---- Mock UI panels for each capability ---- */
 
 function PanelShell({ title, children }: { title: string; children: React.ReactNode }) {
+    const { ACCENT, ACCENT_SOFT, BG, SURFACE, CARD, BORDER, BORDER_STRONG, TEXT, TEXT_DIM, HEADING, ACCENT_ON } = useTheme();
     return (
         <div
             style={{
@@ -694,6 +702,7 @@ function PanelShell({ title, children }: { title: string; children: React.ReactN
 }
 
 function MonitorMock({ isMobile }: { isMobile: boolean }) {
+    const { ACCENT, ACCENT_SOFT, BG, SURFACE, CARD, BORDER, BORDER_STRONG, TEXT, TEXT_DIM, HEADING, ACCENT_ON } = useTheme();
     const ports = Array.from({ length: 24 }).map((_, i) => {
         const s: ChargerState =
             i % 5 === 0
@@ -815,6 +824,7 @@ function MonitorMock({ isMobile }: { isMobile: boolean }) {
 }
 
 function EnergyMock({ isMobile: _isMobile }: { isMobile: boolean }) {
+    const { ACCENT, ACCENT_SOFT, BG, SURFACE, CARD, BORDER, BORDER_STRONG, TEXT, TEXT_DIM, HEADING, ACCENT_ON } = useTheme();
     return (
         <PanelShell title="DYNAMIC LOAD / SITE 60kW BUDGET">
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
@@ -872,6 +882,7 @@ function EnergyMock({ isMobile: _isMobile }: { isMobile: boolean }) {
 }
 
 function BillingMock({ isMobile: _isMobile }: { isMobile: boolean }) {
+    const { ACCENT, ACCENT_SOFT, BG, SURFACE, CARD, BORDER, BORDER_STRONG, TEXT, TEXT_DIM, HEADING, ACCENT_ON } = useTheme();
     const tariffs = [
         { name: 'Off-peak · kWh', value: '₹ 12.00 / kWh' },
         { name: 'Standard · kWh', value: '₹ 18.50 / kWh' },
@@ -916,6 +927,7 @@ function BillingMock({ isMobile: _isMobile }: { isMobile: boolean }) {
 }
 
 function AccessMock({ isMobile: _isMobile }: { isMobile: boolean }) {
+    const { ACCENT, ACCENT_SOFT, BG, SURFACE, CARD, BORDER, BORDER_STRONG, TEXT, TEXT_DIM, HEADING, ACCENT_ON } = useTheme();
     const groups = [
         { name: 'Employees', count: 247, tag: 'FREE · workday' },
         { name: 'Residents', count: 132, tag: 'SUBSIDISED' },
@@ -975,6 +987,7 @@ function AccessMock({ isMobile: _isMobile }: { isMobile: boolean }) {
 /* =================================================================== */
 
 function Compliance({ isMobile }: { isMobile: boolean }) {
+    const { ACCENT, ACCENT_SOFT, BG, SURFACE, CARD, BORDER, BORDER_STRONG, TEXT, TEXT_DIM, HEADING, ACCENT_ON } = useTheme();
     const badges = [
         { code: 'OCPP', sub: '1.6J / 2.0.1', label: 'Open protocol' },
         { code: 'OCPI', sub: 'Roaming', label: 'Global hubs' },
@@ -998,7 +1011,7 @@ function Compliance({ isMobile }: { isMobile: boolean }) {
                     marginBottom: isMobile ? 24 : 36,
                     fontSize: isMobile ? '1.6rem' : 'clamp(2.2rem, 4vw, 3.4rem)',
                     fontWeight: 800,
-                    color: '#fff',
+                    color: HEADING,
                     letterSpacing: '-0.035em',
                     lineHeight: 1.02,
                     maxWidth: 860,
@@ -1064,6 +1077,7 @@ function Compliance({ isMobile }: { isMobile: boolean }) {
 /* =================================================================== */
 
 function Personas({ isMobile }: { isMobile: boolean }) {
+    const { ACCENT, ACCENT_SOFT, BG, SURFACE, CARD, BORDER, BORDER_STRONG, TEXT, TEXT_DIM, HEADING, ACCENT_ON } = useTheme();
     const personas = [
         {
             icon: <Truck size={22} />,
@@ -1145,7 +1159,7 @@ function Personas({ isMobile }: { isMobile: boolean }) {
                                 style={{
                                     fontSize: isMobile ? '1.4rem' : 'clamp(1.6rem, 2.6vw, 2.1rem)',
                                     fontWeight: 800,
-                                    color: '#fff',
+                                    color: HEADING,
                                     letterSpacing: '-0.03em',
                                     lineHeight: 1.05,
                                 }}
@@ -1184,6 +1198,7 @@ function Closing({
     onPrimaryCta?: () => void;
     onSecondaryCta?: () => void;
 }) {
+    const { ACCENT, ACCENT_SOFT, BG, SURFACE, CARD, BORDER, BORDER_STRONG, TEXT, TEXT_DIM, HEADING, ACCENT_ON } = useTheme();
     return (
         <motion.section
             initial={{ opacity: 0, y: 16 }}
@@ -1215,7 +1230,7 @@ function Closing({
                     style={{
                         fontSize: isMobile ? '1.6rem' : 'clamp(2.2rem, 4.2vw, 3.6rem)',
                         fontWeight: 800,
-                        color: '#fff',
+                        color: HEADING,
                         letterSpacing: '-0.04em',
                         lineHeight: 1.02,
                         margin: 0,
@@ -1261,6 +1276,7 @@ function Closing({
 /* =================================================================== */
 
 function SectionIndex({ n, label }: { n: string; label: string }) {
+    const { ACCENT, ACCENT_SOFT, BG, SURFACE, CARD, BORDER, BORDER_STRONG, TEXT, TEXT_DIM, HEADING, ACCENT_ON } = useTheme();
     return (
         <div
             className="mono"

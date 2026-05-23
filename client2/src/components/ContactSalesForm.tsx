@@ -9,7 +9,9 @@ import {
     type PublicInquirySubmitInput,
 } from '@trio/shared/inquiry';
 import { api } from '../lib/axios';
+import { useTheme } from '../lib/theme';
 
+// Dark fallbacks; component bodies destructure useTheme() to shadow these.
 const ACCENT = '#00FF88';
 const BG = '#0B0F0D';
 const SURFACE = '#111715';
@@ -48,6 +50,8 @@ interface ContactSalesFormProps {
 }
 
 export function ContactSalesForm({ open, onClose }: ContactSalesFormProps) {
+    const t = useTheme();
+    const { ACCENT, BG, SURFACE, CARD, BORDER, BORDER_STRONG, TEXT, TEXT_DIM, HEADING, ACCENT_ON } = t;
     const isMobile = useIsMobile(1024);
     const {
         register,
@@ -124,7 +128,7 @@ export function ContactSalesForm({ open, onClose }: ContactSalesFormProps) {
                                 type="button"
                                 onClick={onClose}
                                 aria-label="Close"
-                                style={{ width: 36, height: 36, borderRadius: '50%', background: 'rgba(255,255,255,0.05)', border: `1px solid ${BORDER}`, color: TEXT, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                                style={{ width: 36, height: 36, borderRadius: '50%', background: t.mode === 'light' ? 'rgba(15,30,25,0.05)' : 'rgba(255,255,255,0.05)', border: `1px solid ${BORDER}`, color: TEXT, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                             >
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
                             </button>
@@ -245,7 +249,7 @@ export function ContactSalesForm({ open, onClose }: ContactSalesFormProps) {
                         position: 'fixed',
                         inset: 0,
                         zIndex: 2000,
-                        background: 'rgba(5, 7, 6, 0.96)',
+                        background: t.mode === 'light' ? 'rgba(248,250,249,0.97)' : 'rgba(5, 7, 6, 0.96)',
                         backdropFilter: 'blur(32px)',
                         display: 'flex',
                         alignItems: 'center',
@@ -376,7 +380,7 @@ export function ContactSalesForm({ open, onClose }: ContactSalesFormProps) {
                                 style={{
                                     fontSize: '3rem',
                                     fontWeight: 800,
-                                    color: '#fff',
+                                    color: HEADING,
                                     lineHeight: 1.1,
                                     marginBottom: 20,
                                     letterSpacing: '-0.04em',
@@ -427,7 +431,7 @@ export function ContactSalesForm({ open, onClose }: ContactSalesFormProps) {
                                                 width: 44,
                                                 height: 44,
                                                 borderRadius: '50%',
-                                                background: 'rgba(255,255,255,0.03)',
+                                                background: t.mode === 'light' ? 'rgba(15,30,25,0.03)' : 'rgba(255,255,255,0.03)',
                                                 border: '1px solid rgba(255,255,255,0.06)',
                                                 display: 'flex',
                                                 alignItems: 'center',
@@ -480,7 +484,7 @@ export function ContactSalesForm({ open, onClose }: ContactSalesFormProps) {
                             noValidate
                             className="form-card"
                             style={{
-                                background: 'rgba(255,255,255,0.02)',
+                                background: t.mode === 'light' ? 'rgba(15,30,25,0.02)' : 'rgba(255,255,255,0.02)',
                                 border: '1px solid rgba(255,255,255,0.06)',
                                 borderRadius: 24,
                                 padding: 32,
@@ -606,11 +610,11 @@ export function ContactSalesForm({ open, onClose }: ContactSalesFormProps) {
 
 const inputStyle: React.CSSProperties = {
     width: '100%',
-    background: 'rgba(255,255,255,0.03)',
+    background: 'rgba(127,127,127,0.06)',
     border: '1px solid rgba(255,255,255,0.06)',
     borderRadius: 12,
     padding: '14px 18px',
-    color: TEXT,
+    color: 'inherit',
     outline: 'none',
     fontSize: '0.9rem',
     fontFamily: 'inherit',
@@ -618,17 +622,21 @@ const inputStyle: React.CSSProperties = {
 
 const inputStyleMobile: React.CSSProperties = {
     width: '100%',
-    background: SURFACE,
+    background: 'rgba(127,127,127,0.08)',
     border: `1px solid ${BORDER_STRONG}`,
     borderRadius: 12,
     padding: '13px 14px',
-    color: TEXT,
+    color: 'inherit',
     outline: 'none',
     fontSize: '0.92rem',
     fontFamily: 'inherit',
 };
 
-function Field({
+function Field(props: any) {
+    const { ACCENT, TEXT, TEXT_DIM } = useTheme();
+    return FieldInner({ ...props, ACCENT, TEXT, TEXT_DIM });
+}
+function FieldInner({
     label,
     optional,
     error,

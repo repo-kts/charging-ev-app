@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTheme } from '../lib/theme';
 import { 
     ArrowRight,
     Map,
@@ -15,10 +16,12 @@ import {
     Info
 } from 'lucide-react';
 
+// Dark-theme fallback colours for module-scope code; theme-aware components destructure useTheme() and shadow these.
 const ACCENT = '#00FF88';
 const ACCENT_SOFT = '#00CC77';
 const BG = '#0B0F0D';
 const SURFACE = '#111715';
+const CARD = '#151B18';
 const BORDER = 'rgba(0,255,136,0.08)';
 const BORDER_STRONG = 'rgba(0,255,136,0.18)';
 const TEXT = '#F5F7F6';
@@ -31,6 +34,7 @@ type Props = {
 };
 
 export function EVInfraConsultancyPage({ isMobile, onPrimaryCta, onSecondaryCta }: Props) {
+    const { ACCENT, ACCENT_SOFT, BG, SURFACE, CARD, BORDER, BORDER_STRONG, TEXT, TEXT_DIM, HEADING, ACCENT_ON } = useTheme();
     return (
         <motion.div
             key="ev-infra-consultancy"
@@ -79,6 +83,7 @@ export function EVInfraConsultancyPage({ isMobile, onPrimaryCta, onSecondaryCta 
 /* =================================================================== */
 
 function BlueprintGrid() {
+    const { ACCENT, ACCENT_SOFT, BG, SURFACE, CARD, BORDER, BORDER_STRONG, TEXT, TEXT_DIM, HEADING, ACCENT_ON } = useTheme();
     return (
         <>
             <div
@@ -128,6 +133,7 @@ function Hero({
     onPrimaryCta?: () => void;
     onSecondaryCta?: () => void;
 }) {
+    const { ACCENT, ACCENT_SOFT, BG, SURFACE, CARD, BORDER, BORDER_STRONG, TEXT, TEXT_DIM, HEADING, ACCENT_ON } = useTheme();
     return (
         <section style={{ marginBottom: isMobile ? 72 : 130 }}>
             <motion.div
@@ -155,7 +161,7 @@ function Hero({
                     style={{
                         fontSize: isMobile ? '2rem' : 'clamp(2.6rem, 5.6vw, 5rem)',
                         fontWeight: 800,
-                        color: '#fff',
+                        color: HEADING,
                         margin: 0,
                         marginBottom: 22,
                         letterSpacing: '-0.04em',
@@ -248,6 +254,7 @@ type ProcessPhase = {
 };
 
 function Process({ isMobile }: { isMobile: boolean }) {
+    const { ACCENT, ACCENT_SOFT, BG, SURFACE, CARD, BORDER, BORDER_STRONG, TEXT, TEXT_DIM, HEADING, ACCENT_ON } = useTheme();
     const [activePhaseIndex, setActivePhaseIndex] = React.useState(0);
 
     const phases: ProcessPhase[] = [
@@ -375,7 +382,7 @@ function Process({ isMobile }: { isMobile: boolean }) {
                     marginBottom: isMobile ? 28 : 48,
                     fontSize: isMobile ? '1.6rem' : 'clamp(2.2rem, 4vw, 3.4rem)',
                     fontWeight: 800,
-                    color: '#fff',
+                    color: HEADING,
                     letterSpacing: '-0.035em',
                     lineHeight: 1.02,
                     maxWidth: 860,
@@ -439,7 +446,7 @@ function Process({ isMobile }: { isMobile: boolean }) {
                                         <div className="mono" style={{ fontSize: '0.65rem', color: ACCENT, letterSpacing: '0.1em' }}>
                                             {p.n} · PHASE
                                         </div>
-                                        <h3 style={{ fontSize: '1.1rem', color: '#fff', margin: '4px 0 12px 0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                        <h3 style={{ fontSize: '1.1rem', color: HEADING, margin: '4px 0 12px 0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                                             <span>{p.title}</span>
                                             <span style={{ color: ACCENT }}>{isOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}</span>
                                         </h3>
@@ -471,11 +478,11 @@ function Process({ isMobile }: { isMobile: boolean }) {
                                                     >
                                                         <div>
                                                             <div className="mono" style={{ fontSize: '0.58rem', color: TEXT_DIM }}>DURATION</div>
-                                                            <div style={{ fontSize: '0.82rem', color: '#fff', fontWeight: 600 }}>{p.duration}</div>
+                                                            <div style={{ fontSize: '0.82rem', color: HEADING, fontWeight: 600 }}>{p.duration}</div>
                                                         </div>
                                                         <div>
                                                             <div className="mono" style={{ fontSize: '0.58rem', color: TEXT_DIM }}>PRIMARY FOCUS</div>
-                                                            <div style={{ fontSize: '0.82rem', color: '#fff', fontWeight: 600 }}>{p.focus}</div>
+                                                            <div style={{ fontSize: '0.82rem', color: HEADING, fontWeight: 600 }}>{p.focus}</div>
                                                         </div>
                                                     </div>
                                                     <div style={{ borderBottom: `1px dashed ${BORDER}`, paddingBottom: 12 }}>
@@ -660,7 +667,7 @@ function Process({ isMobile }: { isMobile: boolean }) {
                                             style={{
                                                 fontSize: '1.6rem',
                                                 fontWeight: 800,
-                                                color: '#fff',
+                                                color: HEADING,
                                                 margin: 0,
                                                 marginBottom: 14,
                                                 letterSpacing: '-0.02em',
@@ -700,7 +707,7 @@ function Process({ isMobile }: { isMobile: boolean }) {
                                             </div>
                                             <div>
                                                 <div className="mono" style={{ fontSize: '0.58rem', color: TEXT_DIM }}>DURATION</div>
-                                                <div className="mono" style={{ fontSize: '0.85rem', color: '#fff', fontWeight: 700 }}>
+                                                <div className="mono" style={{ fontSize: '0.85rem', color: HEADING, fontWeight: 700 }}>
                                                     {activePhase.duration}
                                                 </div>
                                             </div>
@@ -723,7 +730,7 @@ function Process({ isMobile }: { isMobile: boolean }) {
                                             </div>
                                             <div>
                                                 <div className="mono" style={{ fontSize: '0.58rem', color: TEXT_DIM }}>PRIMARY FOCUS</div>
-                                                <div className="mono" style={{ fontSize: '0.85rem', color: '#fff', fontWeight: 700 }}>
+                                                <div className="mono" style={{ fontSize: '0.85rem', color: HEADING, fontWeight: 700 }}>
                                                     {activePhase.focus}
                                                 </div>
                                             </div>
@@ -783,6 +790,7 @@ function Process({ isMobile }: { isMobile: boolean }) {
 }
 
 function PhaseTaskCard({ task, isMobile }: { task: ProcessSubTask; isMobile: boolean }) {
+    const { ACCENT, ACCENT_SOFT, BG, SURFACE, CARD, BORDER, BORDER_STRONG, TEXT, TEXT_DIM, HEADING, ACCENT_ON } = useTheme();
     const [isExpanded, setIsExpanded] = React.useState(false);
 
     return (
@@ -820,7 +828,7 @@ function PhaseTaskCard({ task, isMobile }: { task: ProcessSubTask; isMobile: boo
                             boxShadow: `0 0 6px ${ACCENT}`,
                         }}
                     />
-                    <h4 style={{ fontSize: isMobile ? '0.92rem' : '1.05rem', fontWeight: 600, color: '#fff', margin: 0 }}>
+                    <h4 style={{ fontSize: isMobile ? '0.92rem' : '1.05rem', fontWeight: 600, color: HEADING, margin: 0 }}>
                         {task.title}
                     </h4>
                 </div>
@@ -868,6 +876,7 @@ function PhaseTaskCard({ task, isMobile }: { task: ProcessSubTask; isMobile: boo
 /* =================================================================== */
 
 function Sectors({ isMobile }: { isMobile: boolean }) {
+    const { ACCENT, ACCENT_SOFT, BG, SURFACE, CARD, BORDER, BORDER_STRONG, TEXT, TEXT_DIM, HEADING, ACCENT_ON } = useTheme();
     const sectors = [
         {
             code: 'CR',
@@ -915,7 +924,7 @@ function Sectors({ isMobile }: { isMobile: boolean }) {
                     style={{
                         fontSize: isMobile ? '1.6rem' : 'clamp(2.2rem, 4vw, 3.4rem)',
                         fontWeight: 800,
-                        color: '#fff',
+                        color: HEADING,
                         margin: 0,
                         letterSpacing: '-0.035em',
                         lineHeight: 1.02,
@@ -1032,6 +1041,7 @@ function Sectors({ isMobile }: { isMobile: boolean }) {
 /* =================================================================== */
 
 function WhyPartner({ isMobile }: { isMobile: boolean }) {
+    const { ACCENT, ACCENT_SOFT, BG, SURFACE, CARD, BORDER, BORDER_STRONG, TEXT, TEXT_DIM, HEADING, ACCENT_ON } = useTheme();
     const reasons = [
         {
             big: 'Vendor-agnostic.',
@@ -1111,7 +1121,7 @@ function WhyPartner({ isMobile }: { isMobile: boolean }) {
                                 style={{
                                     fontSize: isMobile ? '1.6rem' : 'clamp(1.8rem, 3.2vw, 2.6rem)',
                                     fontWeight: 800,
-                                    color: '#fff',
+                                    color: HEADING,
                                     letterSpacing: '-0.035em',
                                     lineHeight: 1.02,
                                 }}
@@ -1150,6 +1160,7 @@ function Closing({
     onPrimaryCta?: () => void;
     onSecondaryCta?: () => void;
 }) {
+    const { ACCENT, ACCENT_SOFT, BG, SURFACE, CARD, BORDER, BORDER_STRONG, TEXT, TEXT_DIM, HEADING, ACCENT_ON } = useTheme();
     return (
         <motion.section
             initial={{ opacity: 0, y: 16 }}
@@ -1181,7 +1192,7 @@ function Closing({
                     style={{
                         fontSize: isMobile ? '1.6rem' : 'clamp(2.2rem, 4.2vw, 3.6rem)',
                         fontWeight: 800,
-                        color: '#fff',
+                        color: HEADING,
                         letterSpacing: '-0.04em',
                         lineHeight: 1.02,
                         margin: 0,
@@ -1227,6 +1238,7 @@ function Closing({
 /* =================================================================== */
 
 function SectionIndex({ n, label }: { n: string; label: string }) {
+    const { ACCENT, ACCENT_SOFT, BG, SURFACE, CARD, BORDER, BORDER_STRONG, TEXT, TEXT_DIM, HEADING, ACCENT_ON } = useTheme();
     return (
         <div
             className="mono"

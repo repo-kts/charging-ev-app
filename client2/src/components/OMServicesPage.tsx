@@ -1,5 +1,6 @@
 import { Fragment } from 'react';
 import { motion } from 'framer-motion';
+import { useTheme } from '../lib/theme';
 import {
     ArrowRight,
     ArrowDown,
@@ -10,10 +11,12 @@ import {
     AlertTriangle,
 } from 'lucide-react';
 
+// Dark-theme fallback colours for module-scope code; theme-aware components destructure useTheme() and shadow these.
 const ACCENT = '#00FF88';
 const ACCENT_SOFT = '#00CC77';
 const BG = '#0B0F0D';
 const SURFACE = '#111715';
+const CARD = '#151B18';
 const BORDER = 'rgba(0,255,136,0.08)';
 const BORDER_STRONG = 'rgba(0,255,136,0.18)';
 const TEXT = '#F5F7F6';
@@ -26,6 +29,7 @@ type Props = {
 };
 
 export function OMServicesPage({ isMobile, onPrimaryCta, onSecondaryCta }: Props) {
+    const { ACCENT, ACCENT_SOFT, BG, SURFACE, CARD, BORDER, BORDER_STRONG, TEXT, TEXT_DIM, HEADING, ACCENT_ON } = useTheme();
     return (
         <motion.div
             key="om-services"
@@ -91,6 +95,7 @@ function Hero({
     onPrimaryCta?: () => void;
     onSecondaryCta?: () => void;
 }) {
+    const { ACCENT, ACCENT_SOFT, BG, SURFACE, CARD, BORDER, BORDER_STRONG, TEXT, TEXT_DIM, HEADING, ACCENT_ON } = useTheme();
     return (
         <section style={{ marginBottom: isMobile ? 64 : 120 }}>
             <div
@@ -126,7 +131,7 @@ function Hero({
                         style={{
                             fontSize: isMobile ? '2rem' : 'clamp(2.6rem, 5.4vw, 4.8rem)',
                             fontWeight: 800,
-                            color: '#fff',
+                            color: HEADING,
                             margin: 0,
                             marginBottom: 22,
                             letterSpacing: '-0.04em',
@@ -187,6 +192,7 @@ function Hero({
 /* =================================================================== */
 
 function UptimeGauge({ isMobile }: { isMobile: boolean }) {
+    const { ACCENT, ACCENT_SOFT, BG, SURFACE, CARD, BORDER, BORDER_STRONG, TEXT, TEXT_DIM, HEADING, ACCENT_ON } = useTheme();
     const size = isMobile ? 240 : 320;
     const stroke = 10;
     const radius = (size - stroke) / 2;
@@ -279,7 +285,7 @@ function UptimeGauge({ isMobile }: { isMobile: boolean }) {
                         fontFamily: "'Inter', sans-serif",
                         fontSize: isMobile ? '3.4rem' : '4.6rem',
                         fontWeight: 800,
-                        color: '#fff',
+                        color: HEADING,
                         letterSpacing: '-0.05em',
                         lineHeight: 0.95,
                         fontVariantNumeric: 'tabular-nums',
@@ -310,6 +316,7 @@ function UptimeGauge({ isMobile }: { isMobile: boolean }) {
 /* =================================================================== */
 
 function TierFlow({ isMobile }: { isMobile: boolean }) {
+    const { ACCENT, ACCENT_SOFT, BG, SURFACE, CARD, BORDER, BORDER_STRONG, TEXT, TEXT_DIM, HEADING, ACCENT_ON } = useTheme();
     const tiers = [
         {
             n: 'L1',
@@ -356,7 +363,7 @@ function TierFlow({ isMobile }: { isMobile: boolean }) {
                     marginBottom: isMobile ? 28 : 48,
                     fontSize: isMobile ? '1.6rem' : 'clamp(2.2rem, 4vw, 3.4rem)',
                     fontWeight: 800,
-                    color: '#fff',
+                    color: HEADING,
                     letterSpacing: '-0.035em',
                     lineHeight: 1.02,
                     maxWidth: 860,
@@ -455,7 +462,7 @@ function TierFlow({ isMobile }: { isMobile: boolean }) {
                                 style={{
                                     fontSize: isMobile ? '1.15rem' : '1.25rem',
                                     fontWeight: 700,
-                                    color: '#fff',
+                                    color: HEADING,
                                     letterSpacing: '-0.018em',
                                     marginBottom: 14,
                                     lineHeight: 1.2,
@@ -536,6 +543,7 @@ function TierFlow({ isMobile }: { isMobile: boolean }) {
 /* =================================================================== */
 
 function CoreOfferings({ isMobile }: { isMobile: boolean }) {
+    const { ACCENT, ACCENT_SOFT, BG, SURFACE, CARD, BORDER, BORDER_STRONG, TEXT, TEXT_DIM, HEADING, ACCENT_ON } = useTheme();
     const blocks = [
         {
             icon: <CalendarCheck size={22} />,
@@ -579,7 +587,7 @@ function CoreOfferings({ isMobile }: { isMobile: boolean }) {
                     marginBottom: isMobile ? 28 : 40,
                     fontSize: isMobile ? '1.6rem' : 'clamp(2.2rem, 4vw, 3.4rem)',
                     fontWeight: 800,
-                    color: '#fff',
+                    color: HEADING,
                     letterSpacing: '-0.035em',
                     lineHeight: 1.02,
                     maxWidth: 860,
@@ -646,7 +654,7 @@ function CoreOfferings({ isMobile }: { isMobile: boolean }) {
                             style={{
                                 fontSize: isMobile ? '1.4rem' : '1.65rem',
                                 fontWeight: 800,
-                                color: '#fff',
+                                color: HEADING,
                                 letterSpacing: '-0.025em',
                                 lineHeight: 1.1,
                                 marginBottom: 10,
@@ -714,6 +722,7 @@ function CoreOfferings({ isMobile }: { isMobile: boolean }) {
 /* =================================================================== */
 
 function SLAMatrix({ isMobile }: { isMobile: boolean }) {
+    const { ACCENT, ACCENT_SOFT, BG, SURFACE, CARD, BORDER, BORDER_STRONG, TEXT, TEXT_DIM, HEADING, ACCENT_ON } = useTheme();
     const rows = [
         {
             metric: 'Network Uptime Target',
@@ -753,7 +762,7 @@ function SLAMatrix({ isMobile }: { isMobile: boolean }) {
                     marginBottom: isMobile ? 28 : 40,
                     fontSize: isMobile ? '1.6rem' : 'clamp(2.2rem, 4vw, 3.4rem)',
                     fontWeight: 800,
-                    color: '#fff',
+                    color: HEADING,
                     letterSpacing: '-0.035em',
                     lineHeight: 1.02,
                     maxWidth: 860,
@@ -915,7 +924,7 @@ function SLAMatrix({ isMobile }: { isMobile: boolean }) {
                                 style={{
                                     padding: '20px 22px',
                                     fontSize: '0.92rem',
-                                    color: '#fff',
+                                    color: HEADING,
                                     fontWeight: 700,
                                     letterSpacing: '-0.015em',
                                 }}
@@ -958,6 +967,7 @@ function SLAMatrix({ isMobile }: { isMobile: boolean }) {
 /* =================================================================== */
 
 function WhyChoose({ isMobile }: { isMobile: boolean }) {
+    const { ACCENT, ACCENT_SOFT, BG, SURFACE, CARD, BORDER, BORDER_STRONG, TEXT, TEXT_DIM, HEADING, ACCENT_ON } = useTheme();
     const reasons = [
         {
             big: 'Vendor-agnostic.',
@@ -1032,7 +1042,7 @@ function WhyChoose({ isMobile }: { isMobile: boolean }) {
                                 style={{
                                     fontSize: isMobile ? '1.5rem' : 'clamp(1.7rem, 3vw, 2.4rem)',
                                     fontWeight: 800,
-                                    color: '#fff',
+                                    color: HEADING,
                                     letterSpacing: '-0.035em',
                                     lineHeight: 1.05,
                                 }}
@@ -1071,6 +1081,7 @@ function Closing({
     onPrimaryCta?: () => void;
     onSecondaryCta?: () => void;
 }) {
+    const { ACCENT, ACCENT_SOFT, BG, SURFACE, CARD, BORDER, BORDER_STRONG, TEXT, TEXT_DIM, HEADING, ACCENT_ON } = useTheme();
     return (
         <motion.section
             initial={{ opacity: 0, y: 16 }}
@@ -1102,7 +1113,7 @@ function Closing({
                     style={{
                         fontSize: isMobile ? '1.6rem' : 'clamp(2.2rem, 4.2vw, 3.6rem)',
                         fontWeight: 800,
-                        color: '#fff',
+                        color: HEADING,
                         letterSpacing: '-0.04em',
                         lineHeight: 1.02,
                         margin: 0,
@@ -1148,6 +1159,7 @@ function Closing({
 /* =================================================================== */
 
 function SectionIndex({ n, label }: { n: string; label: string }) {
+    const { ACCENT, ACCENT_SOFT, BG, SURFACE, CARD, BORDER, BORDER_STRONG, TEXT, TEXT_DIM, HEADING, ACCENT_ON } = useTheme();
     return (
         <div
             className="mono"

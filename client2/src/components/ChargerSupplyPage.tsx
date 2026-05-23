@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTheme } from '../lib/theme';
 import {
     ArrowRight,
     Zap,
@@ -16,10 +17,12 @@ import {
     Sliders
 } from 'lucide-react';
 
+// Dark-theme fallback colours for module-scope code; theme-aware components destructure useTheme() and shadow these.
 const ACCENT = '#00FF88';
 const ACCENT_SOFT = '#00CC77';
 const BG = '#0B0F0D';
 const SURFACE = '#111715';
+const CARD = '#151B18';
 const BORDER = 'rgba(0,255,136,0.08)';
 const BORDER_STRONG = 'rgba(0,255,136,0.18)';
 const TEXT = '#F5F7F6';
@@ -282,6 +285,7 @@ const BOM: BomGroup[] = [
 ];
 
 export function ChargerSupplyPage({ isMobile, onPrimaryCta, onSecondaryCta }: Props) {
+    const { ACCENT, ACCENT_SOFT, BG, SURFACE, CARD, BORDER, BORDER_STRONG, TEXT, TEXT_DIM, HEADING, ACCENT_ON } = useTheme();
     const [activeGroupId, setActiveGroupId] = React.useState('core');
 
     return (
@@ -361,6 +365,7 @@ function Hero({
     onPrimaryCta?: () => void;
     onSecondaryCta?: () => void;
 }) {
+    const { ACCENT, ACCENT_SOFT, BG, SURFACE, CARD, BORDER, BORDER_STRONG, TEXT, TEXT_DIM, HEADING, ACCENT_ON } = useTheme();
     return (
         <section style={{ marginBottom: isMobile ? 64 : 110 }}>
             <motion.div
@@ -388,7 +393,7 @@ function Hero({
                     style={{
                         fontSize: isMobile ? '2rem' : 'clamp(2.6rem, 5.4vw, 4.8rem)',
                         fontWeight: 800,
-                        color: '#fff',
+                        color: HEADING,
                         margin: 0,
                         marginBottom: 22,
                         letterSpacing: '-0.04em',
@@ -475,6 +480,9 @@ function SiteDiagram({
     activeGroupId: string;
     setActiveGroupId: (id: string) => void;
 }) {
+    const theme = useTheme();
+    const { ACCENT, ACCENT_SOFT, BG, SURFACE, CARD, BORDER, BORDER_STRONG, TEXT, TEXT_DIM, HEADING, ACCENT_ON } = theme;
+    const diagramFilter = theme.mode === 'light' ? 'contrast(3) saturate(2.5) brightness(0.55)' : undefined;
     const isSelected = (id: string) => activeGroupId === id;
 
     const handleSubsystemClick = (id: string) => {
@@ -534,7 +542,7 @@ function SiteDiagram({
                     <div style={{ position: 'relative', zIndex: 1 }}>
                         <svg
                             viewBox="-280 -10 1400 470"
-                            style={{ width: '100%', height: 'auto', display: 'block' }}
+                            style={{ width: '100%', height: 'auto', display: 'block', filter: diagramFilter }}
                             aria-hidden
                         >
                             <defs>
@@ -795,6 +803,9 @@ function MobilePortraitDiagram({
     activeGroupId: string;
     setActiveGroupId: (id: string) => void;
 }) {
+    const theme = useTheme();
+    const { ACCENT, ACCENT_SOFT, BG, SURFACE, CARD, BORDER, BORDER_STRONG, TEXT, TEXT_DIM, HEADING, ACCENT_ON } = theme;
+    const diagramFilter = theme.mode === 'light' ? 'contrast(3) saturate(2.5) brightness(0.55)' : undefined;
     const isSelected = (id: string) => activeGroupId === id;
 
     const handleSubsystemClick = (id: string) => {
@@ -811,7 +822,7 @@ function MobilePortraitDiagram({
             <div
                 style={{
                     position: 'relative',
-                    background: 'rgba(0, 0, 0, 0.25)',
+                    background: SURFACE,
                     borderRadius: 12,
                     border: `1px solid rgba(0, 255, 136, 0.04)`,
                     padding: '8px',
@@ -819,7 +830,7 @@ function MobilePortraitDiagram({
                     boxShadow: 'inset 0 0 16px rgba(0, 255, 136, 0.02)',
                 }}
             >
-                <svg viewBox="0 0 360 260" style={{ width: '100%', height: 'auto', display: 'block' }} aria-hidden>
+                <svg viewBox="0 0 360 260" style={{ width: '100%', height: 'auto', display: 'block', filter: diagramFilter }} aria-hidden>
                     <defs>
                         <linearGradient id="mCanopyGrad" x1="0" x2="0" y1="0" y2="1">
                             <stop offset="0%" stopColor={ACCENT} stopOpacity="0.4" />
@@ -1050,6 +1061,7 @@ function CalloutOrthogonal({
     index?: number;
     isActive?: boolean;
 }) {
+    const { ACCENT, ACCENT_SOFT, BG, SURFACE, CARD, BORDER, BORDER_STRONG, TEXT, TEXT_DIM, HEADING, ACCENT_ON } = useTheme();
     const [ax, ay] = anchor;
     const [bx, by] = bend;
     const stubLength = 110;
@@ -1102,6 +1114,7 @@ function BomLedger({
     activeGroupId: string;
     setActiveGroupId: (id: string) => void;
 }) {
+    const { ACCENT, ACCENT_SOFT, BG, SURFACE, CARD, BORDER, BORDER_STRONG, TEXT, TEXT_DIM, HEADING, ACCENT_ON } = useTheme();
     const activeGroup = BOM.find((g) => g.id === activeGroupId) || BOM[0];
 
     const groupIcons: Record<string, React.ComponentType<any>> = {
@@ -1129,7 +1142,7 @@ function BomLedger({
                     marginBottom: isMobile ? 32 : 48,
                     fontSize: isMobile ? '1.6rem' : 'clamp(2.2rem, 4vw, 3.4rem)',
                     fontWeight: 800,
-                    color: '#fff',
+                    color: HEADING,
                     letterSpacing: '-0.035em',
                     lineHeight: 1.02,
                     maxWidth: 860,
@@ -1168,7 +1181,7 @@ function BomLedger({
                                         border: `1px solid ${isActive ? ACCENT : 'rgba(255, 255, 255, 0.05)'}`,
                                         borderRadius: 8,
                                         padding: '8px 14px',
-                                        color: isActive ? '#fff' : TEXT_DIM,
+                                        color: isActive ? HEADING : TEXT_DIM,
                                         fontSize: '0.8rem',
                                         fontWeight: 600,
                                         whiteSpace: 'nowrap',
@@ -1234,7 +1247,7 @@ function BomLedger({
                         display: 'grid',
                         gridTemplateColumns: '320px 1fr',
                         gap: 40,
-                        background: 'rgba(17, 23, 21, 0.45)',
+                        background: SURFACE,
                         border: `1px solid ${BORDER}`,
                         borderRadius: 20,
                         padding: 32,
@@ -1263,7 +1276,7 @@ function BomLedger({
                                         cursor: 'pointer',
                                         textAlign: 'left',
                                         transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
-                                        color: isActive ? '#fff' : TEXT_DIM,
+                                        color: isActive ? HEADING : TEXT_DIM,
                                         outline: 'none',
                                         width: '100%',
                                     }}
@@ -1352,15 +1365,15 @@ function BomLedger({
                             >
                                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                                     <span>INSTALLATION</span>
-                                    <span style={{ color: '#fff' }}>TURNKEY COMPLETE</span>
+                                    <span style={{ color: HEADING }}>TURNKEY COMPLETE</span>
                                 </div>
                                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                                     <span>CERTIFICATION</span>
-                                    <span style={{ color: '#fff' }}>INDUSTRIAL GRADE</span>
+                                    <span style={{ color: HEADING }}>INDUSTRIAL GRADE</span>
                                 </div>
                                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                                     <span>WARRANTY</span>
-                                    <span style={{ color: '#fff' }}>5 YEAR INCLUDED</span>
+                                    <span style={{ color: HEADING }}>5 YEAR INCLUDED</span>
                                 </div>
                             </div>
                         </div>
@@ -1407,7 +1420,7 @@ function BomLedger({
                                         <div
                                             key={idx}
                                             style={{
-                                                background: 'rgba(255, 255, 255, 0.01)',
+                                                background: SURFACE,
                                                 border: `1px solid ${BORDER}`,
                                                 borderRadius: 8,
                                                 padding: '10px 14px',
@@ -1456,6 +1469,7 @@ function BomLedger({
 }
 
 function BomCard({ item, isMobile }: { item: BomItem; isMobile: boolean }) {
+    const { ACCENT, ACCENT_SOFT, BG, SURFACE, CARD, BORDER, BORDER_STRONG, TEXT, TEXT_DIM, HEADING, ACCENT_ON } = useTheme();
     const [isExpanded, setIsExpanded] = React.useState(false);
     const hasDetails = !!(item.details && item.details.length > 0);
 
@@ -1463,7 +1477,7 @@ function BomCard({ item, isMobile }: { item: BomItem; isMobile: boolean }) {
         <div
             onClick={() => hasDetails && setIsExpanded(!isExpanded)}
             style={{
-                background: 'rgba(255, 255, 255, 0.01)',
+                background: SURFACE,
                 border: `1px solid ${isExpanded ? 'rgba(0, 255, 136, 0.22)' : BORDER}`,
                 borderRadius: 12,
                 padding: isMobile ? 16 : 24,
@@ -1512,7 +1526,7 @@ function BomCard({ item, isMobile }: { item: BomItem; isMobile: boolean }) {
                         style={{
                             fontSize: isMobile ? '1rem' : '1.15rem',
                             fontWeight: 600,
-                            color: '#fff',
+                            color: HEADING,
                             margin: 0,
                             letterSpacing: '-0.01em',
                         }}
@@ -1586,7 +1600,7 @@ function BomCard({ item, isMobile }: { item: BomItem; isMobile: boolean }) {
                             style={{
                                 marginTop: 16,
                                 padding: 16,
-                                background: 'rgba(0, 0, 0, 0.2)',
+                                background: SURFACE,
                                 border: `1px solid rgba(0, 255, 136, 0.08)`,
                                 borderRadius: 8,
                             }}
@@ -1663,6 +1677,7 @@ function BomCard({ item, isMobile }: { item: BomItem; isMobile: boolean }) {
 }
 
 function SpecTag({ spec }: { spec: string }) {
+    const { ACCENT, ACCENT_SOFT, BG, SURFACE, CARD, BORDER, BORDER_STRONG, TEXT, TEXT_DIM, HEADING, ACCENT_ON } = useTheme();
     return (
         <span
             className="mono"
@@ -1689,6 +1704,7 @@ function SpecTag({ spec }: { spec: string }) {
 /* =================================================================== */
 
 function WhyIntegrated({ isMobile }: { isMobile: boolean }) {
+    const { ACCENT, ACCENT_SOFT, BG, SURFACE, CARD, BORDER, BORDER_STRONG, TEXT, TEXT_DIM, HEADING, ACCENT_ON } = useTheme();
     const pillars = [
         {
             big: 'Single point of accountability.',
@@ -1763,7 +1779,7 @@ function WhyIntegrated({ isMobile }: { isMobile: boolean }) {
                                 style={{
                                     fontSize: isMobile ? '1.5rem' : 'clamp(1.7rem, 3vw, 2.4rem)',
                                     fontWeight: 800,
-                                    color: '#fff',
+                                    color: HEADING,
                                     letterSpacing: '-0.035em',
                                     lineHeight: 1.05,
                                 }}
@@ -1802,6 +1818,7 @@ function Closing({
     onPrimaryCta?: () => void;
     onSecondaryCta?: () => void;
 }) {
+    const { ACCENT, ACCENT_SOFT, BG, SURFACE, CARD, BORDER, BORDER_STRONG, TEXT, TEXT_DIM, HEADING, ACCENT_ON } = useTheme();
     return (
         <motion.section
             initial={{ opacity: 0, y: 16 }}
@@ -1833,7 +1850,7 @@ function Closing({
                     style={{
                         fontSize: isMobile ? '1.6rem' : 'clamp(2.2rem, 4.2vw, 3.6rem)',
                         fontWeight: 800,
-                        color: '#fff',
+                        color: HEADING,
                         letterSpacing: '-0.04em',
                         lineHeight: 1.02,
                         margin: 0,
@@ -1879,6 +1896,7 @@ function Closing({
 /* =================================================================== */
 
 function SectionIndex({ n, label }: { n: string; label: string }) {
+    const { ACCENT, ACCENT_SOFT, BG, SURFACE, CARD, BORDER, BORDER_STRONG, TEXT, TEXT_DIM, HEADING, ACCENT_ON } = useTheme();
     return (
         <div
             className="mono"
