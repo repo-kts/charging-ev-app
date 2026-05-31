@@ -58,28 +58,22 @@ const ThemeCtx = createContext<{ theme: ThemeColors; toggle: () => void; setMode
 const STORAGE_KEY = 'trio-theme';
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-    const [mode, setMode] = useState<Mode>(() => {
-        if (typeof window === 'undefined') return 'dark';
-        try {
-            const saved = localStorage.getItem(STORAGE_KEY);
-            if (saved === 'light' || saved === 'dark') return saved;
-        } catch { /* ignore */ }
-        return 'dark';
-    });
+    // Theme is locked to dark — toggle UI removed and any stored 'light' preference is cleared.
+    const [mode] = useState<Mode>('dark');
 
     useEffect(() => {
-        try { localStorage.setItem(STORAGE_KEY, mode); } catch { /* ignore */ }
+        try { localStorage.removeItem(STORAGE_KEY); } catch { /* ignore */ }
         if (typeof document !== 'undefined') {
-            document.documentElement.dataset.theme = mode;
-            document.body.style.background = mode === 'light' ? LIGHT.BG : DARK.BG;
-            document.body.style.color = mode === 'light' ? LIGHT.TEXT : DARK.TEXT;
+            document.documentElement.dataset.theme = 'dark';
+            document.body.style.background = DARK.BG;
+            document.body.style.color = DARK.TEXT;
         }
-    }, [mode]);
+    }, []);
 
     const value = useMemo(() => ({
-        theme: mode === 'light' ? LIGHT : DARK,
-        toggle: () => setMode((m) => (m === 'dark' ? 'light' : 'dark')),
-        setMode,
+        theme: DARK,
+        toggle: () => { /* no-op — theme is locked to dark */ },
+        setMode: () => { /* no-op — theme is locked to dark */ },
     }), [mode]);
 
     return <ThemeCtx.Provider value={value}>{children}</ThemeCtx.Provider>;

@@ -47,7 +47,7 @@ export function EVInfraConsultancyPage({ isMobile, onPrimaryCta, onSecondaryCta 
                 color: TEXT,
                 fontFamily: "'Inter', sans-serif",
                 paddingTop: isMobile ? 80 : 100,
-                paddingBottom: isMobile ? 80 : 140,
+                paddingBottom: isMobile ? 24 : 32,
                 position: 'relative',
                 overflow: 'hidden',
             }}
@@ -71,8 +71,6 @@ export function EVInfraConsultancyPage({ isMobile, onPrimaryCta, onSecondaryCta 
                 <Sectors isMobile={isMobile} />
 
                 <WhyPartner isMobile={isMobile} />
-
-                <Closing isMobile={isMobile} onPrimaryCta={onPrimaryCta} onSecondaryCta={onSecondaryCta} />
             </div>
         </motion.div>
     );

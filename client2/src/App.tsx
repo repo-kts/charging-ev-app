@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo } from 'react'
+import { useState, useEffect, useRef, useMemo, type CSSProperties } from 'react'
 import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import logo from './assets/TM_Secondary_1_JPEG-removebg-preview.png'
@@ -99,72 +99,76 @@ const HUDCard = ({ icon, title, value, unit, delay = 0.5, lineCycle = 2.6 }: any
   const cardBg = t.mode === 'light' ? 'rgba(255,255,255,0.9)' : 'rgba(10, 14, 12, 0.55)';
   const cardBorder = t.mode === 'light' ? 'rgba(0,169,87,0.18)' : 'rgba(255,255,255,0.04)';
   return (
-  <motion.div
-    className="hero-hud-card"
-    initial={{ opacity: 0, y: 16 }}
-    animate={{
-      opacity: 1,
-      y: 0,
-      boxShadow: [
-        '0 0 0px 0 rgba(0, 255, 136, 0)',
-        '0 0 0px 0 rgba(0, 255, 136, 0)',
-        '0 0 30px 4px rgba(0, 255, 136, 0.55)',
-        '0 0 0px 0 rgba(0, 255, 136, 0)',
-      ],
-    }}
-    transition={{
-      default: { duration: 0.7, delay, ease: [0.22, 1, 0.36, 1] },
-      boxShadow: {
-        duration: lineCycle,
-        times: [0, 0.82, 0.95, 1],
-        repeat: Infinity,
-        ease: 'easeInOut',
-        delay: delay + 0.7,
-      },
-    }}
-    style={{
-      background: cardBg,
-      backdropFilter: 'blur(6px)',
-      border: `1px solid ${cardBorder}`,
-      padding: '10px 16px',
-      minWidth: '150px',
-      borderRadius: 12,
-      display: 'flex',
-      alignItems: 'center',
-      gap: 10,
-    }}
-  >
-    {icon && (
-      <div style={{
-        color: ACCENT,
+    <motion.div
+      className="hero-hud-card"
+      initial={{ opacity: 0, y: 16 }}
+      animate={{
+        opacity: 1,
+        y: 0,
+        boxShadow: [
+          '0 0 0px 0 rgba(0, 255, 136, 0)',      // 0%   — fully off, pulse just started
+          '0 0 0px 0 rgba(0, 255, 136, 0)',      // 60%  — still dark, pulse travelling
+          '0 0 6px 1px rgba(0, 255, 136, 0.15)', // 70%  — very faint glow begins
+          '0 0 18px 3px rgba(0, 255, 136, 0.5)', // 78%  — pulse arrives, glow builds
+          '0 0 22px 4px rgba(0, 255, 136, 0.65)',// 83%  — peak glow
+          '0 0 14px 2px rgba(0, 255, 136, 0.35)',// 90%  — slow fade starts
+          '0 0 6px 1px rgba(0, 255, 136, 0.12)', // 96%  — almost gone
+          '0 0 0px 0 rgba(0, 255, 136, 0)',      // 100% — fully off again
+        ],
+      }}
+      transition={{
+        default: { duration: 0.7, delay, ease: [0.22, 1, 0.36, 1] },
+        boxShadow: {
+          duration: lineCycle,
+          // dark 0→60%, slow rise 60→83%, slow fade 83→100%
+          times: [0, 0.60, 0.70, 0.78, 0.83, 0.90, 0.96, 1],
+          repeat: Infinity,
+          ease: 'linear',
+          delay: delay + 0.6,
+        },
+      }}
+      style={{
+        background: cardBg,
+        backdropFilter: 'blur(6px)',
+        border: `1px solid ${cardBorder}`,
+        padding: '10px 16px',
+        minWidth: '150px',
+        borderRadius: 12,
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'center',
-        flexShrink: 0,
-      }}>
-        {icon}
+        gap: 10,
+      }}
+    >
+      {icon && (
+        <div style={{
+          color: ACCENT,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          flexShrink: 0,
+        }}>
+          {icon}
+        </div>
+      )}
+      <div>
+        <div style={{ display: 'flex', alignItems: 'baseline', gap: 4 }}>
+          <span style={{ fontSize: '1.25rem', fontWeight: 700, color: TEXT, letterSpacing: -0.01 }}>{value}</span>
+          {unit && <span style={{ fontSize: '0.75rem', color: ACCENT, fontWeight: 600 }}>{unit}</span>}
+        </div>
+        <div style={{ fontSize: '0.68rem', color: TEXT_DIM, fontWeight: 500, marginTop: 2 }}>{title}</div>
       </div>
-    )}
-    <div>
-      <div style={{ display: 'flex', alignItems: 'baseline', gap: 4 }}>
-        <span style={{ fontSize: '1.25rem', fontWeight: 700, color: TEXT, letterSpacing: -0.01 }}>{value}</span>
-        {unit && <span style={{ fontSize: '0.75rem', color: ACCENT, fontWeight: 600 }}>{unit}</span>}
-      </div>
-      <div style={{ fontSize: '0.68rem', color: TEXT_DIM, fontWeight: 500, marginTop: 2 }}>{title}</div>
-    </div>
-  </motion.div>
+    </motion.div>
   );
 };
 
 // --- LIVE STAT (hero strip) ---
-const FlipStat = ({ label, value, trend }: any) => {
-  const { TEXT, TEXT_DIM, ACCENT_SOFT } = useTheme();
+const FlipStat = ({ label, value }: any) => {
+  const { TEXT, TEXT_DIM } = useTheme();
   return (
-  <div className="flip-stat" style={{ padding: '4px 0', paddingRight: 24 }}>
-    <div className="stat-label" style={{ fontSize: '0.74rem', color: TEXT_DIM, fontWeight: 500, marginBottom: 6 }}>{label}</div>
-    <div className="stat-val" style={{ fontSize: '1.6rem', fontWeight: 600, fontVariantNumeric: 'tabular-nums', letterSpacing: -0.02, color: TEXT }}>{value}</div>
-    <div className="stat-trend" style={{ fontSize: '0.7rem', color: ACCENT_SOFT, marginTop: 4, fontWeight: 500 }}>↗ {trend}</div>
-  </div>
+    <div className="flip-stat" style={{ padding: '4px 0', paddingRight: 24 }}>
+      <div className="stat-label" style={{ fontSize: '0.74rem', color: TEXT_DIM, fontWeight: 500, marginBottom: 6 }}>{label}</div>
+      <div className="stat-val" style={{ fontSize: '1.6rem', fontWeight: 600, fontVariantNumeric: 'tabular-nums', letterSpacing: -0.02, color: TEXT }}>{value}</div>
+    </div>
   );
 };
 
@@ -195,35 +199,35 @@ const ModuleCard = ({ idx, title, desc, status, statusColor, metrics, points, de
   const { ACCENT, TEXT, TEXT_DIM, BORDER } = useTheme();
   if (!statusColor) statusColor = ACCENT;
   return (
-  <motion.div
-    initial={{ opacity: 0, y: 20 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true, margin: '-50px' }}
-    transition={{ duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] }}
-    className="module-card"
-  >
-    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 18 }}>
-      <span style={{ fontSize: '0.7rem', fontWeight: 500, color: TEXT_DIM }}>0{idx} · Module</span>
-      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, fontSize: '0.7rem', fontWeight: 500, color: statusColor }}>
-        <span className="circle" style={{ width: 6, height: 6, background: statusColor }} />
-        {status.toLowerCase()}
-      </span>
-    </div>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-50px' }}
+      transition={{ duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] }}
+      className="module-card"
+    >
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 18 }}>
+        <span style={{ fontSize: '0.7rem', fontWeight: 500, color: TEXT_DIM }}>0{idx} · Module</span>
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, fontSize: '0.7rem', fontWeight: 500, color: statusColor }}>
+          <span className="circle" style={{ width: 6, height: 6, background: statusColor }} />
+          {status.toLowerCase()}
+        </span>
+      </div>
 
-    <h3 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: 8, letterSpacing: -0.02, color: TEXT }}>{title}</h3>
-    <p style={{ color: TEXT_DIM, fontSize: '0.88rem', lineHeight: 1.6, marginBottom: 22, fontWeight: 400 }}>{desc}</p>
+      <h3 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: 8, letterSpacing: -0.02, color: TEXT }}>{title}</h3>
+      <p style={{ color: TEXT_DIM, fontSize: '0.88rem', lineHeight: 1.6, marginBottom: 22, fontWeight: 400 }}>{desc}</p>
 
-    <Sparkline color={statusColor} points={points} />
+      <Sparkline color={statusColor} points={points} />
 
-    <div style={{ display: 'flex', gap: 24, marginTop: 18, paddingTop: 16, borderTop: `1px solid ${BORDER}` }}>
-      {metrics.map((m: any) => (
-        <div key={m.label} style={{ flex: 1 }}>
-          <div style={{ fontSize: '0.7rem', color: TEXT_DIM, fontWeight: 500, marginBottom: 4 }}>{m.label}</div>
-          <div style={{ fontSize: '1rem', fontWeight: 600, fontVariantNumeric: 'tabular-nums', color: TEXT, letterSpacing: -0.01 }}>{m.val}</div>
-        </div>
-      ))}
-    </div>
-  </motion.div>
+      <div style={{ display: 'flex', gap: 24, marginTop: 18, paddingTop: 16, borderTop: `1px solid ${BORDER}` }}>
+        {metrics.map((m: any) => (
+          <div key={m.label} style={{ flex: 1 }}>
+            <div style={{ fontSize: '0.7rem', color: TEXT_DIM, fontWeight: 500, marginBottom: 4 }}>{m.label}</div>
+            <div style={{ fontSize: '1rem', fontWeight: 600, fontVariantNumeric: 'tabular-nums', color: TEXT, letterSpacing: -0.01 }}>{m.val}</div>
+          </div>
+        ))}
+      </div>
+    </motion.div>
   );
 };
 
@@ -268,7 +272,7 @@ function pathToPage(path: string): Page {
 
 export default function App() {
   const { ACCENT, ACCENT_SOFT, BG, SURFACE, CARD, BORDER, BORDER_STRONG, TEXT, TEXT_DIM, HEADING, ACCENT_ON } = useTheme();
-  const { mode: themeMode, toggle: toggleTheme } = useThemeToggle();
+  const { mode: themeMode } = useThemeToggle();
   // Theme-aware big-display heading gradient
   const headingGradient = themeMode === 'light'
     ? 'linear-gradient(180deg, #0F1714 0%, #3F4A45 55%, #6B7570 100%)'
@@ -295,8 +299,8 @@ export default function App() {
   ]);
 
   const [clock, setClock] = useState('');
-  const [stationsOnline, setStationsOnline] = useState(2847);
-  const [kwhToday, setKwhToday] = useState(184206);
+  const [stationsOnline, setStationsOnline] = useState(10);
+  const [kwhToday, setKwhToday] = useState(4000);
   const [indiaGeo, setIndiaGeo] = useState<{ countryPath: string; states: { name: string; path: string }[]; project: (lon: number, lat: number) => [number, number] } | null>(null);
   const [tooltip, setTooltip] = useState<{ name: string; x: number; y: number } | null>(null);
   const stageRef = useRef<HTMLDivElement>(null);
@@ -696,17 +700,6 @@ export default function App() {
     return () => { cancelled = true; };
   }, []);
 
-  const tickerItems = [
-    'TR-01 / NYC_DOWNTOWN / CHARGING / 150kW',
-    'TR-04 / SF_BAY / READY / 0kW',
-    'TR-09 / LDN_CITY / CHARGING / 350kW',
-    'TR-12 / TYO_SHINJUKU / CHARGING / 320kW',
-    'TR-22 / BER_MITTE / READY / 0kW',
-    'TR-31 / SGP_MARINA / CHARGING / 280kW',
-    'TR-44 / DXB_MARINA / CHARGING / 300kW',
-    'TR-58 / SYD_HARBOUR / CHARGING / 220kW',
-  ];
-
   const modules = [
     {
       title: 'Load balancing', desc: 'Grid-aware orchestration redistributing kilowatts across stations in real time.',
@@ -825,9 +818,9 @@ export default function App() {
 
         /* Marquee ticker */
         @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-        .ticker { width: 100%; overflow: hidden; border-top: 1px solid ${BORDER}; border-bottom: 1px solid ${BORDER}; background: ${SURFACE}; padding: 14px 0; }
-        .ticker-track { display: flex; gap: 56px; white-space: nowrap; animation: marquee 90s linear infinite; will-change: transform; }
-        .ticker-item { font-family: 'JetBrains Mono', monospace; font-size: 0.74rem; letter-spacing: 0.04em; color: ${TEXT_DIM}; font-weight: 500; }
+        .ticker { width: 100%; overflow: hidden; border-top: 1px solid ${BORDER}; border-bottom: 1px solid ${BORDER}; background: ${SURFACE}; padding: 18px 0; }
+        .ticker-track { display: flex; gap: 72px; white-space: nowrap; animation: marquee 90s linear infinite; will-change: transform; }
+        .ticker-item { font-family: 'JetBrains Mono', monospace; font-size: 0.95rem; letter-spacing: 0.04em; color: ${TEXT_DIM}; font-weight: 500; }
         .ticker-item .acc { color: ${ACCENT_SOFT}; }
         .ticker-item .sep { color: rgba(245,247,246,0.12); margin: 0 10px; }
 
@@ -1025,8 +1018,8 @@ export default function App() {
           width: 100%;
           max-width: 440px;
           background: ${themeMode === 'light'
-            ? 'linear-gradient(180deg, #FFFFFF 0%, #F4F7F5 100%)'
-            : 'linear-gradient(180deg, #151B18 0%, #0F1412 100%)'};
+          ? 'linear-gradient(180deg, #FFFFFF 0%, #F4F7F5 100%)'
+          : 'linear-gradient(180deg, #151B18 0%, #0F1412 100%)'};
           border: 1px solid ${themeMode === 'light' ? 'rgba(15,30,25,0.10)' : 'rgba(255, 255, 255, 0.08)'};
           border-radius: 24px;
           padding: 8px 0px 8px 0px;
@@ -1217,10 +1210,10 @@ export default function App() {
             {desktopServicesOpen && (
               <div className="nav-services-menu" role="menu">
                 {[
-                  { label: 'Premium Charging Hub', target: 'premium-charging-hub' },
-                  { label: 'EV Infra Consultancy', target: 'ev-infra-consultancy' },
+                  { label: 'Charging Solutions', target: 'premium-charging-hub' },
+                  { label: 'CPM Application', target: 'cpms' },
+                  { label: 'Energy Management', target: 'ev-infra-consultancy' },
                   { label: 'Hardware Supply', target: 'charger-supply' },
-                  { label: 'Charge Point Management', target: 'cpms' },
                   { label: 'Maintenance & Support', target: 'om-services' },
                 ].map(s => (
                   <button
@@ -1245,30 +1238,7 @@ export default function App() {
         </div>
 
         <div style={{ marginLeft: 'auto', display: 'flex', gap: 12, alignItems: 'center' }}>
-          {!isMobile && (
-            <button
-              type="button"
-              onClick={toggleTheme}
-              aria-label={themeMode === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
-              title={themeMode === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
-              style={{
-                width: 40, height: 40, borderRadius: '50%',
-                background: 'transparent', border: `1px solid ${BORDER_STRONG}`,
-                color: TEXT, cursor: 'pointer',
-                display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-                transition: 'background-color 200ms, color 200ms, border-color 200ms',
-              }}
-              onMouseEnter={(e: any) => { e.currentTarget.style.color = ACCENT; e.currentTarget.style.borderColor = ACCENT; }}
-              onMouseLeave={(e: any) => { e.currentTarget.style.color = TEXT; e.currentTarget.style.borderColor = BORDER_STRONG; }}
-            >
-              {themeMode === 'dark' ? (
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path></svg>
-              ) : (
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-              )}
-            </button>
-          )}
-          {!isMobile && (
+          {!isMobile && !['premium-charging-hub', 'cpms', 'ev-infra-consultancy', 'charger-supply', 'om-services'].includes(page) && (
             <button
               className="btn-accent"
               onClick={() => setShowContactForm(true)}
@@ -1309,19 +1279,6 @@ export default function App() {
             <div className="mobile-card-menu">
               {/* List of Navigation Links */}
               <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
-                <button
-                  className="mobile-card-link"
-                  type="button"
-                  style={{ background: 'none', border: 'none', width: '100%', cursor: 'pointer', fontFamily: 'inherit', fontSize: '1.1rem', fontWeight: 600, borderBottom: `1px solid ${themeMode === 'light' ? 'rgba(15,30,25,0.08)' : 'rgba(255,255,255,0.06)'}` }}
-                  onClick={() => toggleTheme()}
-                >
-                  <span>{themeMode === 'dark' ? 'Light mode' : 'Dark mode'}</span>
-                  {themeMode === 'dark' ? (
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.7 }}><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path></svg>
-                  ) : (
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.7 }}><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-                  )}
-                </button>
                 {[
                   { label: 'Find stations', target: 'find-stations' },
                 ].map(l => (
@@ -1364,10 +1321,10 @@ export default function App() {
                       style={{ overflow: 'hidden', background: 'rgba(0,255,136,0.03)' }}
                     >
                       {[
-                        { label: 'Premium Charging Hub', target: 'premium-charging-hub' },
-                        { label: 'EV Infra Consultancy', target: 'ev-infra-consultancy' },
+                        { label: 'Charging Solutions', target: 'premium-charging-hub' },
+                        { label: 'CPM Application', target: 'cpms' },
+                        { label: 'Energy Management', target: 'ev-infra-consultancy' },
                         { label: 'Hardware Supply', target: 'charger-supply' },
-                        { label: 'Charge Point Management', target: 'cpms' },
                         { label: 'Maintenance & Support', target: 'om-services' },
                       ].map(s => (
                         <a
@@ -1581,6 +1538,42 @@ export default function App() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
           >
+            {/* Floating WhatsApp contact button */}
+            <a
+              href={`https://wa.me/916291842407?text=${encodeURIComponent('Hi, I want to inquire about charging')}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Chat on WhatsApp"
+              style={{
+                position: 'fixed',
+                bottom: isMobile ? 20 : 28,
+                right: isMobile ? 20 : 28,
+                width: isMobile ? 52 : 60,
+                height: isMobile ? 52 : 60,
+                borderRadius: '50%',
+                background: '#25D366',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 8px 24px rgba(37, 211, 102, 0.4), 0 4px 12px rgba(0, 0, 0, 0.3)',
+                zIndex: 9000,
+                textDecoration: 'none',
+                transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'scale(1.08)';
+                e.currentTarget.style.boxShadow = '0 10px 28px rgba(37, 211, 102, 0.55), 0 4px 12px rgba(0, 0, 0, 0.3)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'scale(1)';
+                e.currentTarget.style.boxShadow = '0 8px 24px rgba(37, 211, 102, 0.4), 0 4px 12px rgba(0, 0, 0, 0.3)';
+              }}
+            >
+              <svg width={isMobile ? 26 : 30} height={isMobile ? 26 : 30} viewBox="0 0 24 24" fill="#fff">
+                <path d={SOCIAL_ICONS.whatsapp} />
+              </svg>
+            </a>
+
             {/* HERO — refined, premium */}
             <HeroCarousel fallback={
               isMobile ? (
@@ -1618,7 +1611,7 @@ export default function App() {
                       transition={{ delay: 0.3, duration: 0.6 }}
                       style={{ color: TEXT_DIM, fontSize: '0.95rem', lineHeight: 1.6, marginBottom: 24, maxWidth: 340 }}
                     >
-                      The intelligence layer for industrial-scale charging — from grid to vehicle, in real time.
+                      The intelligence layer for industrial scale charging — from grid to vehicle, in real time.
                     </motion.p>
 
                     {/* Charger showcase */}
@@ -1693,20 +1686,20 @@ export default function App() {
                         />
                       </svg>
 
-                      {/* Charger image with float — wrapper handles centering via flexbox so framer-motion's y doesn't break it */}
-                      <motion.img
-                        src={charger3d}
+                      {/* Charger image + TRIO wordmark on the head — float wrapper for both */}
+                      <motion.div
                         animate={{ y: [0, -8, 0] }}
                         transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
                         style={{
                           width: '72%',
                           maxWidth: 240,
-                          height: 'auto',
                           filter: 'drop-shadow(0 18px 28px rgba(0,0,0,0.55))',
                           position: 'relative',
                           zIndex: 2,
                         }}
-                      />
+                      >
+                        <img src={charger3d} alt="Trio Charger" style={{ width: '100%', height: 'auto', display: 'block' }} />
+                      </motion.div>
 
                       {/* Charging status badge — top right */}
                       <motion.div
@@ -1728,24 +1721,26 @@ export default function App() {
                         }}
                         style={{
                           position: 'absolute',
-                          top: 18,
-                          right: 12,
-                          background: themeMode === 'light' ? 'rgba(255,255,255,0.85)' : 'rgba(11,15,13,0.85)',
-                          backdropFilter: 'blur(12px)',
-                          WebkitBackdropFilter: 'blur(12px)',
+                          top: 12,
+                          right: 8,
+                          background: themeMode === 'light' ? 'rgba(255,255,255,0.85)' : 'rgba(11,15,13,0.88)',
+                          backdropFilter: 'blur(10px)',
+                          WebkitBackdropFilter: 'blur(10px)',
                           border: `1px solid ${ACCENT}55`,
-                          borderRadius: 12,
-                          padding: '9px 13px',
+                          borderRadius: 10,
+                          padding: '6px 9px',
                           display: 'flex',
                           alignItems: 'center',
-                          gap: 10,
+                          gap: 7,
                           zIndex: 3,
                         }}
                       >
-                        <span className="pulse-dot" style={{ width: 8, height: 8, borderRadius: '50%', background: ACCENT, color: ACCENT, boxShadow: `0 0 8px ${ACCENT}` }} />
+                        <span style={{ width: 12, height: 12, color: ACCENT, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                        </span>
                         <div>
-                          <div style={{ fontSize: '0.56rem', color: TEXT_DIM, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase' }}>Charging</div>
-                          <div style={{ fontSize: '0.88rem', color: TEXT, fontWeight: 700, lineHeight: 1.1, marginTop: 2 }}>150 <span style={{ color: ACCENT, fontSize: '0.7rem' }}>kW</span></div>
+                          <div style={{ fontSize: '0.46rem', color: TEXT_DIM, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', lineHeight: 1 }}>Total Customers</div>
+                          <div style={{ fontSize: '0.72rem', color: TEXT, fontWeight: 700, lineHeight: 1.1, marginTop: 2 }}>1,000<span style={{ color: ACCENT, fontSize: '0.58rem' }}>+</span></div>
                         </div>
                       </motion.div>
 
@@ -1769,19 +1764,26 @@ export default function App() {
                         }}
                         style={{
                           position: 'absolute',
-                          bottom: 18,
-                          left: 12,
-                          background: themeMode === 'light' ? 'rgba(255,255,255,0.85)' : 'rgba(11,15,13,0.85)',
-                          backdropFilter: 'blur(12px)',
-                          WebkitBackdropFilter: 'blur(12px)',
+                          bottom: 12,
+                          left: 8,
+                          background: themeMode === 'light' ? 'rgba(255,255,255,0.85)' : 'rgba(11,15,13,0.88)',
+                          backdropFilter: 'blur(10px)',
+                          WebkitBackdropFilter: 'blur(10px)',
                           border: `1px solid ${BORDER_STRONG}`,
-                          borderRadius: 12,
-                          padding: '9px 13px',
+                          borderRadius: 10,
+                          padding: '6px 9px',
                           zIndex: 3,
                         }}
                       >
-                        <div style={{ fontSize: '0.56rem', color: TEXT_DIM, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase' }}>Connector</div>
-                        <div style={{ fontSize: '0.88rem', color: TEXT, fontWeight: 700, lineHeight: 1.1, marginTop: 2 }}>CCS2 <span style={{ color: TEXT_DIM, fontSize: '0.62rem', fontWeight: 500 }}>· DC Fast</span></div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
+                          <span style={{ width: 12, height: 12, color: ACCENT, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                          </span>
+                          <div>
+                            <div style={{ fontSize: '0.46rem', color: TEXT_DIM, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', lineHeight: 1 }}>Total Units Consumed</div>
+                            <div style={{ fontSize: '0.72rem', color: TEXT, fontWeight: 700, lineHeight: 1.1, marginTop: 2 }}>½ million<span style={{ color: ACCENT, fontSize: '0.58rem' }}>+</span></div>
+                          </div>
+                        </div>
                       </motion.div>
                     </motion.div>
 
@@ -1828,9 +1830,9 @@ export default function App() {
                       style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}
                     >
                       {[
-                        { label: 'Stations', val: stationsOnline.toLocaleString(), accent: true },
-                        { label: 'kWh today', val: (kwhToday / 1000).toFixed(1) + 'K' },
-                        { label: 'Avg session', val: '22:14' },
+                        { label: 'Stations', val: '10+', accent: true },
+                        { label: 'kWh today', val: '4.0K' },
+                        { label: 'Avg session', val: '35 min' },
                       ].map((s, i) => (
                         <div
                           key={i}
@@ -1878,7 +1880,7 @@ export default function App() {
                           initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }}
                           style={{ color: TEXT_DIM, fontSize: '1.1rem', lineHeight: 1.65, marginBottom: 40, maxWidth: '520px', fontWeight: 400 }}
                         >
-                          The intelligence layer for industrial-scale charging infrastructure — orchestrating every electron from grid to vehicle, in real time.
+                          The intelligence layer for industrial scale charging infrastructure orchestrating every electron from grid to vehicle, in real time.
                         </motion.p>
 
                         <motion.div
@@ -1900,9 +1902,9 @@ export default function App() {
                           initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.75 }}
                           style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', maxWidth: 640, gap: 0 }}
                         >
-                          <FlipStat label="Stations live" value={stationsOnline.toLocaleString()} trend="+12 / 24h" />
-                          <FlipStat label="kWh delivered today" value={kwhToday.toLocaleString()} trend="Live" />
-                          <FlipStat label="Avg session" value="22:14" trend="-1.4%" />
+                          <FlipStat label="Stations live" value="10+" />
+                          <FlipStat label="kWh delivered today" value="4,000" />
+                          <FlipStat label="Avg session" value="35 min" />
                         </motion.div>
                       </motion.div>
                     </div>
@@ -1912,9 +1914,8 @@ export default function App() {
                       {/* Soft floor gradient */}
                       <div style={{ position: 'absolute', bottom: '6%', left: '50%', transform: 'translateX(-50%)', width: '90%', height: '40%', background: `radial-gradient(ellipse at center, ${ACCENT_SOFT}1f, transparent 65%)`, pointerEvents: 'none' }} />
 
-                      {/* charger image — entrance then continuous float (matches mobile hero) */}
-                      <motion.img
-                        src={charger3d}
+                      {/* charger image + TRIO wordmark on the head — entrance then continuous float (matches mobile hero) */}
+                      <motion.div
                         initial={{ opacity: 0, scale: 0.96 }}
                         animate={{ opacity: 1, scale: 1, y: [0, -8, 0] }}
                         transition={{
@@ -1922,26 +1923,28 @@ export default function App() {
                           scale: { duration: 1.1, ease: [0.22, 1, 0.36, 1] },
                           y: { duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 1.1 },
                         }}
-                        style={{ width: '100%', maxWidth: '680px', position: 'relative', zIndex: 5 }}
-                      />
+                        style={{ position: 'relative', width: '100%', maxWidth: '680px', zIndex: 5 }}
+                      >
+                        <img src={charger3d} alt="Trio Charger" style={{ width: '100%', display: 'block' }} />
+                      </motion.div>
 
                       {/* HUD cards & Charging Lines */}
                       <div className="hero-hud-left" style={{ position: 'absolute', top: '22%', left: '-15%', zIndex: 20 }}>
                         <HUDCard
                           icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>}
                           title="Total Customers"
-                          value="56,894"
+                          value="1,000+"
                           delay={0.8}
-                          lineCycle={2.6}
+                          lineCycle={9}
                         />
                       </div>
                       <div className="hero-hud-right" style={{ position: 'absolute', bottom: '28%', right: '-15%', zIndex: 20 }}>
                         <HUDCard
                           icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>}
-                          title="Total Bookings"
-                          value="38,465"
+                          title="Total units consumed"
+                          value="½ million+"
                           delay={1.0}
-                          lineCycle={2.2}
+                          lineCycle={8}
                         />
                       </div>
 
@@ -1963,7 +1966,7 @@ export default function App() {
                           opacity={0.75}
                           vectorEffect="non-scaling-stroke"
                           animate={{ strokeDashoffset: [0, 24] }}
-                          transition={{ duration: 1.4, repeat: Infinity, ease: 'linear' }}
+                          transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
                         />
                         {/* Bright pulse traveling from charger → card (left) */}
                         <motion.path
@@ -1976,10 +1979,10 @@ export default function App() {
                           vectorEffect="non-scaling-stroke"
                           style={{ filter: `drop-shadow(0 0 6px ${ACCENT})` }}
                           animate={{ strokeDashoffset: [-650, 0] }}
-                          transition={{ duration: 2.6, repeat: Infinity, ease: 'linear' }}
+                          transition={{ duration: 9, repeat: Infinity, ease: 'linear' }}
                         />
 
-                        {/* Right Connection (Total Bookings): flowing dashes toward card. Path is charger→card so negative offset moves dashes toward card */}
+                        {/* Right Connection (Total units consumed): flowing dashes toward card. Path is charger→card so negative offset moves dashes toward card */}
                         <motion.path
                           d="M 760 320 L 1025 320 L 1025 380"
                           fill="none"
@@ -1990,7 +1993,7 @@ export default function App() {
                           opacity={0.75}
                           vectorEffect="non-scaling-stroke"
                           animate={{ strokeDashoffset: [0, -24] }}
-                          transition={{ duration: 1.4, repeat: Infinity, ease: 'linear' }}
+                          transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
                         />
                         {/* Bright pulse traveling from charger → card (right) */}
                         <motion.path
@@ -2003,28 +2006,43 @@ export default function App() {
                           vectorEffect="non-scaling-stroke"
                           style={{ filter: `drop-shadow(0 0 6px ${ACCENT})` }}
                           animate={{ strokeDashoffset: [400, 0] }}
-                          transition={{ duration: 2.2, repeat: Infinity, ease: 'linear' }}
+                          transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
                         />
                       </svg>
                     </div>
                   </div>
 
-                  {/* Bottom ticker — calm */}
+                  {/* Bottom ticker — Siemens Energy partnership */}
                   <div className="ticker" style={{ position: 'relative', marginTop: 64 }}>
                     <div className="ticker-track">
-                      {[...tickerItems, ...tickerItems].map((it, i) => {
-                        const parts = it.split(' / ');
-                        const isCharging = parts[2] === 'CHARGING';
-                        return (
-                          <span key={i} className="ticker-item">
-                            <span style={{ color: isCharging ? ACCENT_SOFT : TEXT_DIM }}>●</span>{' '}
-                            <span style={{ color: TEXT, fontWeight: 600 }}>{parts[0]}</span>
-                            <span className="sep">·</span>{parts[1]}
-                            <span className="sep">·</span><span style={{ color: isCharging ? ACCENT_SOFT : TEXT_DIM }}>{parts[2].toLowerCase()}</span>
-                            <span className="sep">·</span>{parts[3]}
+                      {Array.from({ length: 12 }).map((_, i) => (
+                        <span
+                          key={i}
+                          className="ticker-item"
+                          style={{ display: 'inline-flex', alignItems: 'center', gap: 14 }}
+                        >
+                          <span style={{ color: ACCENT_SOFT }}>●</span>
+                          <span style={{ color: TEXT, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+                            Eastern India's only e-mobility partner of
                           </span>
-                        );
-                      })}
+                          <span style={{ display: 'inline-flex', alignItems: 'baseline', gap: 6 }}>
+                            <span
+                              style={{
+                                fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif',
+                                fontSize: '1.35rem',
+                                fontWeight: 700,
+                                letterSpacing: '0.02em',
+                                color: '#009999',
+                              }}
+                            >
+                              SIEMENS
+                            </span>
+                            <span style={{ color: TEXT, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                              energy
+                            </span>
+                          </span>
+                        </span>
+                      ))}
                     </div>
                   </div>
                 </section>
@@ -2045,8 +2063,8 @@ export default function App() {
                     icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" /></svg>,
                   },
                   {
-                    short: 'Convenience',
-                    title: 'User Convenience',
+                    short: 'CPMS',
+                    title: 'Charging Point Management Application',
                     desc: 'Locate stations, start sessions, and pay seamlessly through the Trio app. Real-time availability with smart routing built in.',
                     features: ['Live station availability', 'In-app payments', 'Smart route planning'],
                     tag: 'One-tap',
@@ -2340,7 +2358,7 @@ export default function App() {
                       {(() => {
                         const SERVICES = [
                           { title: 'CHARGING SOLUTIONS', desc: 'Premium DC fast charging hubs with dedicated 60kW bays, structural canopies, and a hospitality lounge for drivers.' },
-                          { title: 'USER CONVENIENCE', desc: 'Cloud CPMS — live station discovery, in-app sessions, dynamic tariffs, multi-payment, and white-label driver experience.' },
+                          { title: 'CHARGING POINT MANAGEMENT APPLICATION', desc: 'Cloud CPMS — live station discovery, in-app sessions, dynamic tariffs, multi-payment, and white-label driver experience.' },
                           { title: 'ENERGY MANAGEMENT', desc: 'End-to-end infrastructure consultancy — site feasibility, load planning, solar + BESS integration, and grid interconnection.' },
                           { title: 'HARDWARE SUPPLY', desc: 'Turnkey supply and installation — 60kW chargers, ACDB panels, industrial cabling, chemical earthing, and custom canopies.' },
                           { title: 'MAINTENANCE & SUPPORT', desc: '24/7 O&M with tiered support, ≥97% uptime SLAs, certified field engineers, and audit-ready compliance reporting.' }
@@ -2372,7 +2390,7 @@ export default function App() {
                     <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: 460 }}>
                       {[
                         { title: 'CHARGING SOLUTIONS', target: 'premium-charging-hub' },
-                        { title: 'USER CONVENIENCE', target: 'cpms' },
+                        { title: 'CHARGING POINT MANAGEMENT APPLICATION', target: 'cpms' },
                         { title: 'ENERGY MANAGEMENT', target: 'ev-infra-consultancy' },
                         { title: 'HARDWARE SUPPLY', target: 'charger-supply' },
                         { title: 'MAINTENANCE & SUPPORT', target: 'om-services' }
@@ -2946,7 +2964,7 @@ export default function App() {
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 1, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                        style={{ position: 'relative', display: 'inline-block' }}
+                        style={{ position: 'relative', display: 'inline-block', marginRight: '60px' }}
                       >
                         {/* Image Container with Gradient Background */}
                         <div className="prof-img-container" style={{
@@ -3533,10 +3551,11 @@ export default function App() {
               <iframe
                 ref={findStationsIframeRef}
                 className="find-stations-iframe"
-                src={`/find-stations.html?apiUrl=${iframeApiBase}`}
+                src={`/find-stations.html?apiUrl=${iframeApiBase}&v=dir5`}
+                scrolling="yes"
                 style={{
                   width: '100%',
-                  height: '1100px',
+                  height: '760px',
                   border: 'none',
                   filter: themeMode === 'light' ? 'invert(0.92) hue-rotate(180deg)' : undefined,
                 }}
@@ -3634,345 +3653,339 @@ export default function App() {
           </motion.div>
         )}
 
-        {page === 'about-us' && (
-          <motion.div
-            key="about"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            <section style={{ background: BG, color: TEXT, paddingTop: isMobile ? '92px' : '100px', paddingBottom: isMobile ? '64px' : '120px' }}>
-              {isMobile ? (
-                <div style={{ padding: '0 20px', position: 'relative', zIndex: 1 }}>
-                  {/* Ambient backdrop */}
-                  <div style={{ position: 'absolute', top: '5%', right: '-30%', width: 360, height: 360, background: `radial-gradient(circle, ${ACCENT_SOFT}20, transparent 65%)`, borderRadius: '50%', pointerEvents: 'none', zIndex: -1 }} />
+        {page === 'about-us' && (() => {
+          const chapterTitleStyle: CSSProperties = {
+            fontFamily: "'Cormorant Garamond', serif",
+            fontSize: isMobile ? '1.35rem' : 'clamp(1.5rem, 2.4vw, 2rem)',
+            fontWeight: 700,
+            color: HEADING,
+            lineHeight: 1.18,
+            letterSpacing: '-0.02em',
+            marginBottom: 18,
+          };
+          const bodyStyle: CSSProperties = {
+            fontFamily: "'Outfit', sans-serif",
+            color: TEXT_DIM,
+            fontSize: isMobile ? '0.88rem' : '0.96rem',
+            lineHeight: 1.75,
+            fontWeight: 300,
+            marginBottom: 18,
+          };
+          const strongStyle: CSSProperties = { color: HEADING, fontWeight: 600 };
+          const accentStrongStyle: CSSProperties = { color: ACCENT, fontWeight: 600 };
+          const emStyle: CSSProperties = { color: ACCENT, fontStyle: 'italic' };
+          const pullQuoteStyle: CSSProperties = {
+            margin: isMobile ? '24px 0' : '32px 0',
+            padding: isMobile ? '16px 18px 16px 20px' : '20px 24px 20px 28px',
+            background: 'rgba(0,255,136,0.04)',
+            borderLeft: `3px solid ${ACCENT}`,
+            borderRadius: '4px',
+            fontFamily: "'Cormorant Garamond', serif",
+            fontSize: isMobile ? '0.95rem' : '1.05rem',
+            fontStyle: 'italic',
+            lineHeight: 1.55,
+            color: HEADING,
+            fontWeight: 500,
+          };
+          const ChapterTag = ({ num }: { num: string }) => (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 24 }}>
+              <span className="mono" style={{ fontSize: '0.62rem', fontWeight: 700, color: ACCENT, letterSpacing: '0.22em' }}>CHAPTER {num}</span>
+              <div style={{ flex: 1, height: 1, background: BORDER_STRONG }} />
+            </div>
+          );
+
+          return (
+            <motion.div
+              key="about"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <section style={{ background: BG, color: TEXT, paddingTop: isMobile ? '92px' : '110px', paddingBottom: isMobile ? '56px' : '80px', position: 'relative', overflow: 'hidden' }}>
+                {/* Ambient backdrops */}
+                <div style={{ position: 'absolute', top: '0%', right: '-25%', width: isMobile ? 420 : 720, height: isMobile ? 420 : 720, background: `radial-gradient(circle, ${ACCENT_SOFT}1a, transparent 65%)`, borderRadius: '50%', pointerEvents: 'none', zIndex: 0 }} />
+                <div style={{ position: 'absolute', bottom: '10%', left: '-20%', width: isMobile ? 360 : 600, height: isMobile ? 360 : 600, background: `radial-gradient(circle, ${ACCENT_SOFT}14, transparent 70%)`, borderRadius: '50%', pointerEvents: 'none', zIndex: 0 }} />
+
+                <div style={{ maxWidth: 920, margin: '0 auto', padding: isMobile ? '0 20px' : '0 var(--side-padding, 88px)', position: 'relative', zIndex: 1 }}>
 
                   {/* HERO */}
-                  <motion.div initial={{ opacity: 0, y: -8 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }} style={{ marginBottom: 40 }}>
-                    <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 12px', background: 'rgba(0,255,136,0.08)', border: `1px solid ${BORDER_STRONG}`, borderRadius: 99, marginBottom: 16 }}>
+                  <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} style={{ marginBottom: isMobile ? 56 : 110, textAlign: 'center' }}>
+                    <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 14px', background: 'rgba(0,255,136,0.08)', border: `1px solid ${BORDER_STRONG}`, borderRadius: 99, marginBottom: 22 }}>
                       <span className="circle pulse-dot" style={{ width: 6, height: 6, background: ACCENT, color: ACCENT }} />
-                      <span className="mono" style={{ fontSize: '0.6rem', fontWeight: 700, color: ACCENT, letterSpacing: '0.18em' }}>WHO WE ARE</span>
+                      <span className="mono" style={{ fontSize: '0.62rem', fontWeight: 700, color: ACCENT, letterSpacing: '0.2em' }}>THE FOUNDERS' STORY</span>
                     </div>
-                    <h1 style={{ fontFamily: "'Syne', sans-serif", fontSize: '2.4rem', fontWeight: 800, color: HEADING, marginBottom: 14, letterSpacing: '-0.035em', lineHeight: 1.05 }}>
-                      Our story <br /><span style={{ color: ACCENT }}>starts here.</span>
+                    <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: isMobile ? '1.75rem' : 'clamp(2rem, 3.6vw, 2.8rem)', fontWeight: 700, color: HEADING, lineHeight: 1.12, letterSpacing: '-0.025em', marginBottom: 18 }}>
+                      From a village with <span style={emStyle}>nothing</span> to Kolkata's EV Revolution.
                     </h1>
-                    <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: '0.95rem', color: TEXT_DIM, lineHeight: 1.6 }}>
-                      Empowering communities through clean technology and sustainable mobility — built in India, designed for the world.
+                    <p style={{ fontFamily: "'Outfit', sans-serif", color: TEXT_DIM, fontSize: isMobile ? '0.92rem' : '1rem', lineHeight: 1.7, maxWidth: 580, margin: '0 auto' }}>
+                      Two men. No money. No cars. No plan. Just a belief so stubborn it outlasted 200 rejections, three crashes to zero, and a ₹100 Crore offer they walked away from.
+                    </p>
+                    <div style={{ width: 64, height: 2, background: ACCENT, margin: '32px auto 0', opacity: 0.7 }} />
+                  </motion.div>
+
+                  {/* OPENER — drop cap */}
+                  <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} style={{ marginBottom: isMobile ? 64 : 100 }}>
+                    <div style={{ overflow: 'hidden' }}>
+                      <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: isMobile ? '3.2rem' : '5rem', fontWeight: 800, color: ACCENT, opacity: 0.22, float: 'left', lineHeight: 0.85, marginRight: 14, marginTop: 4 }}>T</span>
+                      <p style={{ ...bodyStyle, color: TEXT, marginBottom: 22 }}>
+                        here is a kind of hunger that doesn't come from ambition — it comes from necessity. From growing up in a village in Bihar where money was a stranger, where the school bus was a luxury you couldn't afford, where the question wasn't <em>which career to choose</em> — it was <strong style={strongStyle}>how to survive long enough to have one.</strong>
+                      </p>
+                    </div>
+                    <p style={bodyStyle}>
+                      This is the story of <strong style={strongStyle}>Subhash Kumar</strong> and <strong style={strongStyle}>Somnath Das</strong> — two men who came from nothing, failed spectacularly, hit zero more than once, and still built something Kolkata had never seen before.
+                    </p>
+                    <p style={{ ...bodyStyle, marginBottom: 0 }}>
+                      It's not a story about talent. It's a story about what happens when <strong style={strongStyle}>a person with nothing to lose refuses to stop.</strong>
                     </p>
                   </motion.div>
 
-                  {/* VISION */}
-                  <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} style={{ marginBottom: 32, background: `linear-gradient(180deg, ${SURFACE}, ${BG})`, border: `1px solid ${BORDER_STRONG}`, borderRadius: 20, overflow: 'hidden' }}>
-                    <div style={{ height: 180, background: SURFACE, position: 'relative', overflow: 'hidden', borderBottom: `1px solid ${BORDER}` }}>
-                      <img src="/sustainability.png" alt="Sustainability" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                      <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(180deg, transparent 40%, ${BG} 100%)` }} />
+                  {/* CHAPTER 01 */}
+                  <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.55 }} style={{ marginBottom: isMobile ? 64 : 96 }}>
+                    <ChapterTag num="01" />
+                    <h2 style={chapterTitleStyle}>A village boy who had no business <em style={emStyle}>starting a business.</em></h2>
+                    <p style={bodyStyle}>
+                      Subhash Kumar was born in a small village in the interior belt of Madhubani district, Bihar. His family farmed the land. Money was not a concept that lived in their house — it was always just outside the door.
+                    </p>
+                    <p style={bodyStyle}>
+                      He moved through schools one small step at a time — a government school, then a boarding school in a tier-three city, then, when his father's work brought the family to Kolkata, everything changed. <strong style={strongStyle}>He was in class six. He had never seen a city like this.</strong> Most kids from small towns feel lost in a metropolis. Subhash felt the opposite. He felt possibility — raw, overflowing, everywhere he looked.
+                    </p>
+                    <blockquote style={pullQuoteStyle}>
+                      "Coming here, I started seeing that there is a huge scope and so much can be done. I had a great curiosity to see things. From class six, I used to go wandering around the city."
+                    </blockquote>
+                    <p style={{ ...bodyStyle, marginBottom: 0 }}>
+                      While his wealthy classmates took the air-conditioned school bus, <strong style={strongStyle}>Subhash saved his daily bus fare and rode public transport</strong> — quietly calculating, quietly watching, quietly planning. By class eight, he had a word in his head that wouldn't leave: <strong style={accentStrongStyle}>business.</strong>
+                    </p>
+                  </motion.div>
+
+                  {/* CHAPTER 02 */}
+                  <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.55 }} style={{ marginBottom: isMobile ? 64 : 96 }}>
+                    <ChapterTag num="02" />
+                    <h2 style={chapterTitleStyle}>He started with ₹1,000 and a <em style={emStyle}>school bag.</em></h2>
+                    <p style={bodyStyle}>
+                      It was 2011. He was 13 years old, in class eight. Chinese MP3 players — clones of Sony and Apple originals — were flooding Chandni market. Rich classmates wanted them. No one was selling them inside school.
+                    </p>
+                    <p style={{ ...bodyStyle, marginBottom: 28 }}>
+                      Subhash saved every rupee of his daily bus allowance. With ₹1,000 he went to Chandni market, bought players at ₹100 each, carried them back in his bag, and sold them in school for ₹600 to ₹700 — complete with a handwritten bill and a self-issued 6-month warranty.
+                    </p>
+                    <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)', gap: 1, background: BORDER_STRONG, border: `1px solid ${BORDER_STRONG}`, borderRadius: 12, overflow: 'hidden', margin: '8px 0 32px' }}>
+                      {[
+                        { num: '₹1K', lbl: 'Starting capital, age 13' },
+                        { num: '₹500', lbl: 'Profit per sale' },
+                        { num: '₹25K', lbl: 'Saved by class 10' },
+                      ].map((s, i) => (
+                        <div key={i} style={{ background: SURFACE, padding: '20px 14px', textAlign: 'center' }}>
+                          <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: isMobile ? '1.6rem' : '1.85rem', fontWeight: 800, color: ACCENT, lineHeight: 1, marginBottom: 6, letterSpacing: '-0.02em' }}>{s.num}</div>
+                          <div className="mono" style={{ fontSize: '0.58rem', color: TEXT_DIM, letterSpacing: '0.14em', textTransform: 'uppercase' }}>{s.lbl}</div>
+                        </div>
+                      ))}
                     </div>
-                    <div style={{ padding: '18px 18px 20px' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
-                        <div style={{ width: 28, height: 2, background: ACCENT }} />
-                        <span style={{ color: ACCENT, fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase' }}>Our Vision</span>
+                    <p style={bodyStyle}>
+                      When CBSE introduced PSA books unavailable in stores, he walked to College Street, bought in bulk at 25% off, and sold to classmates at full price plus a "sourcing fee." He started downloading class 10 sample papers all night, printing them at home with refilled cartridges, and selling them every morning.
+                    </p>
+                    <p style={{ ...bodyStyle, color: TEXT, fontWeight: 400, marginBottom: 0 }}>
+                      <strong style={strongStyle}>He wasn't just selling things. He was learning the grammar of business —</strong> finding the gap, moving faster than anyone else, and making something from nothing.
+                    </p>
+                  </motion.div>
+
+                  {/* CHAPTER 03 */}
+                  <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.55 }} style={{ marginBottom: isMobile ? 64 : 96 }}>
+                    <ChapterTag num="03" />
+                    <h2 style={chapterTitleStyle}>IIM Bangalore at 20. No degree. No money. <em style={emStyle}>Just an idea.</em></h2>
+                    <p style={bodyStyle}>
+                      Subhash earned a Computer Science seat at SRM University, Chennai. Within a year, the entrepreneur in him couldn't sit still. He noticed students from villages and small towns across India were being told they had two choices — engineering or medicine. Every other path was invisible to them. He had lived that confusion himself. <strong style={strongStyle}>So he decided to solve it.</strong>
+                    </p>
+                    <p style={bodyStyle}>
+                      He co-founded <strong style={strongStyle}>Updeshak.com</strong> — a career counseling platform for first-generation students. Four young men. One domain. One dream. No funding. They submitted to NSRCEL, IIM Bangalore's incubation cell. 500 ideas entered. Updeshak made the <strong style={accentStrongStyle}>top 25.</strong>
+                    </p>
+                    <blockquote style={pullQuoteStyle}>
+                      "He cut the time of two other ideas and gave us 45 minutes instead of 15. He said the idea was too good — but he warned us: people don't want their kids to know about too many career options."
+                    </blockquote>
+                    <p style={{ ...bodyStyle, marginBottom: 0 }}>
+                      They deployed across Tamil Nadu. They got subscription contracts. They were building something real. Then, by final year, his co-founders caved to family pressure and sat for placements. Subhash was the last one standing — and eventually, he fell too.
+                    </p>
+                  </motion.div>
+
+                  {/* CHAPTER 04 */}
+                  <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.55 }} style={{ marginBottom: isMobile ? 64 : 96 }}>
+                    <ChapterTag num="04" />
+                    <h2 style={chapterTitleStyle}>Two hundred companies <em style={emStyle}>said no.</em> Then two said yes.</h2>
+                    <p style={{ ...bodyStyle, marginBottom: 28 }}>
+                      He sat for interviews knowing he didn't want a job. His heart wasn't in it. Company after company — <strong style={strongStyle}>two hundred of them</strong> — looked at him and passed.
+                    </p>
+                    <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', alignItems: 'stretch', gap: 0, background: 'rgba(255,176,32,0.06)', border: `1px solid rgba(255,176,32,0.25)`, borderRadius: 14, overflow: 'hidden', margin: '8px 0 32px' }}>
+                      <div style={{ background: 'rgba(255,176,32,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: isMobile ? '18px 20px' : '20px 28px', minWidth: isMobile ? 'auto' : 120 }}>
+                        <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: isMobile ? '2.2rem' : '2.6rem', fontWeight: 800, color: '#FFB020', lineHeight: 1, letterSpacing: '-0.02em' }}>200</div>
                       </div>
-                      <h2 style={{ fontFamily: "'Syne', sans-serif", fontSize: '1.45rem', fontWeight: 800, color: HEADING, marginBottom: 12, letterSpacing: '-0.02em', lineHeight: 1.2 }}>
-                        A planet where progress moves with nature.
+                      <div style={{ flex: 1, padding: isMobile ? '16px 18px' : '18px 22px' }}>
+                        <div className="mono" style={{ fontSize: '0.58rem', color: '#FFB020', fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', marginBottom: 6 }}>Rejections</div>
+                        <p style={{ fontFamily: "'Outfit', sans-serif", color: TEXT, fontSize: isMobile ? '0.82rem' : '0.88rem', lineHeight: 1.6, margin: 0, fontWeight: 400 }}>
+                          He sat for campus and off-campus interviews not truly wanting a job. 200 companies said no. Then, through an off-campus exam, Atos Syntel said yes — ₹4.25L package. The same week, Vodafone's campus offer came through. He accepted both simultaneously.
+                        </p>
+                      </div>
+                    </div>
+                    <p style={bodyStyle}>
+                      He joined Vodafone. Rose from Graduate Engineer Trainee to Senior Executive. Learned how corporate India operates. But under it all — always — <strong style={strongStyle}>the fire to build something of his own.</strong>
+                    </p>
+                    <p style={{ ...bodyStyle, marginBottom: 0 }}>
+                      Three years of parallel network marketing followed — not by choice, but by circumstance. A relative had invested ₹1 lakh on his behalf without telling him what it was. The money couldn't be refunded. So he leaned in: built a team of 20, made ₹4–5 lakh monthly in sales, learned to sell products worth lakhs to strangers in 5-star hotel lobbies. And in that circle, he met the man who would change everything.
+                    </p>
+                  </motion.div>
+
+                  {/* CHAPTER 05 */}
+                  <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.55 }} style={{ marginBottom: isMobile ? 64 : 96 }}>
+                    <ChapterTag num="05" />
+                    <h2 style={chapterTitleStyle}>The second man. The one who would <em style={emStyle}>drive the first cab.</em></h2>
+                    <p style={bodyStyle}>
+                      Somnath Das came from a different world of struggle. He had lost his father. He was supporting his ageing mother. He had left a steady job to chase something more — and had wound up, like Subhash, deep in network marketing, wondering what was next.
+                    </p>
+                    <p style={bodyStyle}>
+                      The two men found each other in 2022. They worked side by side. They argued, planned, built a team together. And when they both grew disillusioned with referral business, <strong style={strongStyle}>they made a quiet decision: leave everything and build something real.</strong>
+                    </p>
+                    <blockquote style={pullQuoteStyle}>
+                      "His grandfather had once told him — do something in transport, and you will do well. We were crossing a 5-kilometre flyover. We had no money. We had no plan. We looked at each other and decided."
+                    </blockquote>
+                    <p style={{ ...bodyStyle, marginBottom: 0 }}>
+                      A week later, Subhash landed in Pune for work, hailed an Uber, and learned about Everest Fleet — a company that leases cabs for a ₹10,000 deposit. He called Somnath that night. They said two words: <strong style={accentStrongStyle}>let's go.</strong> Somnath drove the cab himself. Not because they couldn't afford a driver — but because they needed to understand every single centimetre of the business before they built it.
+                    </p>
+                  </motion.div>
+
+                  {/* CHAPTER 06 — TIMELINE */}
+                  <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.55 }} style={{ marginBottom: isMobile ? 64 : 96 }}>
+                    <ChapterTag num="06" />
+                    <h2 style={chapterTitleStyle}>They hit zero. And zero again. <em style={emStyle}>And zero again.</em></h2>
+                    <p style={{ ...bodyStyle, marginBottom: 28 }}>
+                      They came back to Kolkata on 2nd October 2023 — Gandhi Jayanti — and started Try Evolution India Private Limited. What followed were lessons no one teaches in business school — because the only classroom is failure itself.
+                    </p>
+                    <div style={{ margin: '12px 0 32px' }}>
+                      {[
+                        { yr: "Oct '23", title: 'CNG fleet — launched with 5 leased cabs', body: 'Initial loss of ₹1.5 lakh absorbed. Reached profitability. Then CNG queues of 8–9 hours destroyed the model entirely. Back to zero.' },
+                        { yr: "Early '24", title: 'Global Fleet EV deal — ₹5 lakh committed', body: "Partnership collapsed when drivers couldn't be found in the 2-week deadline. Money lost. Yash, the third co-founder, pulled out. Back to zero." },
+                        { yr: "Mid '24", title: '₹100 Crore investor offer — walked away', body: 'Full funding offered. The terms: 5% equity each, no directorship, ₹1L salary. They rejected it without hesitation. They had not come this far to become employees of their own company.' },
+                        { yr: "Dec '24", title: 'Subhash quit Vodafone — on a promise never kept', body: 'A second investor gave verbal commitment. Subhash resigned. Four months passed with no money, no cars, no progress. He walked away from Patna in February 2025 and came home to Kolkata.' },
+                      ].map((it, i) => (
+                        <div key={i} style={{ display: 'grid', gridTemplateColumns: isMobile ? '64px 1fr' : '90px 1fr', gap: isMobile ? '0 12px' : '0 18px' }}>
+                          <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: isMobile ? '0.78rem' : '0.88rem', fontWeight: 700, color: ACCENT, textAlign: 'right', paddingTop: 3 }}>{it.yr}</div>
+                          <div style={{ borderLeft: `1px solid ${BORDER_STRONG}`, paddingLeft: isMobile ? 16 : 20, paddingBottom: 22, position: 'relative' }}>
+                            <div style={{ position: 'absolute', left: -4, top: 6, width: 8, height: 8, borderRadius: '50%', background: ACCENT, boxShadow: `0 0 8px ${ACCENT}` }} />
+                            <h4 style={{ fontFamily: "'Outfit', sans-serif", fontSize: isMobile ? '0.85rem' : '0.92rem', fontWeight: 600, color: HEADING, marginBottom: 4 }}>{it.title}</h4>
+                            <p style={{ fontFamily: "'Outfit', sans-serif", color: TEXT_DIM, fontSize: isMobile ? '0.76rem' : '0.82rem', lineHeight: 1.6, fontWeight: 300, margin: 0 }}>{it.body}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    <blockquote style={pullQuoteStyle}>
+                      "In March 2025, we were negative ₹15 lakhs. We had no cars, no drivers, no business — just a registered company and the stubbornness to keep going. We started anyway."
+                    </blockquote>
+                    <p style={{ ...bodyStyle, marginBottom: 0 }}>
+                      <strong style={strongStyle}>This is where most stories end.</strong> They are not reasonable people. They are the kind of people who were born with nothing and have spent their entire lives proving that nothing is just a starting point.
+                    </p>
+                  </motion.div>
+
+                  {/* CHAPTER 07 */}
+                  <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.55 }} style={{ marginBottom: isMobile ? 64 : 96 }}>
+                    <ChapterTag num="07" />
+                    <h2 style={chapterTitleStyle}>They borrowed. They built. <em style={emStyle}>They became the first.</em></h2>
+                    <p style={bodyStyle}>
+                      In April 2025, Subhash took a ₹6 lakh personal loan. They leased 20–25 EVs. Operations finally began — for real, this time. No partner backing out. No investor disappearing. Just two men and a fleet.
+                    </p>
+                    <p style={bodyStyle}>
+                      Their CA and CS partners — who had watched every crash and every comeback — came forward and invested ₹10–15 lakhs of their own money. A project report was written. A bank loan was secured. A new entity was born: <strong style={accentStrongStyle}>Try EV Charging LLP.</strong> A friend named Mohit from Siemens — who knew the full story, every rupee of debt, every failure — connected them to people who mattered. They have since done over ₹1 Crore of business through his introductions alone.
+                    </p>
+                    <p style={{ ...bodyStyle, color: TEXT, fontWeight: 400 }}>
+                      By the first week of November 2025, their own EV charging station went live in New Town, Kolkata. <strong style={strongStyle}>They became the first fleet operator in the market to own their own EV charging infrastructure.</strong>
+                    </p>
+                    <blockquote style={{ ...pullQuoteStyle, marginBottom: 0 }}>
+                      "We became the first fleet owner to have an in-house charging station along with our own fleet. The dream we saw years ago — it was finally real."
+                    </blockquote>
+                  </motion.div>
+
+                  {/* FOUNDERS */}
+                  <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} style={{ marginTop: isMobile ? 64 : 100, marginBottom: isMobile ? 64 : 100 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 22 }}>
+                      <span className="mono" style={{ fontSize: '0.62rem', fontWeight: 700, color: ACCENT, letterSpacing: '0.22em' }}>THE FOUNDERS</span>
+                      <div style={{ flex: 1, height: 1, background: BORDER_STRONG }} />
+                    </div>
+                    <h2 style={chapterTitleStyle}>
+                      The two men behind <em style={emStyle}>every electric mile.</em>
+                    </h2>
+                    <p style={{ fontFamily: "'Outfit', sans-serif", color: TEXT_DIM, fontSize: isMobile ? '0.88rem' : '0.96rem', lineHeight: 1.7, fontWeight: 300, marginBottom: 28 }}>
+                      Trio EV is not a company built by people with inherited advantages. It was built by two men who had none — and chose to build anyway.
+                    </p>
+                    <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(2, 1fr)', gap: 18 }}>
+                      {[
+                        { initials: 'SK', photo: 'https://www.trio-ev.com/assets/subhasht2-BbwMLUwq.jpg', name: 'Subhash Kumar', role: 'Co-Founder & Director — Strategy & Growth', desc: 'Born in a village in Madhubani, Bihar. Sold MP3 players from his school bag at 13. Reached the top 25 at IIM Bangalore without a rupee of external funding. Rejected 200 companies before landing his first job — then rejected a ₹100 Crore investment offer to keep control of his own dream. Handles strategy, funding, investor relations, and the big-picture vision of Trio EV.' },
+                        { initials: 'SD', photo: 'https://www.trio-ev.com/assets/somnath-DQNgJxFg.jpg' as string | null, name: 'Somnath Das', role: 'Co-Founder & Director — Operations', desc: 'Born into his own struggle — supporting his mother alone after losing his father. Left a corporate career and network marketing to build something from the ground up. Drove the very first Trio EV cab himself — not out of necessity, but to understand every detail of the business he was building. Every driver, every route, every charging schedule runs through his hands.' },
+                      ].map((f, i) => (
+                        <div key={i} style={{ background: SURFACE, border: `1px solid ${BORDER_STRONG}`, borderRadius: 14, overflow: 'hidden' }}>
+                          <div style={{ height: isMobile ? 200 : 240, background: `linear-gradient(135deg, ${BG}, ${SURFACE})`, position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', borderBottom: `1px solid ${BORDER}`, overflow: 'hidden' }}>
+                            {f.photo ? (
+                              <>
+                                <img
+                                  src={f.photo}
+                                  alt={f.name}
+                                  onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
+                                  style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top' }}
+                                />
+                                <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(180deg, transparent 55%, ${SURFACE}cc 100%)`, pointerEvents: 'none' }} />
+                              </>
+                            ) : (
+                              <>
+                                <div style={{ position: 'absolute', inset: 0, backgroundImage: `linear-gradient(${ACCENT}05 1px, transparent 1px), linear-gradient(90deg, ${ACCENT}05 1px, transparent 1px)`, backgroundSize: '20px 20px', opacity: 0.6 }} />
+                                <div style={{ width: 80, height: 80, borderRadius: '50%', background: `radial-gradient(circle, ${ACCENT}24, ${ACCENT}08)`, border: `1px solid ${ACCENT}66`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Cormorant Garamond', serif", fontSize: '1.6rem', fontWeight: 800, color: ACCENT, position: 'relative', zIndex: 1, boxShadow: `0 0 24px ${ACCENT}33` }}>
+                                  {f.initials}
+                                </div>
+                              </>
+                            )}
+                          </div>
+                          <div style={{ padding: isMobile ? '16px 18px 18px' : '20px 22px 22px' }}>
+                            <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: isMobile ? '1.1rem' : '1.2rem', fontWeight: 700, color: HEADING, marginBottom: 3, letterSpacing: '-0.01em' }}>{f.name}</h3>
+                            <div className="mono" style={{ fontSize: '0.55rem', fontWeight: 700, color: ACCENT, letterSpacing: '0.16em', textTransform: 'uppercase', marginBottom: 12 }}>{f.role}</div>
+                            <p style={{ fontFamily: "'Outfit', sans-serif", color: TEXT_DIM, fontSize: isMobile ? '0.8rem' : '0.84rem', lineHeight: 1.65, fontWeight: 300, margin: 0 }}>{f.desc}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </motion.div>
+
+                  {/* FINALE */}
+                  <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} style={{ background: `linear-gradient(180deg, ${SURFACE}, ${BG})`, border: `1px solid ${BORDER_STRONG}`, borderRadius: 20, padding: isMobile ? '40px 24px' : '64px 56px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+                    <div style={{ position: 'absolute', inset: 0, backgroundImage: `radial-gradient(circle at 50% 0%, ${ACCENT_SOFT}1a, transparent 60%)`, pointerEvents: 'none' }} />
+                    <div style={{ position: 'relative', zIndex: 1 }}>
+                      <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 14px', background: 'rgba(0,255,136,0.08)', border: `1px solid ${BORDER_STRONG}`, borderRadius: 99, marginBottom: 22 }}>
+                        <span style={{ width: 6, height: 6, background: ACCENT, borderRadius: '50%', boxShadow: `0 0 8px ${ACCENT}` }} />
+                        <span className="mono" style={{ fontSize: '0.62rem', fontWeight: 700, color: ACCENT, letterSpacing: '0.2em' }}>AS OF MAY 2026</span>
+                      </div>
+                      <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: isMobile ? '1.4rem' : 'clamp(1.6rem, 2.8vw, 2.2rem)', fontWeight: 700, color: HEADING, lineHeight: 1.15, letterSpacing: '-0.02em', marginBottom: 18 }}>
+                        From ₹1,000 saved on a bus to <em style={emStyle}>Kolkata's EV future.</em>
                       </h2>
-                      <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: '0.88rem', color: TEXT_DIM, lineHeight: 1.65 }}>
-                        Trio envisions a world where every ride and every delivery contributes to a healthier planet. We aim to eliminate pollution and create a fully electric ecosystem for both personal mobility and logistics — making sustainable, smart, connected transport accessible to all.
+                      <p style={{ fontFamily: "'Outfit', sans-serif", color: TEXT_DIM, fontSize: isMobile ? '0.88rem' : '0.96rem', lineHeight: 1.75, fontWeight: 300, maxWidth: 580, margin: '0 auto 14px' }}>
+                        From Madhubani to Kolkata. From a farming family to a founding team. From carrying MP3 players in a school bag to running 100+ electric vehicles on the city's roads. From a flyover conversation with ₹15 lakhs in debt to Kolkata's first fleet-owned EV charging station.
                       </p>
-                    </div>
-                  </motion.div>
-
-                  {/* MISSION */}
-                  <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} style={{ marginBottom: 40 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
-                      <div style={{ width: 28, height: 2, background: ACCENT }} />
-                      <span style={{ color: ACCENT, fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase' }}>Our Mission</span>
-                    </div>
-                    <h2 style={{ fontFamily: "'Syne', sans-serif", fontSize: '1.45rem', fontWeight: 800, color: HEADING, marginBottom: 18, letterSpacing: '-0.02em', lineHeight: 1.2 }}>
-                      Redefining how people move<br /><span style={{ color: ACCENT }}>and how business runs.</span>
-                    </h2>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                      {[
-                        { tag: 'Electric Cars', text: 'Eco-friendly, stylish, reliable, and affordable for everyday use.' },
-                        { tag: 'Smart Logistics', text: '100% electric fleets that reduce congestion, noise, and emissions.' },
-                        { tag: 'Sustainability', text: 'Green practices across design, manufacturing, and daily operations.' },
-                        { tag: 'Innovation', text: 'Smart tech + renewable energy + continuous performance.' },
-                        { tag: 'Community', text: 'Raising awareness about eco-friendly mobility and nature-first choices.' },
-                        { tag: 'Connected Future', text: 'Technology, people, and the environment coexisting seamlessly.' },
-                      ].map((m, i) => (
-                        <motion.div
-                          key={i}
-                          initial={{ opacity: 0, x: -8 }}
-                          whileInView={{ opacity: 1, x: 0 }}
-                          viewport={{ once: true }}
-                          transition={{ duration: 0.35, delay: 0.06 * i }}
-                          style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderLeft: `3px solid ${ACCENT}`, borderRadius: 12, padding: '12px 14px', display: 'flex', flexDirection: 'column', gap: 4 }}
-                        >
-                          <span style={{ color: ACCENT, fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase' }}>{m.tag}</span>
-                          <span style={{ color: TEXT, fontSize: '0.86rem', lineHeight: 1.45, fontFamily: "'Outfit', sans-serif" }}>{m.text}</span>
-                        </motion.div>
-                      ))}
-                    </div>
-                    <div style={{ marginTop: 16, padding: '12px 14px', borderLeft: `2px solid ${ACCENT}44`, fontStyle: 'italic', color: TEXT_DIM, fontSize: '0.82rem', lineHeight: 1.5, fontFamily: "'Outfit', sans-serif" }}>
-                      Our purpose is clear — protect nature, reduce pollution, and create a sustainable legacy.
-                    </div>
-                  </motion.div>
-
-                  {/* STORY TIMELINE */}
-                  <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} style={{ marginBottom: 40 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
-                      <div style={{ width: 28, height: 2, background: ACCENT }} />
-                      <span style={{ color: ACCENT, fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase' }}>Our Story</span>
-                    </div>
-                    <h2 style={{ fontFamily: "'Syne', sans-serif", fontSize: '1.45rem', fontWeight: 800, color: HEADING, marginBottom: 22, letterSpacing: '-0.02em', lineHeight: 1.2 }}>
-                      From an idea<br /><span style={{ color: ACCENT }}>to a city-wide impact.</span>
-                    </h2>
-
-                    {/* Vertical timeline */}
-                    <div style={{ position: 'relative', paddingLeft: 24, marginBottom: 24 }}>
-                      <div style={{ position: 'absolute', left: 7, top: 6, bottom: 6, width: 1, background: `linear-gradient(180deg, ${ACCENT}55, ${BORDER_STRONG} 50%, ${ACCENT}55)` }} />
-                      {[
-                        { year: '2018', title: 'The spark', text: 'Roots in telecom (Vodafone, multi-country). The realization: tech advances but environment pays the cost.' },
-                        { year: '2022', title: 'Two cars in Pune', text: 'Tested the market by driving cars ourselves — learned operations, payments, and driver realities.' },
-                        { year: '2024', title: 'Trio Evolution India', text: 'Officially registered. Pivoted to B2B with Mahindra Logistics, serving TCS, Capgemini, Cognizant, KPMG, Indigo.' },
-                        { year: '2025', title: 'Kolkata charging hub', text: "Becoming Kolkata's first fleet owner to build a private EV charging hub in New Town's IT corridor." },
-                      ].map((step, i) => (
-                        <motion.div
-                          key={i}
-                          initial={{ opacity: 0, x: -8 }}
-                          whileInView={{ opacity: 1, x: 0 }}
-                          viewport={{ once: true }}
-                          transition={{ duration: 0.4, delay: i * 0.1 }}
-                          style={{ position: 'relative', marginBottom: i === 3 ? 0 : 22 }}
-                        >
-                          <div style={{ position: 'absolute', left: -24, top: 4, width: 14, height: 14, borderRadius: '50%', background: BG, border: `2px solid ${ACCENT}`, boxShadow: `0 0 8px ${ACCENT}55` }} />
-                          <div className="mono" style={{ color: ACCENT, fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.18em', marginBottom: 4 }}>{step.year}</div>
-                          <div style={{ fontFamily: "'Syne', sans-serif", fontSize: '1rem', fontWeight: 700, color: TEXT, marginBottom: 4 }}>{step.title}</div>
-                          <p style={{ fontFamily: "'Outfit', sans-serif", color: TEXT_DIM, fontSize: '0.82rem', lineHeight: 1.55, margin: 0 }}>{step.text}</p>
-                        </motion.div>
-                      ))}
-                    </div>
-
-                    {/* Featured founder quote card */}
-                    <div style={{ background: `linear-gradient(140deg, ${ACCENT}12, ${SURFACE})`, border: `1px solid ${ACCENT}44`, borderRadius: 16, padding: '22px 18px', position: 'relative', overflow: 'hidden' }}>
-                      <svg width="22" height="18" viewBox="0 0 32 24" fill={ACCENT} style={{ opacity: 0.45, marginBottom: 10 }}>
-                        <path d="M0 14 C 0 6, 4 0, 12 0 L 12 4 C 8 4, 6 6, 6 12 L 12 12 L 12 24 L 0 24 Z M 20 14 C 20 6, 24 0, 32 0 L 32 4 C 28 4, 26 6, 26 12 L 32 12 L 32 24 L 20 24 Z" />
-                      </svg>
-                      <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: '1rem', fontStyle: 'italic', color: TEXT, lineHeight: 1.5, margin: 0, letterSpacing: '-0.01em' }}>
-                        We're not just offering transport — we're driving a transition to greener, smarter mobility for all.
+                      <p style={{ fontFamily: "'Outfit', sans-serif", color: TEXT_DIM, fontSize: isMobile ? '0.85rem' : '0.92rem', lineHeight: 1.75, fontWeight: 300, maxWidth: 580, margin: '0 auto', fontStyle: 'italic' }}>
+                        The story of Trio EV is not about resources. It is about what happens when two men with nothing to lose decide that the answer is always one more try.
                       </p>
+                      <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)', gap: 1, background: BORDER_STRONG, border: `1px solid ${BORDER_STRONG}`, borderRadius: 12, overflow: 'hidden', marginTop: isMobile ? 28 : 44 }}>
+                        {[
+                          { num: '100+', lbl: 'EVs running today' },
+                          { num: '₹3 CR', lbl: 'Year 1 revenue' },
+                          { num: '₹60L', lbl: 'Charging revenue (6 months)' },
+                          { num: '#1', lbl: 'Fleet-owned charging station, Kolkata' },
+                        ].map((s, i) => (
+                          <div key={i} style={{ background: BG, padding: isMobile ? '18px 12px' : '22px 14px', textAlign: 'center' }}>
+                            <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: isMobile ? '1.6rem' : '2rem', fontWeight: 700, color: ACCENT, lineHeight: 1, marginBottom: 6 }}>{s.num}</div>
+                            <div className="mono" style={{ fontSize: '0.54rem', color: TEXT_DIM, letterSpacing: '0.12em', textTransform: 'uppercase', lineHeight: 1.4 }}>{s.lbl}</div>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </motion.div>
 
-                  {/* LEADERSHIP */}
-                  <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} style={{ marginBottom: 40 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
-                      <div style={{ width: 28, height: 2, background: ACCENT }} />
-                      <span style={{ color: ACCENT, fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase' }}>Leadership</span>
-                    </div>
-                    <h2 style={{ fontFamily: "'Syne', sans-serif", fontSize: '1.45rem', fontWeight: 800, color: HEADING, marginBottom: 18, letterSpacing: '-0.02em', lineHeight: 1.2 }}>
-                      The minds behind <span style={{ color: ACCENT }}>the mission.</span>
-                    </h2>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                      {[
-                        { name: 'Subhash Kumar', role: 'Founder & CEO', bio: 'B.Tech CS. Former Vodafone. Now leading Trio with focus on innovation and sustainability.', img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1974&auto=format&fit=crop' },
-                        { name: 'Somnath Das', role: 'Founder & COO', bio: 'M.A. graduate. Former Uber. Drives smooth operations and impactful strategy at Trio.', img: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=2070&auto=format&fit=crop' },
-                      ].map(leader => (
-                        <div key={leader.name} style={{ background: SURFACE, border: `1px solid ${BORDER_STRONG}`, borderRadius: 18, padding: 18, display: 'flex', gap: 16, alignItems: 'flex-start' }}>
-                          <div style={{ width: 72, height: 72, borderRadius: '50%', overflow: 'hidden', border: `2px solid ${ACCENT}33`, flexShrink: 0 }}>
-                            <img src={leader.img} alt={leader.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                          </div>
-                          <div style={{ flex: 1, minWidth: 0 }}>
-                            <h3 style={{ fontFamily: "'Syne', sans-serif", fontSize: '1.05rem', fontWeight: 700, color: HEADING, marginBottom: 3, letterSpacing: '-0.01em' }}>{leader.name}</h3>
-                            <div style={{ fontFamily: "'Outfit', sans-serif", color: ACCENT, fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: 8 }}>{leader.role}</div>
-                            <p style={{ fontFamily: "'Outfit', sans-serif", color: TEXT_DIM, fontSize: '0.78rem', lineHeight: 1.5, margin: 0 }}>{leader.bio}</p>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </motion.div>
-
-                  {/* IMPACT */}
-                  <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
-                      <div style={{ width: 28, height: 2, background: ACCENT }} />
-                      <span style={{ color: ACCENT, fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase' }}>Impact</span>
-                    </div>
-                    <h2 style={{ fontFamily: "'Syne', sans-serif", fontSize: '1.45rem', fontWeight: 800, color: HEADING, marginBottom: 18, letterSpacing: '-0.02em', lineHeight: 1.2 }}>
-                      Accelerating a <span style={{ color: ACCENT }}>cleaner future.</span>
-                    </h2>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-                      {[
-                        { icon: 'M23 6l-9.5 9.5-5-5L1 18', title: 'EV-First Fleet', desc: 'All-electric fleet rollout across regions by 2026.' },
-                        { icon: 'M12 2L5 9h4v12h6V9h4L12 2z', title: 'Nature First', desc: 'Reforestation + renewables, net-zero by 2030.' },
-                        { icon: 'M13 2L3 14h9l-1 8 10-12h-9l1-8z', title: 'Smart Roads', desc: 'Road-harvested energy for streetlights & EVs.' },
-                        { icon: 'M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2 M9 7a4 4 0 1 0 0-8 4 4 0 0 0 0 8z M23 21v-2a4 4 0 0 0-3-3.87 M16 3.13a4 4 0 0 1 0 7.75', title: 'Inclusion', desc: 'R&D + skills for rural clean-tech adoption.' },
-                      ].map((item, i) => (
-                        <div key={i} style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderTop: `3px solid ${ACCENT}`, borderRadius: 12, padding: 14 }}>
-                          <div style={{ width: 32, height: 32, borderRadius: 8, background: `${ACCENT}15`, color: ACCENT, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 10 }}>
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d={item.icon} /></svg>
-                          </div>
-                          <h4 style={{ fontFamily: "'Syne', sans-serif", fontSize: '0.85rem', fontWeight: 700, color: HEADING, marginBottom: 5, lineHeight: 1.2 }}>{item.title}</h4>
-                          <p style={{ fontFamily: "'Outfit', sans-serif", color: TEXT_DIM, fontSize: '0.7rem', lineHeight: 1.45, margin: 0 }}>{item.desc}</p>
-                        </div>
-                      ))}
-                    </div>
-                  </motion.div>
                 </div>
-              ) : (
-                <>
-                  {/* 1. HERO */}
-                  <div className="about-hero" style={{ textAlign: 'center', marginBottom: 120, padding: '0 24px' }}>
-                    <h1 style={{ fontFamily: "'Syne', sans-serif", fontSize: 'clamp(3rem, 7vw, 4.5rem)', fontWeight: 800, color: HEADING, marginBottom: 20, letterSpacing: '-0.04em', lineHeight: 1.1 }}>
-                      Our Commitment to <br />
-                      <span style={{ color: ACCENT, fontSize: '0.8em' }}>Communities</span>
-                    </h1>
-                    <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: '1.25rem', color: TEXT_DIM, maxWidth: 600, margin: '0 auto', lineHeight: 1.6, fontWeight: 400 }}>
-                      Empowering local communities through clean technology and <br /> sustainable practices.
-                    </p>
-                  </div>
-
-                  <div className="about-inner" style={{ maxWidth: 1200, margin: '0 auto', padding: '0 48px' }}>
-                    {/* 2. VISION */}
-                    <div className="vision-grid" style={{ display: 'grid', gridTemplateColumns: '1.2fr 0.8fr', gap: 60, alignItems: 'center', marginBottom: 120 }}>
-                      <div className="vision-img" style={{ background: SURFACE, borderRadius: 32, overflow: 'hidden', border: `1px solid ${BORDER}`, height: 420 }}>
-                        <img src="/sustainability.png" alt="Sustainability" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                      </div>
-                      <div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 24 }}>
-                          <div style={{ width: 40, height: 2, background: ACCENT, borderRadius: 1 }} />
-                          <h2 className="about-section-title" style={{ fontFamily: "'Syne', sans-serif", fontSize: '2.5rem', fontWeight: 800, color: HEADING, letterSpacing: '-0.02em' }}>Our Vision</h2>
-                        </div>
-                        <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: '1.1rem', color: TEXT_DIM, lineHeight: 1.8, fontWeight: 400 }}>
-                          Trio envisions a world where every ride and every delivery contributes to a healthier planet. Our vision is to eliminate pollution and carbon emissions by creating a fully electric ecosystem for both personal mobility and logistics. We aspire to lead the transformation of the automotive and logistics industries, making sustainable, smart, and connected transportation accessible to all. By combining innovation, responsibility, and care for nature, we aim to build a future where progress and the environment move together in harmony.
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* 3. MISSION */}
-                    <div className="mission-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1.1fr', gap: 60, alignItems: 'center', marginBottom: 120 }}>
-                      <div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 20 }}>
-                          <div style={{ width: 40, height: 2, background: ACCENT, borderRadius: 1 }} />
-                          <h2 className="about-section-title" style={{ fontFamily: "'Syne', sans-serif", fontSize: '2.2rem', fontWeight: 800, color: HEADING, letterSpacing: '-0.02em' }}>Our Mission</h2>
-                        </div>
-                        <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: '1rem', color: TEXT_DIM, lineHeight: 1.7, marginBottom: 20 }}>
-                          At Trio, our mission is to redefine the way people move and businesses operate. We are committed to:
-                        </p>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-                          {[
-                            "Developing electric cars that are eco-friendly, stylish, reliable, and affordable for everyday use.",
-                            "Revolutionizing logistics with 100% electric fleets that reduce congestion, minimize noise, and lower emissions.",
-                            "Supporting sustainability by adopting green practices in design, manufacturing, and operations for healthier cities.",
-                            "Driving innovation through smart technology, renewable energy integration, and continuous performance improvements.",
-                            "Empowering communities by raising awareness about eco-friendly mobility and promoting nature-first choices.",
-                            "Building a connected future where technology, people, and the environment coexist seamlessly."
-                          ].map((item, i) => (
-                            <div key={i} style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
-                              <div style={{ width: 16, height: 16, borderRadius: '50%', border: `1px solid ${ACCENT}44`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: 4 }}>
-                                <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke={ACCENT} strokeWidth="4"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                              </div>
-                              <span style={{ fontFamily: "'Outfit', sans-serif", color: TEXT_DIM, fontSize: '0.9rem', lineHeight: 1.4 }}>{item}</span>
-                            </div>
-                          ))}
-                        </div>
-                        <p style={{ fontFamily: "'Outfit', sans-serif", marginTop: 24, paddingLeft: 20, borderLeft: `2px solid ${ACCENT}33`, fontStyle: 'italic', color: TEXT_DIM, fontSize: '0.9rem' }}>
-                          Our purpose is clear: to protect nature, reduce pollution, and create a sustainable legacy where clean mobility becomes the heartbeat of modern living.
-                        </p>
-                      </div>
-                      <div className="mission-img" style={{ background: SURFACE, borderRadius: 32, overflow: 'hidden', border: `1px solid ${BORDER}`, height: 500 }}>
-                        <img src="/energy.png" alt="Energy" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                      </div>
-                    </div>
-
-                    {/* 4. STORY */}
-                    <div className="story-block" style={{ maxWidth: 800, margin: '0 auto 160px', textAlign: 'center' }}>
-                      <h2 style={{ fontFamily: "'Syne', sans-serif", fontSize: '3rem', fontWeight: 800, color: HEADING, marginBottom: 12 }}>Our <span style={{ color: ACCENT }}>Story</span></h2>
-                      <div style={{ width: 60, height: 2, background: ACCENT, margin: '0 auto 60px' }} />
-                      <div style={{ fontFamily: "'Outfit', sans-serif", color: TEXT_DIM, fontSize: '1.15rem', lineHeight: 1.8, textAlign: 'left', display: 'flex', flexDirection: 'column', gap: 32 }}>
-                        <p>Our journey began in the world of IT and telecom, where one of our founders worked on designing revenue models for Vodafone across Greece, Albania, and the UK. While building systems that directly impacted millions of customers, a realization struck — technology was advancing, but the hidden cost was environmental damage caused by emissions, vibrations, and unsustainable operations.</p>
-                        <p>With a background in Computer Science and years of experience in telecom, the seed of an idea was planted: how can technology and business models be re-imagined to serve both people and the planet? This vision led to an entrepreneurial journey beginning in 2018, exploring eco-friendly solutions and sustainability-driven startups.</p>
-                        <p>In 2022, the concept of clean transportation took shape. Starting small in Pune with just two leased vehicles, we tested the market, even driving the cars ourselves to understand a driver's real challenges. Those early months gave us invaluable insights into operations, payment irregularities, and the struggles drivers face daily. From there, we expanded to Kolkata, scaling our fleet and building strong foundations.</p>
-
-                        <div style={{ padding: '60px 0', textAlign: 'center' }}>
-                          <h3 className="story-quote" style={{ fontFamily: "'Outfit', sans-serif", fontSize: '2.2rem', fontWeight: 500, color: ACCENT, fontStyle: 'italic', lineHeight: 1.4, letterSpacing: '-0.01em' }}>
-                            "We're not just offering transport — we're driving a transition to greener, smarter mobility for all."
-                          </h3>
-                        </div>
-
-                        <p>In July 2024, after two years of groundwork, we officially registered Trio Evolution India Pvt. Ltd. — named to represent the three founders who came together from IT, transportation, and mechanical engineering backgrounds. Though one co-founder eventually moved on, the vision remained strong: to revolutionize mobility through sustainability.</p>
-                        <p>We shifted from B2C to a B2B model, partnering with Mahindra Logistics to deploy EV fleets for large enterprises. Soon after, we began serving industry leaders like TCS, Capgemini, Cognizant, KPMG, and Indigo — expanding our fleet and proving that sustainable transport can meet the toughest corporate demands.</p>
-                        <p>Recognizing that fleet growth is incomplete without infrastructure, we took the bold step of becoming Kolkata's first fleet owner to build a private EV charging hub in New Town, right at the heart of the city's IT corridor. This hub, set to be completed by August 2025, not only powers our fleet but also supports smaller operators, ensuring accessibility and affordability for all.</p>
-                        <p>Today, our services span electric vehicle leasing, fleet management, smart charging infrastructure, and employee transportation solutions. From humble beginnings to city-wide impact, our story is proof that a vision backed by persistence can shape the future of mobility. As we move forward, our commitment remains the same: to empower businesses and communities to progress without compromising our planet. This is our story — and we're just getting started.</p>
-                      </div>
-                    </div>
-
-                    {/* 5. LEADERSHIP */}
-                    <div className="leadership-block" style={{ marginBottom: 160 }}>
-                      <div style={{ textAlign: 'center', marginBottom: 80 }}>
-                        <h2 style={{ fontFamily: "'Syne', sans-serif", fontSize: '3rem', fontWeight: 800, color: HEADING, marginBottom: 20 }}>Leadership <span style={{ color: ACCENT }}>Team</span></h2>
-                        <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: '1.2rem', color: TEXT_DIM, maxWidth: 640, margin: '0 auto' }}>
-                          The minds behind our mission to transform transportation through clean energy and community-driven innovation.
-                        </p>
-                      </div>
-                      <div className="leadership-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 40, maxWidth: 1000, margin: '0 auto' }}>
-                        {[
-                          {
-                            name: "Subhash Kumar",
-                            role: "Founder & CEO",
-                            bio: "B.Tech in Computer Science. Former employee at Vodafone. Currently leading Trio as Founder & CEO, driving innovation and sustainable solutions.",
-                            img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1974&auto=format&fit=crop"
-                          },
-                          {
-                            name: "Somnath Das",
-                            role: "Founder & COO",
-                            bio: "M.A. graduate. Former employee at Uber. Now serving as Founder & COO of Trio, ensuring smooth operations and impactful strategies.",
-                            img: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=2070&auto=format&fit=crop"
-                          }
-                        ].map(leader => (
-                          <div key={leader.name} className="leadership-card" style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderRadius: 40, padding: 60, textAlign: 'center', transition: 'all 0.3s' }}>
-                            <div className="leader-avatar" style={{ width: 120, height: 120, borderRadius: '50%', overflow: 'hidden', margin: '0 auto 32px', border: `4px solid ${ACCENT}22` }}>
-                              <img src={leader.img} alt={leader.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                            </div>
-                            <h3 style={{ fontFamily: "'Syne', sans-serif", fontSize: '1.75rem', fontWeight: 700, color: HEADING, marginBottom: 8 }}>{leader.name}</h3>
-                            <div style={{ fontFamily: "'Outfit', sans-serif", color: ACCENT, fontSize: '0.9rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 24 }}>{leader.role}</div>
-                            <p style={{ fontFamily: "'Outfit', sans-serif", color: TEXT_DIM, fontSize: '0.95rem', lineHeight: 1.6 }}>{leader.bio}</p>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* 6. IMPACT */}
-                    <div>
-                      <div style={{ textAlign: 'center', marginBottom: 80 }}>
-                        <h2 style={{ fontFamily: "'Syne', sans-serif", fontSize: '3rem', fontWeight: 800, color: HEADING, marginBottom: 20 }}>Our <span style={{ color: ACCENT }}>Impact</span></h2>
-                        <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: '1.2rem', color: TEXT_DIM, maxWidth: 640, margin: '0 auto' }}>
-                          We are dedicated to accelerating a clean, equitable future by integrating technology and sustainability in every journey.
-                        </p>
-                      </div>
-                      <div className="impact-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 24 }}>
-                        {[
-                          { icon: 'M23 6l-9.5 9.5-5-5L1 18', title: "EV-First Fleet", desc: "Deploying electric vehicles and hybrid transport solutions across all regions by 2026." },
-                          { icon: 'M12 2L5 9h4v12h6V9h4L12 2z', title: "Commitment to Nature", desc: "Investing in reforestation and renewable projects to exceed net-zero impact by 2030." },
-                          { icon: 'M13 2L3 14h9l-1 8 10-12h-9l1-8z', title: "Sustainable Smart Roads", desc: "Implementing road-based energy harvesting to power streetlights and EV charging stations." },
-                          { icon: 'M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2 M9 7a4 4 0 1 0 0-8 4 4 0 0 0 0 8z M23 21v-2a4 4 0 0 0-3-3.87 M16 3.13a4 4 0 0 1 0 7.75', title: "Innovation & Inclusion", desc: "Fostering R&D and skill-building programs to empower rural communities in clean tech adoption." }
-                        ].map((item, i) => (
-                          <div key={i} className="impact-card" style={{ background: BG, border: `1px solid ${BORDER}`, borderTop: `4px solid ${ACCENT}`, borderRadius: 16, padding: 32, transition: 'transform 0.3s' }}>
-                            <div style={{ color: ACCENT, marginBottom: 20 }}>
-                              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d={item.icon}></path></svg>
-                            </div>
-                            <h4 style={{ fontFamily: "'Syne', sans-serif", fontSize: '1.2rem', fontWeight: 700, color: HEADING, marginBottom: 16 }}>{item.title}</h4>
-                            <p style={{ fontFamily: "'Outfit', sans-serif", color: TEXT_DIM, fontSize: '0.88rem', lineHeight: 1.6 }}>{item.desc}</p>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </>
-              )}
-            </section>
-          </motion.div>
-        )}
+              </section>
+            </motion.div>
+          );
+        })()}
 
         {page === 'blog' && (
           <motion.div

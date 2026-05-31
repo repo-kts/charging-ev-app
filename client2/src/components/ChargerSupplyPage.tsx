@@ -332,6 +332,72 @@ export function ChargerSupplyPage({ isMobile, onPrimaryCta, onSecondaryCta }: Pr
             >
                 <Hero isMobile={isMobile} onPrimaryCta={onPrimaryCta} onSecondaryCta={onSecondaryCta} />
 
+                {/* Siemens backing strip — above the diagram */}
+                <motion.div
+                    initial={{ opacity: 0, y: 12 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5 }}
+                    style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: isMobile ? 14 : 22,
+                        marginBottom: isMobile ? 28 : 44,
+                        padding: isMobile ? '14px 18px' : '16px 24px',
+                        background: SURFACE,
+                        border: `1px solid ${BORDER}`,
+                        borderRadius: 12,
+                        flexWrap: 'wrap',
+                    }}
+                >
+                    <span
+                        className="mono"
+                        style={{
+                            fontSize: isMobile ? '0.58rem' : '0.64rem',
+                            fontWeight: 700,
+                            letterSpacing: '0.22em',
+                            color: TEXT_DIM,
+                            textTransform: 'uppercase',
+                        }}
+                    >
+                        Backed by
+                    </span>
+                    <span style={{ width: isMobile ? 18 : 28, height: 1, background: BORDER_STRONG }} />
+                    <span
+                        style={{
+                            display: 'inline-flex',
+                            alignItems: 'baseline',
+                            gap: 6,
+                            fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif',
+                        }}
+                    >
+                        <span
+                            style={{
+                                fontSize: isMobile ? '1.05rem' : '1.25rem',
+                                fontWeight: 700,
+                                letterSpacing: '0.02em',
+                                color: '#009999',
+                            }}
+                        >
+                            SIEMENS
+                        </span>
+                    </span>
+                    <span style={{ width: isMobile ? 18 : 28, height: 1, background: BORDER_STRONG }} />
+                    <span
+                        className="mono"
+                        style={{
+                            fontSize: isMobile ? '0.55rem' : '0.6rem',
+                            fontWeight: 600,
+                            letterSpacing: '0.18em',
+                            color: TEXT_DIM,
+                            textTransform: 'uppercase',
+                        }}
+                    >
+                        Eastern India's only e-mobility partner
+                    </span>
+                </motion.div>
+
                 <SiteDiagram
                     isMobile={isMobile}
                     activeGroupId={activeGroupId}

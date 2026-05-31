@@ -73,6 +73,19 @@ document.addEventListener('DOMContentLoaded', async function() {
     } catch(__tplErr) { console.warn('[ev-stations] template patch skipped', __tplErr); }
     // === END TEMPLATE PATCH ===
 
+    // === HOVER PATCH: open station / cluster popups only on click, not hover ===
+    try {
+      template = template.replace(
+        'onStationHover={(s) => { if (s) openStation(s); else scheduleClose(); }}',
+        'onStationHover={() => {}}'
+      );
+      template = template.replace(
+        'onClusterHover={(c) => { if (c) openCluster(c); else scheduleClose(); }}',
+        'onClusterHover={() => {}}'
+      );
+    } catch(__hoverErr) { console.warn('[ev-stations] hover patch skipped', __hoverErr); }
+    // === END HOVER PATCH ===
+
     const uuids = Object.keys(manifest);
     setStatus('Unpacking ' + uuids.length + ' assets...');
 

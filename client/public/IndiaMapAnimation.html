@@ -255,13 +255,15 @@
   .state-popup-backdrop {
     position: absolute;
     inset: 0;
-    /* lighter & blurrier — the map underneath should still be readable so
-       the user can see which state they're switching to on hover. */
     background: var(--backdrop);
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
     pointer-events: none;
     transition: background 0.35s ease;
+  }
+  .state-popup.show .state-popup-backdrop {
+    pointer-events: auto;
+    cursor: pointer;
   }
   .state-popup-card {
     position: relative;
@@ -1024,52 +1026,14 @@
     if (e.key === 'Escape' && popup.classList.contains('show')) closeStatePopup();
   });
 
-  // ---- hover-driven open/close with small grace timers ----
-  // Open delay prevents flicker when the cursor sweeps over a state edge.
-  // Close delay lets the cursor cross from state -> card without closing.
-  let openTimer = null, closeTimer = null;
-  const OPEN_DELAY = 90;
-  const CLOSE_DELAY = 280;
-
-  function scheduleOpen(feature, name, el) {
-    if (closeTimer) { clearTimeout(closeTimer); closeTimer = null; }
-    // already open? switch the popup contents immediately, no delay
-    if (popup.classList.contains('show')) {
-      if (selectedEl !== el) {
-        if (selectedEl) selectedEl.classList.remove('selected');
-        selectedEl = el;
-        el.classList.add('selected');
-        openStatePopup(feature, name);
-      }
-      return;
-    }
-    // not yet open — wait briefly so quick fly-bys don't pop the panel
-    if (openTimer) clearTimeout(openTimer);
-    openTimer = setTimeout(() => {
-      openTimer = null;
+  function openForState(feature, name, el) {
+    if (selectedEl !== el) {
       if (selectedEl) selectedEl.classList.remove('selected');
       selectedEl = el;
       el.classList.add('selected');
-      openStatePopup(feature, name);
-    }, OPEN_DELAY);
+    }
+    openStatePopup(feature, name);
   }
-
-  function scheduleClose() {
-    if (openTimer) { clearTimeout(openTimer); openTimer = null; }
-    if (closeTimer) clearTimeout(closeTimer);
-    closeTimer = setTimeout(() => {
-      closeTimer = null;
-      closeStatePopup();
-    }, CLOSE_DELAY);
-  }
-
-  // when the cursor enters the popup card itself, keep it alive; when it
-  // leaves, schedule a close (so moving the cursor off the page closes).
-  const popupCard = popup.querySelector('.state-popup-card');
-  popupCard.addEventListener('mouseenter', () => {
-    if (closeTimer) { clearTimeout(closeTimer); closeTimer = null; }
-  });
-  popupCard.addEventListener('mouseleave', () => scheduleClose());
 
   for (const f of geo.features) {
     const d = geomToPath(f.geometry);
@@ -1079,9 +1043,7 @@
     p.setAttribute('d', d);
     const name = (f.properties && (f.properties.st_nm || f.properties.NAME_1 || f.properties.ST_NM)) || 'State';
     p.setAttribute('data-name', name);
-    // hover opens the pop-out for this state; leaving schedules a close
-    p.addEventListener('mouseenter', () => scheduleOpen(f, name, p));
-    p.addEventListener('mouseleave', () => scheduleClose());
+    p.addEventListener('click', () => openForState(f, name, p));
     svg.appendChild(p);
   }
 

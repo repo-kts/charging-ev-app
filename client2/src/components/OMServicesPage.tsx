@@ -42,7 +42,7 @@ export function OMServicesPage({ isMobile, onPrimaryCta, onSecondaryCta }: Props
                 color: TEXT,
                 fontFamily: "'Inter', sans-serif",
                 paddingTop: isMobile ? 80 : 100,
-                paddingBottom: isMobile ? 80 : 140,
+                paddingBottom: isMobile ? 24 : 32,
                 position: 'relative',
                 overflow: 'hidden',
             }}
@@ -76,7 +76,6 @@ export function OMServicesPage({ isMobile, onPrimaryCta, onSecondaryCta }: Props
                 <CoreOfferings isMobile={isMobile} />
                 <SLAMatrix isMobile={isMobile} />
                 <WhyChoose isMobile={isMobile} />
-                <Closing isMobile={isMobile} onPrimaryCta={onPrimaryCta} onSecondaryCta={onSecondaryCta} />
             </div>
         </motion.div>
     );

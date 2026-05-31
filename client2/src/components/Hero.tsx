@@ -7,13 +7,13 @@ export const Hero: React.FC = () => {
   return (
     <section className="hero-section" style={{ minHeight: '100vh', display: 'flex', alignItems: 'center' }}>
       <div className="container" style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '60px', alignItems: 'center' }}>
-        
-        <motion.div 
+
+        <motion.div
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8 }}
         >
-          <motion.p 
+          <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3 }}
@@ -21,7 +21,7 @@ export const Hero: React.FC = () => {
           >
             ELECTRICAL CHARGING POWER STATION
           </motion.p>
-          
+
           <h1 style={{ fontSize: 'clamp(4rem, 10vw, 8rem)', fontWeight: 900, lineHeight: 0.9, marginBottom: '30px', color: 'transparent', WebkitTextStroke: '2px rgba(255,255,255,0.1)', position: 'relative' }}>
             EV <br />
             <span style={{ color: 'var(--text-primary)', WebkitTextStroke: '0' }}>CHARGING</span>
@@ -48,7 +48,7 @@ export const Hero: React.FC = () => {
                 <Users size={24} />
               </div>
               <div>
-                <h3 style={{ fontSize: '1.5rem', fontWeight: 900 }}>56,894</h3>
+                <h3 style={{ fontSize: '1.5rem', fontWeight: 900 }}>1000+</h3>
                 <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Total Customers</p>
               </div>
             </div>
@@ -58,8 +58,8 @@ export const Hero: React.FC = () => {
                 <Calendar size={24} />
               </div>
               <div>
-                <h3 style={{ fontSize: '1.5rem', fontWeight: 900 }}>38,465</h3>
-                <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Total Bookings</p>
+                <h3 style={{ fontSize: '1.5rem', fontWeight: 900 }}>½ million+</h3>
+                <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Total units consumed</p>
               </div>
             </div>
           </div>
@@ -72,10 +72,10 @@ export const Hero: React.FC = () => {
           style={{ position: 'relative' }}
         >
           {/* Background Glow */}
-          <div style={{ 
-            position: 'absolute', 
-            top: '50%', 
-            left: '50%', 
+          <div style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
             transform: 'translate(-50%, -50%)',
             width: '400px',
             height: '400px',
@@ -85,17 +85,17 @@ export const Hero: React.FC = () => {
             zIndex: -1
           }} />
 
-          <motion.img 
-            src={heroImage} 
-            alt="EV Charger" 
+          <motion.img
+            src={heroImage}
+            alt="EV Charger"
             style={{ width: '100%', height: 'auto', filter: 'drop-shadow(0 0 50px rgba(124, 255, 0, 0.2))' }}
-            animate={{ 
+            animate={{
               y: [0, -20, 0],
             }}
-            transition={{ 
-              duration: 4, 
-              repeat: Infinity, 
-              ease: "easeInOut" 
+            transition={{
+              duration: 4,
+              repeat: Infinity,
+              ease: "easeInOut"
             }}
           />
         </motion.div>

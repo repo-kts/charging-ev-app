@@ -33,7 +33,7 @@ export function PremiumChargingHubPage({ isMobile, onPrimaryCta, onSecondaryCta 
                 color: TEXT,
                 fontFamily: "'Inter', sans-serif",
                 paddingTop: isMobile ? 80 : 100,
-                paddingBottom: isMobile ? 80 : 140,
+                paddingBottom: isMobile ? 10 : 30,
                 position: 'relative',
                 overflow: 'hidden',
             }}
@@ -81,8 +81,6 @@ export function PremiumChargingHubPage({ isMobile, onPrimaryCta, onSecondaryCta 
                 {/* ============ 04 — SAFETY (triptych w/ vertical labels) ============ */}
                 <SafetyTriptych isMobile={isMobile} />
 
-                {/* ============ CLOSING ============ */}
-                <Closing isMobile={isMobile} onPrimaryCta={onPrimaryCta} onSecondaryCta={onSecondaryCta} />
             </div>
         </motion.div>
     );
@@ -181,13 +179,13 @@ function Hero({
                         >
                             Locate a hub <ArrowRight size={16} />
                         </button>
-                        <button
+                        {/* <button
                             className="btn-ghost"
                             onClick={onSecondaryCta}
                             style={{ cursor: 'pointer', fontSize: '0.92rem' }}
                         >
                             Talk to sales
-                        </button>
+                        </button> */}
                     </div>
                 </motion.div>
 
@@ -674,7 +672,7 @@ function AmenitiesManifest({ isMobile }: { isMobile: boolean }) {
         {
             n: '01',
             title: 'Driver rest room',
-            body: 'Air-conditioned lounge, comfortable seating, quiet — designed for drivers to actually unwind during the charging cycle.',
+            body: 'Lounge, comfortable seating, quiet — designed for drivers to actually unwind during the charging cycle.',
             meta: 'COMPLIMENTARY',
         },
         {
@@ -1010,100 +1008,7 @@ function SafetyTriptych({ isMobile }: { isMobile: boolean }) {
     );
 }
 
-/* =================================================================== */
-/* CLOSING                                                             */
-/* =================================================================== */
 
-function Closing({
-    isMobile,
-    onPrimaryCta,
-    onSecondaryCta,
-}: {
-    isMobile: boolean;
-    onPrimaryCta?: () => void;
-    onSecondaryCta?: () => void;
-}) {
-    const { ACCENT, ACCENT_SOFT, BG, SURFACE, CARD, BORDER, BORDER_STRONG, TEXT, TEXT_DIM, HEADING, ACCENT_ON } = useTheme();
-    return (
-        <motion.section
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.55 }}
-            style={{
-                borderTop: `1px solid ${BORDER}`,
-                paddingTop: isMobile ? 48 : 80,
-                display: 'grid',
-                gridTemplateColumns: isMobile ? '1fr' : '1.2fr 1fr',
-                gap: isMobile ? 24 : 64,
-                alignItems: 'end',
-            }}
-        >
-            <div>
-                <div
-                    className="mono"
-                    style={{
-                        color: ACCENT,
-                        fontSize: '0.65rem',
-                        letterSpacing: '0.24em',
-                        fontWeight: 700,
-                        marginBottom: 18,
-                    }}
-                >
-                    PULL IN · REFRESH · POWER AHEAD
-                </div>
-                <h2
-                    style={{
-                        fontFamily: "'Inter', sans-serif",
-                        fontSize: isMobile ? '1.6rem' : 'clamp(2.2rem, 4.2vw, 3.6rem)',
-                        fontWeight: 800,
-                        color: HEADING,
-                        letterSpacing: '-0.04em',
-                        lineHeight: 1.02,
-                        margin: 0,
-                    }}
-                >
-                    Experience the highest standard of public EV charging.
-                </h2>
-            </div>
-            <div>
-                <p
-                    style={{
-                        fontSize: isMobile ? '0.95rem' : '1.02rem',
-                        color: TEXT_DIM,
-                        lineHeight: 1.65,
-                        marginBottom: 24,
-                    }}
-                >
-                    Locate your nearest TRIO-EV Charging Hub — or talk to our team about bringing
-                    premium charging to your fleet, property, or city.
-                </p>
-                <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-                    <button
-                        className="btn-accent"
-                        onClick={onPrimaryCta}
-                        style={{
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: 8,
-                            cursor: 'pointer',
-                            fontSize: '0.92rem',
-                        }}
-                    >
-                        Find a hub <ArrowRight size={16} />
-                    </button>
-                    <button
-                        className="btn-ghost"
-                        onClick={onSecondaryCta}
-                        style={{ cursor: 'pointer', fontSize: '0.92rem' }}
-                    >
-                        Contact sales
-                    </button>
-                </div>
-            </div>
-        </motion.section>
-    );
-}
 
 /* =================================================================== */
 /* SHARED: section index header                                        */
