@@ -9,7 +9,9 @@ import {
     type PublicInquirySubmitInput,
 } from '@trio/shared/inquiry';
 import { api } from '../lib/axios';
+import { useTheme } from '../lib/theme';
 
+// Dark fallbacks; component bodies destructure useTheme() to shadow these.
 const ACCENT = '#00FF88';
 const BG = '#0B0F0D';
 const SURFACE = '#111715';
@@ -48,6 +50,8 @@ interface ContactSalesFormProps {
 }
 
 export function ContactSalesForm({ open, onClose }: ContactSalesFormProps) {
+    const t = useTheme();
+    const { ACCENT, BG, SURFACE, CARD, BORDER, BORDER_STRONG, TEXT, TEXT_DIM, HEADING, ACCENT_ON } = t;
     const isMobile = useIsMobile(1024);
     const {
         register,
@@ -124,7 +128,7 @@ export function ContactSalesForm({ open, onClose }: ContactSalesFormProps) {
                                 type="button"
                                 onClick={onClose}
                                 aria-label="Close"
-                                style={{ width: 36, height: 36, borderRadius: '50%', background: 'rgba(255,255,255,0.05)', border: `1px solid ${BORDER}`, color: TEXT, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                                style={{ width: 36, height: 36, borderRadius: '50%', background: t.mode === 'light' ? 'rgba(15,30,25,0.05)' : 'rgba(255,255,255,0.05)', border: `1px solid ${BORDER}`, color: TEXT, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                             >
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
                             </button>
@@ -154,7 +158,7 @@ export function ContactSalesForm({ open, onClose }: ContactSalesFormProps) {
                             <div style={{ display: 'flex', flexDirection: 'column', marginBottom: 26, borderTop: `1px solid ${BORDER}`, borderBottom: `1px solid ${BORDER}` }}>
                                 {[
                                     { value: 'hello@trio.ev', href: 'mailto:hello@trio.ev', icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" /><polyline points="22,6 12,13 2,6" /></svg> },
-                                    { value: '+91 98xxx xxxxx', href: 'https://wa.me/91', icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" /></svg> },
+                                    { value: '+91 62918 42407', href: 'https://wa.me/916291842407?text=' + encodeURIComponent('Hi, I want to inquire about charging'), icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" /></svg> },
                                     { value: 'Bengaluru, India', href: null, icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" /></svg> },
                                 ].map((opt, i) => {
                                     const inner = (
@@ -175,7 +179,7 @@ export function ContactSalesForm({ open, onClose }: ContactSalesFormProps) {
                                         borderBottom: i < 2 ? `1px solid ${BORDER}` : 'none',
                                     };
                                     return opt.href ? (
-                                        <a key={i} href={opt.href} style={styleObj}>{inner}</a>
+                                        <a key={i} href={opt.href} target={opt.href.startsWith('http') ? '_blank' : undefined} rel={opt.href.startsWith('http') ? 'noopener noreferrer' : undefined} style={styleObj}>{inner}</a>
                                     ) : (
                                         <div key={i} style={styleObj}>{inner}</div>
                                     );
@@ -245,7 +249,7 @@ export function ContactSalesForm({ open, onClose }: ContactSalesFormProps) {
                         position: 'fixed',
                         inset: 0,
                         zIndex: 2000,
-                        background: 'rgba(5, 7, 6, 0.96)',
+                        background: t.mode === 'light' ? 'rgba(248,250,249,0.97)' : 'rgba(5, 7, 6, 0.96)',
                         backdropFilter: 'blur(32px)',
                         display: 'flex',
                         alignItems: 'center',
@@ -376,7 +380,7 @@ export function ContactSalesForm({ open, onClose }: ContactSalesFormProps) {
                                 style={{
                                     fontSize: '3rem',
                                     fontWeight: 800,
-                                    color: '#fff',
+                                    color: HEADING,
                                     lineHeight: 1.1,
                                     marginBottom: 20,
                                     letterSpacing: '-0.04em',
@@ -406,71 +410,88 @@ export function ContactSalesForm({ open, onClose }: ContactSalesFormProps) {
                                         icon: 'M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z M22 6l-10 7L2 6',
                                         label: 'EMAIL',
                                         value: 'hello@trio.ev',
+                                        href: 'mailto:hello@trio.ev',
                                     },
                                     {
                                         icon: 'M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z',
                                         label: 'WHATSAPP',
-                                        value: '+91 98xxx xxxxx',
+                                        value: '+91 62918 42407',
+                                        href: 'https://wa.me/916291842407?text=' + encodeURIComponent('Hi, I want to inquire about charging'),
                                     },
                                     {
                                         icon: 'M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z M12 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6z',
                                         label: 'HQ',
                                         value: 'Bengaluru, India',
+                                        href: null,
                                     },
-                                ].map((item) => (
-                                    <div
-                                        key={item.label}
-                                        style={{ display: 'flex', alignItems: 'center', gap: 20 }}
-                                    >
-                                        <div
-                                            style={{
-                                                width: 44,
-                                                height: 44,
-                                                borderRadius: '50%',
-                                                background: 'rgba(255,255,255,0.03)',
-                                                border: '1px solid rgba(255,255,255,0.06)',
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                justifyContent: 'center',
-                                                color: ACCENT,
-                                            }}
+                                ].map((item) => {
+                                    const innerContent = (
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
+                                            <div
+                                                style={{
+                                                    width: 44,
+                                                    height: 44,
+                                                    borderRadius: '50%',
+                                                    background: t.mode === 'light' ? 'rgba(15,30,25,0.03)' : 'rgba(255,255,255,0.03)',
+                                                    border: '1px solid rgba(255,255,255,0.06)',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                    color: ACCENT,
+                                                }}
+                                            >
+                                                <svg
+                                                    width="18"
+                                                    height="18"
+                                                    viewBox="0 0 24 24"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    strokeWidth="2"
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                >
+                                                    <path d={item.icon}></path>
+                                                </svg>
+                                            </div>
+                                            <div>
+                                                <div
+                                                    style={{
+                                                        fontSize: '0.65rem',
+                                                        fontWeight: 700,
+                                                        color: TEXT_DIM,
+                                                        letterSpacing: '0.1em',
+                                                    }}
+                                                >
+                                                    {item.label}
+                                                </div>
+                                                <div
+                                                    style={{
+                                                        fontSize: '1rem',
+                                                        color: TEXT,
+                                                        fontWeight: 500,
+                                                    }}
+                                                >
+                                                    {item.value}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    );
+                                    return item.href ? (
+                                        <a
+                                            key={item.label}
+                                            href={item.href}
+                                            target={item.label === 'WHATSAPP' ? '_blank' : undefined}
+                                            rel={item.label === 'WHATSAPP' ? 'noopener noreferrer' : undefined}
+                                            style={{ textDecoration: 'none', display: 'block', width: '100%' }}
                                         >
-                                            <svg
-                                                width="18"
-                                                height="18"
-                                                viewBox="0 0 24 24"
-                                                fill="none"
-                                                stroke="currentColor"
-                                                strokeWidth="2"
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                            >
-                                                <path d={item.icon}></path>
-                                            </svg>
+                                            {innerContent}
+                                        </a>
+                                    ) : (
+                                        <div key={item.label}>
+                                            {innerContent}
                                         </div>
-                                        <div>
-                                            <div
-                                                style={{
-                                                    fontSize: '0.65rem',
-                                                    fontWeight: 700,
-                                                    color: TEXT_DIM,
-                                                    letterSpacing: '0.1em',
-                                                }}
-                                            >
-                                                {item.label}
-                                            </div>
-                                            <div
-                                                style={{
-                                                    fontSize: '1rem',
-                                                    color: TEXT,
-                                                    fontWeight: 500,
-                                                }}
-                                            >
-                                                {item.value}
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
+                                    );
+                                })}
                             </div>
                         </div>
 
@@ -480,7 +501,7 @@ export function ContactSalesForm({ open, onClose }: ContactSalesFormProps) {
                             noValidate
                             className="form-card"
                             style={{
-                                background: 'rgba(255,255,255,0.02)',
+                                background: t.mode === 'light' ? 'rgba(15,30,25,0.02)' : 'rgba(255,255,255,0.02)',
                                 border: '1px solid rgba(255,255,255,0.06)',
                                 borderRadius: 24,
                                 padding: 32,
@@ -606,11 +627,11 @@ export function ContactSalesForm({ open, onClose }: ContactSalesFormProps) {
 
 const inputStyle: React.CSSProperties = {
     width: '100%',
-    background: 'rgba(255,255,255,0.03)',
+    background: 'rgba(127,127,127,0.06)',
     border: '1px solid rgba(255,255,255,0.06)',
     borderRadius: 12,
     padding: '14px 18px',
-    color: TEXT,
+    color: 'inherit',
     outline: 'none',
     fontSize: '0.9rem',
     fontFamily: 'inherit',
@@ -618,17 +639,21 @@ const inputStyle: React.CSSProperties = {
 
 const inputStyleMobile: React.CSSProperties = {
     width: '100%',
-    background: SURFACE,
+    background: 'rgba(127,127,127,0.08)',
     border: `1px solid ${BORDER_STRONG}`,
     borderRadius: 12,
     padding: '13px 14px',
-    color: TEXT,
+    color: 'inherit',
     outline: 'none',
     fontSize: '0.92rem',
     fontFamily: 'inherit',
 };
 
-function Field({
+function Field(props: any) {
+    const { ACCENT, TEXT, TEXT_DIM } = useTheme();
+    return FieldInner({ ...props, ACCENT, TEXT, TEXT_DIM });
+}
+function FieldInner({
     label,
     optional,
     error,

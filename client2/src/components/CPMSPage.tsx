@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTheme } from '../lib/theme';
 import {
     ArrowRight,
     Activity,
@@ -11,10 +12,12 @@ import {
     Globe,
 } from 'lucide-react';
 
+// Dark-theme fallback colours for module-scope code; theme-aware components destructure useTheme() and shadow these.
 const ACCENT = '#00FF88';
 const ACCENT_SOFT = '#00CC77';
 const BG = '#0B0F0D';
 const SURFACE = '#111715';
+const CARD = '#151B18';
 const BORDER = 'rgba(0,255,136,0.08)';
 const BORDER_STRONG = 'rgba(0,255,136,0.18)';
 const TEXT = '#F5F7F6';
@@ -27,6 +30,7 @@ type Props = {
 };
 
 export function CPMSPage({ isMobile, onPrimaryCta, onSecondaryCta }: Props) {
+    const { ACCENT, ACCENT_SOFT, BG, SURFACE, CARD, BORDER, BORDER_STRONG, TEXT, TEXT_DIM, HEADING, ACCENT_ON } = useTheme();
     return (
         <motion.div
             key="cpms"
@@ -39,7 +43,7 @@ export function CPMSPage({ isMobile, onPrimaryCta, onSecondaryCta }: Props) {
                 color: TEXT,
                 fontFamily: "'Inter', sans-serif",
                 paddingTop: isMobile ? 80 : 100,
-                paddingBottom: isMobile ? 80 : 140,
+                paddingBottom: isMobile ? 24 : 36,
                 position: 'relative',
                 overflow: 'hidden',
             }}
@@ -69,10 +73,11 @@ export function CPMSPage({ isMobile, onPrimaryCta, onSecondaryCta }: Props) {
                 }}
             >
                 <Hero isMobile={isMobile} onPrimaryCta={onPrimaryCta} onSecondaryCta={onSecondaryCta} />
+                <BuiltInHouse isMobile={isMobile} />
+                <DriverApp isMobile={isMobile} />
                 <CapabilityConsole isMobile={isMobile} />
                 <Compliance isMobile={isMobile} />
                 <Personas isMobile={isMobile} />
-                <Closing isMobile={isMobile} onPrimaryCta={onPrimaryCta} onSecondaryCta={onSecondaryCta} />
             </div>
         </motion.div>
     );
@@ -85,14 +90,14 @@ export function CPMSPage({ isMobile, onPrimaryCta, onSecondaryCta }: Props) {
 function Hero({
     isMobile,
     onPrimaryCta,
-    onSecondaryCta,
 }: {
     isMobile: boolean;
     onPrimaryCta?: () => void;
     onSecondaryCta?: () => void;
 }) {
+    const { ACCENT, ACCENT_SOFT, BG, SURFACE, CARD, BORDER, BORDER_STRONG, TEXT_DIM, HEADING } = useTheme();
     return (
-        <section style={{ marginBottom: isMobile ? 64 : 120 }}>
+        <section style={{ marginBottom: isMobile ? 48 : 120 }}>
             <div
                 style={{
                     display: 'grid',
@@ -109,33 +114,39 @@ function Hero({
                     <div
                         className="mono"
                         style={{
-                            display: 'flex',
+                            display: 'inline-flex',
                             alignItems: 'center',
-                            gap: 14,
+                            gap: 8,
                             color: ACCENT,
-                            fontSize: '0.65rem',
+                            fontSize: '0.62rem',
                             fontWeight: 700,
-                            letterSpacing: '0.24em',
-                            marginBottom: 28,
+                            letterSpacing: '0.22em',
+                            marginBottom: 26,
+                            padding: '5px 12px',
+                            background: 'rgba(0,255,136,0.08)',
+                            border: `1px solid ${BORDER_STRONG}`,
+                            borderRadius: 99,
                         }}
                     >
-                        <span>CHARGE POINT MANAGEMENT</span>
+                        <span style={{ width: 6, height: 6, borderRadius: '50%', background: ACCENT, boxShadow: `0 0 8px ${ACCENT}` }} />
+                        <span>BUILT IN-HOUSE · TRIO CPMS · v4.2</span>
                     </div>
 
                     <h1
                         style={{
-                            fontSize: isMobile ? '2rem' : 'clamp(2.6rem, 5.4vw, 4.8rem)',
-                            fontWeight: 800,
-                            color: '#fff',
+                            fontFamily: "'Outfit', sans-serif",
+                            fontSize: isMobile ? '1.5rem' : 'clamp(1.7rem, 3vw, 2.4rem)',
+                            fontWeight: 600,
+                            color: HEADING,
                             margin: 0,
-                            marginBottom: 22,
-                            letterSpacing: '-0.04em',
-                            lineHeight: 1,
-                            maxWidth: 1100,
+                            marginBottom: 18,
+                            letterSpacing: '-0.02em',
+                            lineHeight: 1.12,
+                            maxWidth: 560,
                         }}
                     >
-                        Great hardware is half the job.{' '}
-                        <span style={{ color: ACCENT }}>This is the brain.</span>
+                        We built the software that runs our fleet.{' '}
+                        <span style={{ color: ACCENT }}>Now it runs yours.</span>
                     </h1>
 
                     <p
@@ -145,23 +156,64 @@ function Hero({
                             lineHeight: 1.6,
                             maxWidth: 620,
                             margin: 0,
+                            marginBottom: 24,
+                        }}
+                    >
+                        Trio CPMS is the in-house cloud platform that powers our own 100+ EV fleet and our charging hub in New Town, Kolkata. Operator dashboard, driver app, and developer API — battle-tested on our own operations before it ever ran on yours.
+                    </p>
+
+                    {/* Platform availability strip */}
+                    <div
+                        style={{
+                            display: 'flex',
+                            flexWrap: 'wrap',
+                            gap: 8,
                             marginBottom: 32,
                         }}
                     >
-                        A cloud CPMS that turns passive electrical hardware into an intelligent,
-                        revenue-generating, self-healing energy network — from a single dashboard.
-                    </p>
+                        {[
+                            { label: 'Web Dashboard', icon: 'M3 4h18v14H3z M3 18l6-6 4 4 8-8' },
+                            { label: 'iOS · Android', icon: 'M5 2h14v20H5z M9 18h6' },
+                            { label: 'REST + Webhook API', icon: 'M8 9l-4 3 4 3 M16 9l4 3-4 3 M14 4l-4 16' },
+                        ].map((p) => (
+                            <div
+                                key={p.label}
+                                className="mono"
+                                style={{
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    gap: 7,
+                                    padding: '6px 12px',
+                                    border: `1px solid ${BORDER}`,
+                                    borderRadius: 8,
+                                    fontSize: '0.62rem',
+                                    fontWeight: 600,
+                                    letterSpacing: '0.14em',
+                                    color: TEXT_DIM,
+                                    textTransform: 'uppercase',
+                                    background: SURFACE,
+                                }}
+                            >
+                                <svg width={11} height={11} viewBox="0 0 24 24" fill="none" stroke={ACCENT} strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round">
+                                    <path d={p.icon} />
+                                </svg>
+                                <span>{p.label}</span>
+                            </div>
+                        ))}
+                    </div>
 
-                    <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+                    <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center', flexDirection: isMobile ? 'column' : 'row' }}>
                         <button
                             className="btn-accent"
                             onClick={onPrimaryCta}
                             style={{
                                 display: 'inline-flex',
                                 alignItems: 'center',
+                                justifyContent: 'center',
                                 gap: 8,
                                 cursor: 'pointer',
                                 fontSize: '0.92rem',
+                                width: isMobile ? '100%' : 'auto',
                             }}
                         >
                             Request a demo <ArrowRight size={16} />
@@ -209,84 +261,189 @@ function stateColor(s: ChargerState): string {
     return '#FFB454';
 }
 
+type LogEntry = { ts: string; kind: 'WS' | 'API' | 'OCPP' | 'JOB'; target: string; msg: string; status?: string };
+
+const initialLogs: LogEntry[] = [
+    { ts: '12:34:56', kind: 'WS', target: 'TR-08', msg: 'state=charging session_id=ses_8a2', status: 'ok' },
+    { ts: '12:34:55', kind: 'API', target: 'POST /v1/sessions', msg: '201 created  82ms', status: '201' },
+    { ts: '12:34:54', kind: 'OCPP', target: 'TR-03', msg: 'StatusNotification → Preparing', status: 'ok' },
+    { ts: '12:34:52', kind: 'JOB', target: 'tariff_engine', msg: 'recomputed prices for 12 ports', status: 'ok' },
+    { ts: '12:34:50', kind: 'WS', target: 'TR-12', msg: 'reservation_held for user_8a2f', status: 'ok' },
+];
+
+function logColor(k: LogEntry['kind'], ACCENT: string): string {
+    if (k === 'WS') return ACCENT;
+    if (k === 'API') return '#5EC8FF';
+    if (k === 'OCPP') return '#FFB454';
+    return '#C792EA';
+}
+
 function LiveNetworkPanel({ isMobile }: { isMobile: boolean }) {
+    const { ACCENT, ACCENT_SOFT, BG, SURFACE, CARD, BORDER, BORDER_STRONG, TEXT, TEXT_DIM, HEADING, ACCENT_ON } = useTheme();
     const [chargers, setChargers] = useState(initialChargers);
     const [kw, setKw] = useState(284);
+    const [logs, setLogs] = useState<LogEntry[]>(initialLogs);
+    const [ping, setPing] = useState(18);
+    const [activeTab, setActiveTab] = useState<'dashboard' | 'events' | 'api' | 'settings'>('dashboard');
 
     useEffect(() => {
         const i = setInterval(() => {
+            // mutate one charger state
+            const newState: ChargerState = (['AVAILABLE', 'CHARGING', 'CHARGING', 'RESERVED'] as ChargerState[])[Math.floor(Math.random() * 4)];
+            let mutatedId = '';
             setChargers((prev) => {
                 const next = [...prev];
                 const idx = Math.floor(Math.random() * next.length);
-                const states: ChargerState[] = ['AVAILABLE', 'CHARGING', 'CHARGING', 'RESERVED'];
-                next[idx] = { ...next[idx], state: states[Math.floor(Math.random() * states.length)] };
+                mutatedId = next[idx].id;
+                next[idx] = { ...next[idx], state: newState };
                 return next;
             });
             setKw((k) => Math.max(180, Math.min(360, k + Math.floor(Math.random() * 20) - 10)));
+            setPing((p) => Math.max(8, Math.min(48, p + Math.floor(Math.random() * 8) - 4)));
+
+            // push a new log entry
+            const now = new Date();
+            const ts = now.toTimeString().slice(0, 8);
+            const r = Math.random();
+            let entry: LogEntry;
+            if (r < 0.45) {
+                entry = { ts, kind: 'WS', target: mutatedId, msg: `state=${newState.toLowerCase()}`, status: 'ok' };
+            } else if (r < 0.75) {
+                entry = { ts, kind: 'OCPP', target: mutatedId, msg: `StatusNotification → ${newState[0] + newState.slice(1).toLowerCase()}`, status: 'ok' };
+            } else if (r < 0.92) {
+                const codes = ['200', '201', '204'];
+                const code = codes[Math.floor(Math.random() * codes.length)];
+                const ms = 30 + Math.floor(Math.random() * 80);
+                entry = { ts, kind: 'API', target: 'POST /v1/sessions', msg: `${code} ${ms}ms`, status: code };
+            } else {
+                entry = { ts, kind: 'JOB', target: 'tariff_engine', msg: 'recomputed prices', status: 'ok' };
+            }
+            setLogs((prev) => [entry, ...prev].slice(0, 5));
         }, 1600);
         return () => clearInterval(i);
     }, []);
+
+    const tabs: Array<{ id: typeof activeTab; label: string }> = [
+        { id: 'dashboard', label: 'Dashboard' },
+        { id: 'events', label: 'Events' },
+        { id: 'api', label: 'API' },
+        { id: 'settings', label: 'Settings' },
+    ];
 
     return (
         <div
             style={{
                 background: SURFACE,
                 border: `1px solid ${BORDER_STRONG}`,
-                borderRadius: 16,
+                borderRadius: 12,
                 overflow: 'hidden',
                 boxShadow: `0 30px 80px ${ACCENT}10`,
             }}
         >
-            {/* Console header */}
+            {/* Title bar — traffic-light controls + app title + API health */}
             <div
                 style={{
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'space-between',
-                    padding: '12px 16px',
+                    padding: '10px 14px',
                     borderBottom: `1px solid ${BORDER}`,
                     background: BG,
+                    gap: 12,
                 }}
             >
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12, minWidth: 0 }}>
                     <div style={{ display: 'flex', gap: 6 }}>
-                        {[0, 1, 2].map((i) => (
-                            <span
-                                key={i}
-                                style={{
-                                    width: 8,
-                                    height: 8,
-                                    borderRadius: '50%',
-                                    background: `${ACCENT}55`,
-                                }}
-                            />
-                        ))}
+                        <span style={{ width: 10, height: 10, borderRadius: '50%', background: '#FF5F57' }} />
+                        <span style={{ width: 10, height: 10, borderRadius: '50%', background: '#FEBC2E' }} />
+                        <span style={{ width: 10, height: 10, borderRadius: '50%', background: '#28C840' }} />
                     </div>
                     <span
                         className="mono"
                         style={{
-                            fontSize: '0.6rem',
+                            fontSize: '0.58rem',
                             color: TEXT_DIM,
-                            letterSpacing: '0.22em',
+                            letterSpacing: '0.18em',
                             fontWeight: 700,
+                            whiteSpace: 'nowrap',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            minWidth: 0,
                         }}
                     >
-                        TRIO-CPMS · OPERATOR CONSOLE
+                        {isMobile ? 'trio-cpms' : 'trio-cpms · ops.trio.dev'}
                     </span>
                 </div>
-                <motion.span
-                    animate={{ opacity: [0.4, 1, 0.4] }}
-                    transition={{ duration: 1.8, repeat: Infinity }}
+                {/* API health pill */}
+                <div
                     className="mono"
                     style={{
-                        fontSize: '0.55rem',
-                        color: ACCENT,
-                        letterSpacing: '0.22em',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: 8,
+                        fontSize: '0.5rem',
                         fontWeight: 700,
+                        letterSpacing: '0.16em',
+                        color: TEXT_DIM,
+                        whiteSpace: 'nowrap',
+                        flexShrink: 0,
                     }}
                 >
-                    ● LIVE
-                </motion.span>
+                    <motion.span
+                        animate={{ opacity: [0.4, 1, 0.4] }}
+                        transition={{ duration: 1.6, repeat: Infinity }}
+                        style={{ display: 'inline-flex', alignItems: 'center', gap: 4, color: ACCENT }}
+                    >
+                        <span style={{ width: 5, height: 5, borderRadius: '50%', background: ACCENT, boxShadow: `0 0 6px ${ACCENT}` }} />
+                        {isMobile ? 'WS' : 'WS·CONNECTED'}
+                    </motion.span>
+                    <span style={{ opacity: 0.4 }}>·</span>
+                    <span style={{ color: ACCENT, fontVariantNumeric: 'tabular-nums' }}>{ping}ms</span>
+                    {!isMobile && (
+                      <>
+                        <span style={{ opacity: 0.4 }}>·</span>
+                        <span style={{ color: '#5EC8FF' }}>API 200</span>
+                      </>
+                    )}
+                </div>
+            </div>
+
+            {/* Tab bar */}
+            <div
+                style={{
+                    display: 'flex',
+                    background: BG,
+                    borderBottom: `1px solid ${BORDER}`,
+                    overflowX: 'auto',
+                }}
+            >
+                {tabs.map((t) => {
+                    const on = activeTab === t.id;
+                    return (
+                        <button
+                            key={t.id}
+                            onClick={() => setActiveTab(t.id)}
+                            className="mono"
+                            style={{
+                                background: on ? SURFACE : 'transparent',
+                                border: 'none',
+                                borderBottom: on ? `2px solid ${ACCENT}` : '2px solid transparent',
+                                color: on ? ACCENT : TEXT_DIM,
+                                padding: '9px 16px',
+                                fontSize: '0.6rem',
+                                fontWeight: 700,
+                                letterSpacing: '0.18em',
+                                textTransform: 'uppercase',
+                                cursor: 'pointer',
+                                fontFamily: 'inherit',
+                                whiteSpace: 'nowrap',
+                                transition: 'all 150ms',
+                            }}
+                        >
+                            {t.label}
+                        </button>
+                    );
+                })}
             </div>
 
             {/* Stat row */}
@@ -396,6 +553,67 @@ function LiveNetworkPanel({ isMobile }: { isMobile: boolean }) {
                     </div>
                 ))}
             </div>
+
+            {/* Live event log — console output */}
+            <div
+                style={{
+                    background: BG,
+                    borderTop: `1px solid ${BORDER}`,
+                    padding: '8px 14px 10px',
+                }}
+            >
+                <div
+                    className="mono"
+                    style={{
+                        fontSize: '0.5rem',
+                        color: TEXT_DIM,
+                        letterSpacing: '0.22em',
+                        fontWeight: 700,
+                        marginBottom: 6,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                    }}
+                >
+                    <span>EVENT STREAM · live</span>
+                    <span style={{ opacity: 0.5 }}>tail -f</span>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                    {logs.map((l, i) => (
+                        <motion.div
+                            key={l.ts + l.target + i}
+                            initial={i === 0 ? { opacity: 0, x: -6 } : false}
+                            animate={{ opacity: 1 - i * 0.18, x: 0 }}
+                            transition={{ duration: 0.3 }}
+                            className="mono"
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 10,
+                                fontSize: isMobile ? '0.58rem' : '0.62rem',
+                                lineHeight: 1.5,
+                                whiteSpace: 'nowrap',
+                                overflow: 'hidden',
+                            }}
+                        >
+                            <span style={{ color: TEXT_DIM, opacity: 0.7, flexShrink: 0 }}>{l.ts}</span>
+                            <span
+                                style={{
+                                    color: logColor(l.kind, ACCENT),
+                                    fontWeight: 700,
+                                    letterSpacing: '0.08em',
+                                    width: 36,
+                                    flexShrink: 0,
+                                }}
+                            >
+                                {l.kind}
+                            </span>
+                            <span style={{ color: TEXT, fontWeight: 600, flexShrink: 0 }}>{l.target}</span>
+                            <span style={{ color: TEXT_DIM, overflow: 'hidden', textOverflow: 'ellipsis' }}>{l.msg}</span>
+                        </motion.div>
+                    ))}
+                </div>
+            </div>
         </div>
     );
 }
@@ -415,7 +633,1120 @@ type Capability = {
     render: (isMobile: boolean) => React.ReactNode;
 };
 
+/* =================================================================== */
+/* BUILT IN-HOUSE — the origin story of the platform                   */
+/* =================================================================== */
+
+function BuiltInHouse({ isMobile }: { isMobile: boolean }) {
+    const { ACCENT, ACCENT_SOFT, BG, SURFACE, CARD, BORDER, BORDER_STRONG, TEXT, TEXT_DIM, HEADING } = useTheme();
+
+    const proofPoints = [
+        { num: '100+', lbl: 'EVs running on it daily' },
+        { num: '1', lbl: 'Owned charging hub in production' },
+        { num: '24/7', lbl: 'Live operations since Nov 2025' },
+        { num: '₹0', lbl: 'License fees, ever — built in-house' },
+    ];
+
+    return (
+        <motion.section
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-60px' }}
+            transition={{ duration: 0.6 }}
+            style={{ marginBottom: isMobile ? 56 : 140 }}
+        >
+            <SectionIndex n="00" label="WHY WE BUILT IT" />
+
+            <div
+                style={{
+                    marginTop: 24,
+                    display: 'grid',
+                    gridTemplateColumns: isMobile ? '1fr' : '1.05fr 1fr',
+                    gap: isMobile ? 28 : 60,
+                    alignItems: 'start',
+                }}
+            >
+                <div>
+                    <h2
+                        style={{
+                            fontSize: isMobile ? '1.6rem' : 'clamp(2rem, 3.6vw, 3rem)',
+                            fontWeight: 800,
+                            color: HEADING,
+                            letterSpacing: '-0.035em',
+                            lineHeight: 1.06,
+                            margin: 0,
+                            marginBottom: 20,
+                            maxWidth: 620,
+                        }}
+                    >
+                        We needed it. We couldn't buy it.{' '}
+                        <span style={{ color: ACCENT }}>So we built it.</span>
+                    </h2>
+                    <p
+                        style={{
+                            fontSize: isMobile ? '0.95rem' : '1.02rem',
+                            color: TEXT_DIM,
+                            lineHeight: 1.7,
+                            margin: 0,
+                            marginBottom: 16,
+                            maxWidth: 540,
+                        }}
+                    >
+                        When Trio's fleet went live in early 2025, every off-the-shelf CPMS we tried was either built for European tariff models, locked us into a hardware brand, or charged per-port fees that broke our unit economics from day one.
+                    </p>
+                    <p
+                        style={{
+                            fontSize: isMobile ? '0.95rem' : '1.02rem',
+                            color: TEXT_DIM,
+                            lineHeight: 1.7,
+                            margin: 0,
+                            marginBottom: 16,
+                            maxWidth: 540,
+                        }}
+                    >
+                        So our engineering team wrote our own. Every release ships to our own fleet first — load-balanced across our hub in New Town, billed through our own tariff engine, monitored by our own ops console. <strong style={{ color: TEXT, fontWeight: 600 }}>If it doesn't survive a Kolkata Monday morning rush, it doesn't ship.</strong>
+                    </p>
+                    <p
+                        style={{
+                            fontSize: isMobile ? '0.95rem' : '1.02rem',
+                            color: TEXT,
+                            lineHeight: 1.7,
+                            margin: 0,
+                            maxWidth: 540,
+                        }}
+                    >
+                        Now the same platform is open to partners — fleet operators, residential complexes, CPO networks, and anyone running OCPP hardware in India.
+                    </p>
+                </div>
+
+                {/* Proof card */}
+                <div
+                    style={{
+                        background: SURFACE,
+                        border: `1px solid ${BORDER_STRONG}`,
+                        borderRadius: 16,
+                        padding: isMobile ? '22px 22px' : '28px 30px',
+                        position: 'relative',
+                        overflow: 'hidden',
+                    }}
+                >
+                    <div style={{ position: 'absolute', inset: 0, backgroundImage: `radial-gradient(circle at 50% 0%, ${ACCENT_SOFT}14, transparent 60%)`, pointerEvents: 'none' }} />
+                    <div style={{ position: 'relative', zIndex: 1 }}>
+                        <div
+                            className="mono"
+                            style={{
+                                fontSize: '0.6rem',
+                                color: ACCENT,
+                                fontWeight: 700,
+                                letterSpacing: '0.22em',
+                                marginBottom: 16,
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 8,
+                            }}
+                        >
+                            <span style={{ width: 6, height: 6, borderRadius: '50%', background: ACCENT, boxShadow: `0 0 8px ${ACCENT}` }} />
+                            <span>BATTLE-TESTED · PRODUCTION</span>
+                        </div>
+                        <div
+                            style={{
+                                display: 'grid',
+                                gridTemplateColumns: 'repeat(2, 1fr)',
+                                gap: 1,
+                                background: BORDER,
+                                border: `1px solid ${BORDER}`,
+                                borderRadius: 12,
+                                overflow: 'hidden',
+                            }}
+                        >
+                            {proofPoints.map((p) => (
+                                <div key={p.lbl} style={{ background: BG, padding: '18px 16px' }}>
+                                    <div
+                                        style={{
+                                            fontFamily: "'Cormorant Garamond', serif",
+                                            fontSize: isMobile ? '1.7rem' : '2rem',
+                                            fontWeight: 700,
+                                            color: ACCENT,
+                                            lineHeight: 1,
+                                            marginBottom: 6,
+                                        }}
+                                    >
+                                        {p.num}
+                                    </div>
+                                    <div
+                                        className="mono"
+                                        style={{
+                                            fontSize: '0.56rem',
+                                            color: TEXT_DIM,
+                                            letterSpacing: '0.14em',
+                                            textTransform: 'uppercase',
+                                            lineHeight: 1.45,
+                                        }}
+                                    >
+                                        {p.lbl}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        <div
+                            style={{
+                                marginTop: 18,
+                                padding: '12px 14px',
+                                background: 'rgba(0,255,136,0.05)',
+                                border: `1px solid ${BORDER}`,
+                                borderRadius: 10,
+                                fontFamily: "'Cormorant Garamond', serif",
+                                fontStyle: 'italic',
+                                fontSize: isMobile ? '0.95rem' : '1.05rem',
+                                lineHeight: 1.5,
+                                color: HEADING,
+                            }}
+                        >
+                            "If it doesn't run our fleet, we don't ship it to yours."
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </motion.section>
+    );
+}
+
+/* =================================================================== */
+/* CAPABILITY CONSOLE — feature modules                                */
+/* =================================================================== */
+
+/* =================================================================== */
+/* DRIVER APP — three phone mockups: discover, scan, session            */
+/* =================================================================== */
+
+function PhoneFrame({ children, label }: { children: React.ReactNode; label: string }) {
+    const { ACCENT, BG, SURFACE, BORDER_STRONG, TEXT_DIM } = useTheme();
+    return (
+        <div
+            style={{
+                width: '100%',
+                maxWidth: 260,
+                margin: '0 auto',
+                aspectRatio: '9 / 19.5',
+                background: '#000',
+                border: `1px solid ${BORDER_STRONG}`,
+                borderRadius: 36,
+                padding: 6,
+                position: 'relative',
+                boxShadow: `0 30px 60px rgba(0,0,0,0.6), 0 0 0 1px ${BORDER_STRONG}, 0 0 24px ${ACCENT}10`,
+            }}
+        >
+            {/* notch */}
+            <div
+                style={{
+                    position: 'absolute',
+                    top: 6,
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    width: 80,
+                    height: 18,
+                    background: '#000',
+                    borderRadius: '0 0 14px 14px',
+                    zIndex: 10,
+                }}
+            />
+            {/* inner screen */}
+            <div
+                style={{
+                    width: '100%',
+                    height: '100%',
+                    background: SURFACE,
+                    borderRadius: 30,
+                    overflow: 'hidden',
+                    position: 'relative',
+                }}
+            >
+                {children}
+            </div>
+            {/* screen label */}
+            <div
+                className="mono"
+                style={{
+                    position: 'absolute',
+                    bottom: -28,
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    fontSize: '0.55rem',
+                    fontWeight: 700,
+                    color: TEXT_DIM,
+                    letterSpacing: '0.22em',
+                    textTransform: 'uppercase',
+                    whiteSpace: 'nowrap',
+                }}
+            >
+                {label}
+            </div>
+        </div>
+    );
+}
+
+function PhoneBottomNav() {
+    const { ACCENT, BG, BORDER, TEXT_DIM } = useTheme();
+    const items = [
+        { id: 'home', d: 'M3 12l9-9 9 9 M5 10v11h14V10' },
+        { id: 'route', d: 'M3 6h13a3 3 0 0 1 3 3v6 M19 18h-3 M7 18H4 M9 6l-3 3 3 3 M15 12l3 3-3 3' },
+        { id: 'scan', d: '', icon: true },
+        { id: 'wallet', d: 'M3 7h18v12H3z M3 11h18 M16 15h2' },
+        { id: 'profile', d: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8z M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1' },
+    ];
+    return (
+        <div
+            style={{
+                position: 'absolute',
+                bottom: 0,
+                left: 0,
+                right: 0,
+                background: BG,
+                borderTop: `1px solid ${BORDER}`,
+                padding: '8px 6px 12px',
+                display: 'flex',
+                justifyContent: 'space-around',
+                alignItems: 'center',
+                zIndex: 5,
+            }}
+        >
+            {items.map((it) =>
+                it.icon ? (
+                    <div
+                        key={it.id}
+                        style={{
+                            width: 36,
+                            height: 36,
+                            borderRadius: '50%',
+                            background: ACCENT,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            boxShadow: `0 4px 12px ${ACCENT}55`,
+                            transform: 'translateY(-8px)',
+                        }}
+                    >
+                        <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="#0d0d0d" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M4 4h6v6H4z M14 4h6v6h-6z M4 14h6v6H4z M14 14h6v6h-6z" />
+                        </svg>
+                    </div>
+                ) : (
+                    <svg
+                        key={it.id}
+                        width={16}
+                        height={16}
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke={TEXT_DIM}
+                        strokeWidth={1.8}
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                    >
+                        <path d={it.d} />
+                    </svg>
+                ),
+            )}
+        </div>
+    );
+}
+
+function DiscoveryMockup() {
+    const { ACCENT } = useTheme();
+    return (
+        <div style={{ position: 'absolute', inset: 0, background: '#eae6dc' }}>
+            {/* Stylized SVG map — roads, blocks, water */}
+            <svg
+                viewBox="0 0 240 480"
+                preserveAspectRatio="xMidYMid slice"
+                style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}
+                aria-hidden
+            >
+                {/* base land */}
+                <rect width="240" height="480" fill="#eae6dc" />
+                {/* water body — diagonal river */}
+                <path
+                    d="M -10 360 C 40 320 90 380 140 340 C 190 300 230 350 260 320 L 260 500 L -10 500 Z"
+                    fill="#b9d6df"
+                    opacity="0.85"
+                />
+                {/* park / greenery */}
+                <ellipse cx="40" cy="180" rx="36" ry="28" fill="#c7d8b3" opacity="0.9" />
+                <rect x="160" y="80" width="68" height="48" rx="4" fill="#c7d8b3" opacity="0.85" />
+                {/* building block clusters — light tan rects */}
+                {[
+                    { x: 14, y: 60, w: 32, h: 22 },
+                    { x: 50, y: 56, w: 26, h: 30 },
+                    { x: 92, y: 60, w: 38, h: 24 },
+                    { x: 14, y: 120, w: 24, h: 28 },
+                    { x: 82, y: 124, w: 30, h: 22 },
+                    { x: 122, y: 120, w: 28, h: 30 },
+                    { x: 14, y: 220, w: 38, h: 24 },
+                    { x: 60, y: 220, w: 24, h: 28 },
+                    { x: 96, y: 224, w: 38, h: 22 },
+                    { x: 148, y: 220, w: 30, h: 28 },
+                    { x: 184, y: 224, w: 42, h: 22 },
+                    { x: 14, y: 280, w: 32, h: 24 },
+                    { x: 56, y: 282, w: 28, h: 22 },
+                    { x: 96, y: 280, w: 40, h: 26 },
+                    { x: 146, y: 282, w: 30, h: 24 },
+                    { x: 184, y: 286, w: 42, h: 22 },
+                ].map((b, i) => (
+                    <rect
+                        key={i}
+                        x={b.x}
+                        y={b.y}
+                        width={b.w}
+                        height={b.h}
+                        rx="2"
+                        fill="#dcd6c4"
+                        opacity="0.95"
+                    />
+                ))}
+                {/* main roads — white strokes */}
+                <g stroke="#ffffff" strokeLinecap="round" fill="none">
+                    {/* horizontal arterial roads */}
+                    <path d="M -10 100 L 260 100" strokeWidth="6" />
+                    <path d="M -10 200 L 260 200" strokeWidth="5" />
+                    <path d="M -10 260 L 260 260" strokeWidth="4" />
+                    {/* vertical roads */}
+                    <path d="M 50 -10 L 50 360" strokeWidth="5" />
+                    <path d="M 140 -10 L 140 360" strokeWidth="5" />
+                    <path d="M 90 100 L 90 360" strokeWidth="3" />
+                    {/* curvy road */}
+                    <path d="M -10 320 C 60 300 120 340 200 300 L 260 290" strokeWidth="4" />
+                </g>
+                {/* secondary roads — thin gray */}
+                <g stroke="#c6c0ae" strokeWidth="1.5" fill="none">
+                    <path d="M -10 150 L 240 150" />
+                    <path d="M -10 240 L 240 240" />
+                    <path d="M 110 -10 L 110 200" />
+                    <path d="M 180 100 L 180 320" />
+                    <path d="M 20 200 L 20 320" />
+                </g>
+                {/* tiny labels — place names */}
+                <text x="20" y="42" fontSize="6" fontWeight="700" fill="#8a8472" fontFamily="'Inter', sans-serif">KALITALA</text>
+                <text x="120" y="170" fontSize="6" fontWeight="700" fill="#8a8472" fontFamily="'Inter', sans-serif">NEWTOWN</text>
+                <text x="160" y="430" fontSize="6" fontWeight="700" fill="#5a8896" fontFamily="'Inter', sans-serif">RIVER</text>
+            </svg>
+
+            {/* top status bar */}
+            <div style={{ position: 'absolute', top: 30, left: 14, right: 14, display: 'flex', justifyContent: 'space-between' }} className="mono">
+                <span style={{ fontSize: '0.5rem', color: '#3a3a35', fontWeight: 700 }}>9:41</span>
+                <span style={{ fontSize: '0.5rem', color: '#3a3a35', fontWeight: 700 }}>●●●●</span>
+            </div>
+
+            {/* map pins */}
+            {[
+                { x: '28%', y: '36%', label: 'TRIOEV01', active: true },
+                { x: '62%', y: '50%', label: '' },
+                { x: '38%', y: '58%', label: '' },
+                { x: '70%', y: '26%', label: '' },
+            ].map((p, i) => (
+                <div key={i} style={{ position: 'absolute', left: p.x, top: p.y, transform: 'translate(-50%, -100%)' }}>
+                    {p.active && (
+                        <div
+                            style={{
+                                position: 'absolute',
+                                bottom: 'calc(100% + 6px)',
+                                left: '50%',
+                                transform: 'translateX(-50%)',
+                                background: '#0d0d0d',
+                                color: ACCENT,
+                                padding: '4px 8px',
+                                borderRadius: 6,
+                                fontSize: '0.45rem',
+                                fontWeight: 700,
+                                whiteSpace: 'nowrap',
+                                border: `1px solid ${ACCENT}55`,
+                                fontFamily: "'Inter', sans-serif",
+                                boxShadow: '0 4px 10px rgba(0,0,0,0.3)',
+                            }}
+                        >
+                            {p.label}
+                        </div>
+                    )}
+                    <div
+                        style={{
+                            width: 14,
+                            height: 14,
+                            borderRadius: '50%',
+                            background: ACCENT,
+                            border: '2px solid #fff',
+                            boxShadow: `0 0 10px ${ACCENT}cc, 0 2px 4px rgba(0,0,0,0.4)`,
+                        }}
+                    />
+                </div>
+            ))}
+
+            {/* user location dot */}
+            <div
+                style={{
+                    position: 'absolute',
+                    left: '50%',
+                    top: '78%',
+                    transform: 'translateX(-50%)',
+                    width: 12,
+                    height: 12,
+                    borderRadius: '50%',
+                    background: '#5EC8FF',
+                    border: '2px solid #fff',
+                    boxShadow: '0 0 12px #5EC8FF99, 0 2px 4px rgba(0,0,0,0.4)',
+                }}
+            />
+            <PhoneBottomNav />
+        </div>
+    );
+}
+
+function ScanMockup() {
+    const { ACCENT, BG, TEXT, TEXT_DIM, BORDER } = useTheme();
+    return (
+        <div style={{ position: 'absolute', inset: 0, background: '#0a0d0b' }}>
+            {/* status bar */}
+            <div style={{ position: 'absolute', top: 30, left: 14, right: 14, display: 'flex', justifyContent: 'space-between' }} className="mono">
+                <span style={{ fontSize: '0.5rem', color: TEXT, fontWeight: 700 }}>9:41</span>
+                <span style={{ fontSize: '0.5rem', color: TEXT, fontWeight: 700 }}>●●●●</span>
+            </div>
+            {/* header text */}
+            <div
+                style={{
+                    position: 'absolute',
+                    top: 56,
+                    left: 0,
+                    right: 0,
+                    textAlign: 'center',
+                    fontSize: '0.72rem',
+                    color: TEXT,
+                    fontWeight: 600,
+                    fontFamily: "'Inter', sans-serif",
+                }}
+            >
+                Scan QR on the charger
+            </div>
+            {/* viewfinder */}
+            <div
+                style={{
+                    position: 'absolute',
+                    top: '32%',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    width: '60%',
+                    aspectRatio: '1 / 1',
+                }}
+            >
+                {[
+                    { t: 0, l: 0, br: false, bb: false },
+                    { t: 0, r: 0, bl: false, bb: false },
+                    { b: 0, l: 0, br: false, bt: false },
+                    { b: 0, r: 0, bl: false, bt: false },
+                ].map((c, i) => {
+                    const isTop = c.t === 0;
+                    const isLeft = c.l === 0;
+                    return (
+                        <div
+                            key={i}
+                            style={{
+                                position: 'absolute',
+                                top: c.t,
+                                bottom: c.b,
+                                left: c.l,
+                                right: c.r,
+                                width: 22,
+                                height: 22,
+                                borderTop: isTop ? `2px solid ${ACCENT}` : 'none',
+                                borderBottom: !isTop ? `2px solid ${ACCENT}` : 'none',
+                                borderLeft: isLeft ? `2px solid ${ACCENT}` : 'none',
+                                borderRight: !isLeft ? `2px solid ${ACCENT}` : 'none',
+                                borderRadius: 4,
+                                filter: `drop-shadow(0 0 4px ${ACCENT}66)`,
+                            }}
+                        />
+                    );
+                })}
+            </div>
+            {/* scan line */}
+            <motion.div
+                animate={{ top: ['32%', '60%', '32%'] }}
+                transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut' }}
+                style={{
+                    position: 'absolute',
+                    left: '20%',
+                    right: '20%',
+                    height: 2,
+                    background: `linear-gradient(90deg, transparent, ${ACCENT}, transparent)`,
+                    filter: `drop-shadow(0 0 6px ${ACCENT})`,
+                }}
+            />
+            {/* enter ID button */}
+            <div
+                style={{
+                    position: 'absolute',
+                    bottom: 90,
+                    left: 16,
+                    right: 16,
+                    padding: '10px 0',
+                    textAlign: 'center',
+                    fontSize: '0.65rem',
+                    fontWeight: 700,
+                    color: BG,
+                    background: ACCENT,
+                    borderRadius: 8,
+                    boxShadow: `0 4px 14px ${ACCENT}44`,
+                    fontFamily: "'Inter', sans-serif",
+                }}
+            >
+                Enter Charger ID
+            </div>
+            <div
+                style={{
+                    position: 'absolute',
+                    bottom: 72,
+                    left: 16,
+                    right: 16,
+                    textAlign: 'center',
+                    fontSize: '0.48rem',
+                    color: TEXT_DIM,
+                    fontFamily: "'Inter', sans-serif",
+                }}
+            >
+                Charger ID is below the QR
+            </div>
+            <PhoneBottomNav />
+        </div>
+    );
+}
+
+function EnterIDMockup() {
+    const { ACCENT, BG, SURFACE, BORDER, BORDER_STRONG, TEXT, TEXT_DIM, HEADING } = useTheme();
+    return (
+        <div style={{ position: 'absolute', inset: 0, background: '#f7f7f5' }}>
+            {/* status bar */}
+            <div style={{ position: 'absolute', top: 30, left: 14, right: 14, display: 'flex', justifyContent: 'space-between' }} className="mono">
+                <span style={{ fontSize: '0.5rem', color: '#3a3a35', fontWeight: 700 }}>9:41</span>
+                <span style={{ fontSize: '0.5rem', color: '#3a3a35', fontWeight: 700 }}>●●●●</span>
+            </div>
+            {/* back chevron */}
+            <div style={{ position: 'absolute', top: 56, left: 14, display: 'flex', alignItems: 'center', gap: 6, color: '#3a3a35' }}>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6" /></svg>
+                <span style={{ fontSize: '0.6rem', fontFamily: "'Inter', sans-serif", fontWeight: 500 }}>back</span>
+            </div>
+            {/* heading */}
+            <div style={{ position: 'absolute', top: 84, left: 16, right: 16, fontFamily: "'Inter', sans-serif" }}>
+                <div style={{ fontSize: '0.95rem', fontWeight: 800, color: '#0d0d0d', marginBottom: 4 }}>Enter Charger ID</div>
+                <div style={{ fontSize: '0.5rem', color: '#7a7a72' }}>Find charger ID below QR code on charger</div>
+            </div>
+            {/* form */}
+            <div style={{ position: 'absolute', top: 150, left: 16, right: 16, fontFamily: "'Inter', sans-serif" }}>
+                <div style={{ fontSize: '0.55rem', color: '#0d0d0d', fontWeight: 700, marginBottom: 6 }}>Charger ID</div>
+                <div style={{ background: '#fff', border: '1px solid #FF7373', borderRadius: 4, padding: '10px 12px', fontSize: '0.55rem', color: '#bdbab1' }}>
+                    Enter Charger ID
+                </div>
+                <div style={{ fontSize: '0.42rem', color: '#FF5252', fontWeight: 600, marginTop: 4 }}>Please enter charger Id</div>
+            </div>
+            {/* submit button */}
+            <div
+                style={{
+                    position: 'absolute',
+                    top: 232,
+                    left: 16,
+                    right: 16,
+                    padding: '10px 0',
+                    textAlign: 'center',
+                    fontSize: '0.65rem',
+                    fontWeight: 700,
+                    color: '#fff',
+                    background: '#00b850',
+                    borderRadius: 4,
+                    boxShadow: '0 4px 12px rgba(0,184,80,0.3)',
+                    fontFamily: "'Inter', sans-serif",
+                }}
+            >
+                Submit
+            </div>
+            {/* faux keyboard hint */}
+            <div style={{ position: 'absolute', bottom: 56, left: 0, right: 0, height: 110, background: '#d3d6db', borderTop: '1px solid #bbb' }}>
+                <div style={{ display: 'grid', gridTemplateRows: 'repeat(4, 1fr)', gap: 2, padding: '6px 4px', height: '100%' }}>
+                    {[10, 10, 9, 7].map((n, r) => (
+                        <div key={r} style={{ display: 'grid', gridTemplateColumns: `repeat(${n}, 1fr)`, gap: 2 }}>
+                            {Array.from({ length: n }).map((_, i) => (
+                                <div key={i} style={{ background: '#fff', borderRadius: 3, boxShadow: '0 1px 1px rgba(0,0,0,0.1)' }} />
+                            ))}
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </div>
+    );
+}
+
+function ProfileMockup() {
+    const { ACCENT } = useTheme();
+    const items = [
+        { icon: 'M3 13l9-9 9 9 M5 11v10h14V11', label: 'My Vehicle' },
+        { icon: 'M13 2L3 14h9l-1 8 10-12h-9l1-8z', label: 'Autocharge' },
+        { icon: 'M21 12a9 9 0 1 1-3-6.7 M21 4v5h-5', label: 'Charging Session' },
+        { icon: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8z M3 21a9 9 0 0 1 18 0', label: 'Account details' },
+        { icon: 'M3 5h12 M3 12h12 M3 19h12 M17 5l4 7-4 7', label: 'Change Language' },
+        { icon: 'M12 2a10 10 0 1 0 10 10 M12 17v.01 M9 9a3 3 0 1 1 5.2 2c-.4.3-.7.5-1 .8-1 .8-1.2 1.4-1.2 2.2', label: 'Help and Support' },
+        { icon: 'M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2 M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z', label: 'Refer a Friend' },
+        { icon: 'M3 7h18v12H3z M3 11h18', label: 'My Promo Codes' },
+    ];
+    return (
+        <div style={{ position: 'absolute', inset: 0, background: '#f7f7f5' }}>
+            {/* status bar */}
+            <div style={{ position: 'absolute', top: 30, left: 14, right: 14, display: 'flex', justifyContent: 'space-between' }} className="mono">
+                <span style={{ fontSize: '0.5rem', color: '#3a3a35', fontWeight: 700 }}>9:41</span>
+                <span style={{ fontSize: '0.5rem', color: '#3a3a35', fontWeight: 700 }}>●●●●</span>
+            </div>
+            {/* user header */}
+            <div style={{ position: 'absolute', top: 56, left: 14, right: 14, display: 'flex', alignItems: 'center', gap: 8 }}>
+                <div style={{ width: 20, height: 20, borderRadius: '50%', background: '#e1e1d8' }} />
+                <span style={{ fontSize: '0.7rem', fontWeight: 800, color: '#0d0d0d', fontFamily: "'Inter', sans-serif", letterSpacing: '0.04em' }}>SS FLEET</span>
+            </div>
+            {/* menu list */}
+            <div style={{ position: 'absolute', top: 90, left: 8, right: 8, bottom: 90, overflow: 'hidden' }}>
+                {items.map((it, i) => (
+                    <div
+                        key={i}
+                        style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 8,
+                            padding: '7px 8px',
+                            borderBottom: '1px solid #e6e4dc',
+                            background: '#fff',
+                        }}
+                    >
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#3a3a35" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+                            <path d={it.icon} />
+                        </svg>
+                        <span style={{ flex: 1, fontSize: '0.55rem', fontFamily: "'Inter', sans-serif", color: '#0d0d0d', fontWeight: 500 }}>{it.label}</span>
+                        <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#bdbab1" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <polyline points="9 18 15 12 9 6" />
+                        </svg>
+                    </div>
+                ))}
+            </div>
+            {/* log out button */}
+            <div
+                style={{
+                    position: 'absolute',
+                    bottom: 60,
+                    left: 12,
+                    right: 12,
+                    padding: '7px 0',
+                    textAlign: 'center',
+                    fontSize: '0.55rem',
+                    fontWeight: 700,
+                    color: '#FF5252',
+                    border: '1px solid #FF5252',
+                    borderRadius: 4,
+                    background: '#fff',
+                    fontFamily: "'Inter', sans-serif",
+                }}
+            >
+                Log Out
+            </div>
+            <PhoneBottomNav />
+        </div>
+    );
+}
+
+function SessionMockup() {
+    const { ACCENT, ACCENT_SOFT, BG, SURFACE, CARD, BORDER, BORDER_STRONG, TEXT, TEXT_DIM, HEADING } = useTheme();
+    return (
+        <div style={{ position: 'absolute', inset: 0, background: BG, display: 'flex', flexDirection: 'column' }}>
+            {/* hero / charger photo placeholder */}
+            <div
+                style={{
+                    height: '32%',
+                    background: `linear-gradient(135deg, #1a2018, #0d1410), radial-gradient(circle at 50% 50%, ${ACCENT}1f, transparent 60%)`,
+                    position: 'relative',
+                    overflow: 'hidden',
+                }}
+            >
+                {/* faux charger silhouette */}
+                <div
+                    style={{
+                        position: 'absolute',
+                        bottom: '15%',
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                        width: 36,
+                        height: 56,
+                        background: `linear-gradient(180deg, #2a2f2c, #1a1e1b)`,
+                        borderRadius: 6,
+                        border: `1px solid ${BORDER_STRONG}`,
+                    }}
+                >
+                    <div style={{ position: 'absolute', top: 6, left: 6, right: 6, height: 24, background: ACCENT, borderRadius: 3, opacity: 0.8, boxShadow: `0 0 12px ${ACCENT}66` }} />
+                </div>
+            </div>
+            {/* content */}
+            <div style={{ padding: '12px 14px', flex: 1, display: 'flex', flexDirection: 'column', gap: 10 }}>
+                <div>
+                    <div style={{ fontSize: '0.85rem', fontWeight: 800, color: TEXT, letterSpacing: '-0.01em', fontFamily: "'Inter', sans-serif" }}>TRIOEV01</div>
+                    <div style={{ fontSize: '0.45rem', color: TEXT_DIM, marginTop: 2, fontFamily: "'Inter', sans-serif" }}>Charger ID: TRIOEV01 · Operator: Trio EV</div>
+                </div>
+                <div style={{ display: 'flex', gap: 6 }}>
+                    <div style={{ flex: 1, background: ACCENT, color: BG, padding: '6px 0', textAlign: 'center', borderRadius: 6, fontSize: '0.5rem', fontWeight: 700, fontFamily: "'Inter', sans-serif" }}>Direction</div>
+                    <div style={{ flex: 1, background: 'transparent', border: `1px solid ${ACCENT}`, color: ACCENT, padding: '6px 0', textAlign: 'center', borderRadius: 6, fontSize: '0.5rem', fontWeight: 700, fontFamily: "'Inter', sans-serif" }}>Contact</div>
+                </div>
+                <div style={{ borderTop: `1px solid ${BORDER}`, paddingTop: 8 }}>
+                    <div className="mono" style={{ fontSize: '0.5rem', color: TEXT_DIM, fontWeight: 700, letterSpacing: '0.16em', marginBottom: 6 }}>
+                        AVAILABLE CONNECTOR
+                    </div>
+                    <div style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderRadius: 8, padding: '8px 10px' }}>
+                        <div style={{ fontSize: '0.58rem', fontWeight: 700, color: TEXT, marginBottom: 4, fontFamily: "'Inter', sans-serif" }}>CCS Type 2 A</div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <span style={{ fontSize: '0.5rem', color: TEXT_DIM, fontFamily: "'Inter', sans-serif" }}>30.0 kWh</span>
+                            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, fontSize: '0.45rem', color: '#FF7373', fontWeight: 600, fontFamily: "'Inter', sans-serif" }}>
+                                <span style={{ width: 5, height: 5, borderRadius: '50%', background: '#FF7373' }} />
+                                In Use
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <PhoneBottomNav />
+        </div>
+    );
+}
+
+function AppScreenshot({ src, fallback }: { src: string; fallback: React.ReactNode }) {
+    const [failed, setFailed] = useState(false);
+    if (failed) return <>{fallback}</>;
+    return (
+        <img
+            src={src}
+            alt=""
+            onError={() => setFailed(true)}
+            style={{
+                position: 'absolute',
+                inset: 0,
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                objectPosition: 'center top',
+            }}
+        />
+    );
+}
+
+function DriverApp({ isMobile }: { isMobile: boolean }) {
+    const { ACCENT, ACCENT_SOFT, BG, SURFACE, CARD, BORDER, BORDER_STRONG, TEXT, TEXT_DIM, HEADING } = useTheme();
+
+    const screens = [
+        {
+            n: '01',
+            label: 'DISCOVERY',
+            title: 'Find the nearest Trio charger.',
+            desc: 'Live map shows every Trio port with real-time availability — synced from the same operator console our team uses.',
+            mockup: <AppScreenshot src="/app-map.png" fallback={<DiscoveryMockup />} />,
+            frameLabel: 'HOME · MAP',
+        },
+        {
+            n: '02',
+            label: 'INSTANT START',
+            title: 'Scan. Charge. Done.',
+            desc: 'The QR scanner kicks off a session in seconds. Damaged code? Tap "Enter Charger ID" and type it manually.',
+            mockup: <AppScreenshot src="/app-scan.png" fallback={<ScanMockup />} />,
+            frameLabel: 'SCAN',
+        },
+        {
+            n: '03',
+            label: 'MANUAL FALLBACK',
+            title: 'Type the ID, start the session.',
+            desc: 'Validation kicks in immediately — no wrong codes, no silent failures. The driver knows whether the ID is good before they walk over to plug in.',
+            mockup: <AppScreenshot src="/app-enter-id.png" fallback={<EnterIDMockup />} />,
+            frameLabel: 'ENTER ID',
+        },
+        {
+            n: '04',
+            label: 'CHARGER DETAIL',
+            title: 'See ports, connectors, hours.',
+            desc: 'Tap a station for live availability, supported connectors, operating hours, bay photos, and reviews — before you commit to driving over.',
+            mockup: <AppScreenshot src="/app-detail.png" fallback={<SessionMockup />} />,
+            frameLabel: 'STATION',
+        },
+        {
+            n: '05',
+            label: 'PAY & MANAGE',
+            title: 'Wallet, autocharge, profile.',
+            desc: 'In-app wallet for one-tap payments. Autocharge for fleet drivers. Vehicles, promo codes, receipts, and full session history — all in one place.',
+            mockup: <AppScreenshot src="/app-profile.png" fallback={<ProfileMockup />} />,
+            frameLabel: 'PROFILE',
+        },
+    ];
+
+    return (
+        <motion.section
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-60px' }}
+            transition={{ duration: 0.6 }}
+            style={{ marginBottom: isMobile ? 56 : 140 }}
+        >
+            <SectionIndex n="D" label="THE DRIVER APP" />
+
+            <div
+                style={{
+                    marginTop: 24,
+                    marginBottom: isMobile ? 32 : 48,
+                    display: 'grid',
+                    gridTemplateColumns: isMobile ? '1fr' : '1.1fr 1fr',
+                    gap: isMobile ? 16 : 48,
+                    alignItems: 'end',
+                }}
+            >
+                <h2
+                    style={{
+                        fontFamily: "'Outfit', sans-serif",
+                        fontSize: isMobile ? '1.4rem' : 'clamp(1.6rem, 2.6vw, 2.2rem)',
+                        fontWeight: 600,
+                        color: HEADING,
+                        letterSpacing: '-0.02em',
+                        lineHeight: 1.12,
+                        margin: 0,
+                        maxWidth: 560,
+                    }}
+                >
+                    Three taps — from finding{' '}
+                    <span style={{ color: ACCENT }}>to charging.</span>
+                </h2>
+                <p
+                    style={{
+                        fontSize: isMobile ? '0.92rem' : '0.98rem',
+                        color: TEXT_DIM,
+                        lineHeight: 1.65,
+                        margin: 0,
+                        maxWidth: 460,
+                    }}
+                >
+                    The same driver app our fleet uses every day — iOS &amp; Android, white-labelable to your brand. Map discovery, QR-scan start, wallet payments, autocharge, and session history.
+                </p>
+            </div>
+
+            {isMobile ? (
+                <DriverAppMobileCarousel screens={screens} />
+            ) : (
+                <div
+                    style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(5, 1fr)',
+                        gap: 18,
+                        rowGap: 64,
+                    }}
+                >
+                    {screens.map((s) => (
+                        <div key={s.n} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
+                            <PhoneFrame label={s.frameLabel}>{s.mockup}</PhoneFrame>
+                            <div
+                                style={{
+                                    marginTop: 56,
+                                    width: '100%',
+                                    maxWidth: 300,
+                                }}
+                            >
+                                <div
+                                    className="mono"
+                                    style={{
+                                        fontSize: '0.58rem',
+                                        color: ACCENT,
+                                        letterSpacing: '0.22em',
+                                        fontWeight: 700,
+                                        marginBottom: 10,
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        gap: 10,
+                                    }}
+                                >
+                                    <span>{s.n}</span>
+                                    <span style={{ width: 24, height: 1, background: BORDER_STRONG }} />
+                                    <span>{s.label}</span>
+                                </div>
+                                <h3
+                                    style={{
+                                        fontFamily: "'Outfit', sans-serif",
+                                        fontSize: '1.2rem',
+                                        fontWeight: 600,
+                                        color: HEADING,
+                                        lineHeight: 1.18,
+                                        letterSpacing: '-0.02em',
+                                        margin: '0 0 10px',
+                                    }}
+                                >
+                                    {s.title}
+                                </h3>
+                                <p
+                                    style={{
+                                        fontSize: '0.84rem',
+                                        color: TEXT_DIM,
+                                        lineHeight: 1.65,
+                                        margin: 0,
+                                    }}
+                                >
+                                    {s.desc}
+                                </p>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            )}
+        </motion.section>
+    );
+}
+
+type DriverScreen = {
+    n: string;
+    label: string;
+    title: string;
+    desc: string;
+    mockup: React.ReactNode;
+    frameLabel: string;
+};
+
+function DriverAppMobileCarousel({ screens }: { screens: DriverScreen[] }) {
+    const { ACCENT, BORDER_STRONG, TEXT_DIM, HEADING } = useTheme();
+    const [active, setActive] = useState(0);
+    const [paused, setPaused] = useState(false);
+
+    useEffect(() => {
+        if (paused) return;
+        const id = setInterval(() => {
+            setActive((i) => (i + 1) % screens.length);
+        }, 4500);
+        return () => clearInterval(id);
+    }, [paused, screens.length]);
+
+    const current = screens[active];
+
+    return (
+        <div style={{ position: 'relative' }}>
+            {/* Phone with sliding screens */}
+            <div
+                onTouchStart={() => setPaused(true)}
+                onTouchEnd={() => setTimeout(() => setPaused(false), 800)}
+                style={{ display: 'flex', justifyContent: 'center', position: 'relative' }}
+            >
+                <PhoneFrame label={current.frameLabel}>
+                    <AnimatePresence mode="wait">
+                        <motion.div
+                            key={current.n}
+                            initial={{ opacity: 0, x: 30, scale: 0.98 }}
+                            animate={{ opacity: 1, x: 0, scale: 1 }}
+                            exit={{ opacity: 0, x: -30, scale: 0.98 }}
+                            transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+                            style={{ position: 'absolute', inset: 0 }}
+                        >
+                            {current.mockup}
+                        </motion.div>
+                    </AnimatePresence>
+                </PhoneFrame>
+            </div>
+
+            {/* Pagination dots */}
+            <div
+                style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    gap: 8,
+                    marginTop: 52,
+                    marginBottom: 22,
+                }}
+            >
+                {screens.map((s, i) => {
+                    const on = i === active;
+                    return (
+                        <button
+                            key={s.n}
+                            onClick={() => {
+                                setActive(i);
+                                setPaused(true);
+                                setTimeout(() => setPaused(false), 6000);
+                            }}
+                            aria-label={`Show ${s.label}`}
+                            style={{
+                                width: on ? 22 : 7,
+                                height: 7,
+                                borderRadius: 99,
+                                background: on ? ACCENT : 'rgba(255,255,255,0.18)',
+                                border: 'none',
+                                padding: 0,
+                                cursor: 'pointer',
+                                boxShadow: on ? `0 0 8px ${ACCENT}66` : 'none',
+                                transition: 'width 0.35s ease, background 0.35s ease',
+                            }}
+                        />
+                    );
+                })}
+            </div>
+
+            {/* Description card — animates per active screen */}
+            <AnimatePresence mode="wait">
+                <motion.div
+                    key={current.n + '-desc'}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={{ duration: 0.35 }}
+                    style={{ textAlign: 'center', maxWidth: 360, margin: '0 auto', padding: '0 12px' }}
+                >
+                    <div
+                        className="mono"
+                        style={{
+                            fontSize: '0.58rem',
+                            color: ACCENT,
+                            letterSpacing: '0.22em',
+                            fontWeight: 700,
+                            marginBottom: 10,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            gap: 10,
+                        }}
+                    >
+                        <span>{current.n}</span>
+                        <span style={{ width: 24, height: 1, background: BORDER_STRONG }} />
+                        <span>{current.label}</span>
+                    </div>
+                    <h3
+                        style={{
+                            fontFamily: "'Outfit', sans-serif",
+                            fontSize: '1.15rem',
+                            fontWeight: 600,
+                            color: HEADING,
+                            lineHeight: 1.18,
+                            letterSpacing: '-0.02em',
+                            margin: '0 0 10px',
+                        }}
+                    >
+                        {current.title}
+                    </h3>
+                    <p
+                        style={{
+                            fontSize: '0.86rem',
+                            color: TEXT_DIM,
+                            lineHeight: 1.65,
+                            margin: 0,
+                        }}
+                    >
+                        {current.desc}
+                    </p>
+                </motion.div>
+            </AnimatePresence>
+        </div>
+    );
+}
+
+/* =================================================================== */
+/* CAPABILITY CONSOLE — feature modules                                */
+/* =================================================================== */
+
 function CapabilityConsole({ isMobile }: { isMobile: boolean }) {
+    const { ACCENT, ACCENT_SOFT, BG, SURFACE, CARD, BORDER, BORDER_STRONG, TEXT, TEXT_DIM, HEADING, ACCENT_ON } = useTheme();
     const [active, setActive] = useState(0);
 
     const caps: Capability[] = [
@@ -505,9 +1836,9 @@ function CapabilityConsole({ isMobile }: { isMobile: boolean }) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-60px' }}
             transition={{ duration: 0.6 }}
-            style={{ marginBottom: isMobile ? 80 : 140 }}
+            style={{ marginBottom: isMobile ? 56 : 140 }}
         >
-            <SectionIndex n="A" label="CORE CAPABILITIES" />
+            <SectionIndex n="A" label="WHAT'S IN THE APP" />
 
             <h2
                 style={{
@@ -515,14 +1846,14 @@ function CapabilityConsole({ isMobile }: { isMobile: boolean }) {
                     marginBottom: isMobile ? 28 : 40,
                     fontSize: isMobile ? '1.6rem' : 'clamp(2.2rem, 4vw, 3.4rem)',
                     fontWeight: 800,
-                    color: '#fff',
+                    color: HEADING,
                     letterSpacing: '-0.035em',
                     lineHeight: 1.02,
                     maxWidth: 860,
                 }}
             >
-                Four modules.{' '}
-                <span style={{ color: ACCENT }}>One control plane.</span>
+                Four software modules.{' '}
+                <span style={{ color: ACCENT }}>One operator console.</span>
             </h2>
 
             {/* Tab bar */}
@@ -589,7 +1920,7 @@ function CapabilityConsole({ isMobile }: { isMobile: boolean }) {
                             style={{
                                 fontSize: isMobile ? '1.6rem' : '2rem',
                                 fontWeight: 800,
-                                color: '#fff',
+                                color: HEADING,
                                 letterSpacing: '-0.03em',
                                 lineHeight: 1.05,
                                 margin: 0,
@@ -649,6 +1980,7 @@ function CapabilityConsole({ isMobile }: { isMobile: boolean }) {
 /* ---- Mock UI panels for each capability ---- */
 
 function PanelShell({ title, children }: { title: string; children: React.ReactNode }) {
+    const { ACCENT, ACCENT_SOFT, BG, SURFACE, CARD, BORDER, BORDER_STRONG, TEXT, TEXT_DIM, HEADING, ACCENT_ON } = useTheme();
     return (
         <div
             style={{
@@ -694,6 +2026,7 @@ function PanelShell({ title, children }: { title: string; children: React.ReactN
 }
 
 function MonitorMock({ isMobile }: { isMobile: boolean }) {
+    const { ACCENT, ACCENT_SOFT, BG, SURFACE, CARD, BORDER, BORDER_STRONG, TEXT, TEXT_DIM, HEADING, ACCENT_ON } = useTheme();
     const ports = Array.from({ length: 24 }).map((_, i) => {
         const s: ChargerState =
             i % 5 === 0
@@ -815,6 +2148,7 @@ function MonitorMock({ isMobile }: { isMobile: boolean }) {
 }
 
 function EnergyMock({ isMobile: _isMobile }: { isMobile: boolean }) {
+    const { ACCENT, ACCENT_SOFT, BG, SURFACE, CARD, BORDER, BORDER_STRONG, TEXT, TEXT_DIM, HEADING, ACCENT_ON } = useTheme();
     return (
         <PanelShell title="DYNAMIC LOAD / SITE 60kW BUDGET">
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
@@ -872,6 +2206,7 @@ function EnergyMock({ isMobile: _isMobile }: { isMobile: boolean }) {
 }
 
 function BillingMock({ isMobile: _isMobile }: { isMobile: boolean }) {
+    const { ACCENT, ACCENT_SOFT, BG, SURFACE, CARD, BORDER, BORDER_STRONG, TEXT, TEXT_DIM, HEADING, ACCENT_ON } = useTheme();
     const tariffs = [
         { name: 'Off-peak · kWh', value: '₹ 12.00 / kWh' },
         { name: 'Standard · kWh', value: '₹ 18.50 / kWh' },
@@ -916,6 +2251,7 @@ function BillingMock({ isMobile: _isMobile }: { isMobile: boolean }) {
 }
 
 function AccessMock({ isMobile: _isMobile }: { isMobile: boolean }) {
+    const { ACCENT, ACCENT_SOFT, BG, SURFACE, CARD, BORDER, BORDER_STRONG, TEXT, TEXT_DIM, HEADING, ACCENT_ON } = useTheme();
     const groups = [
         { name: 'Employees', count: 247, tag: 'FREE · workday' },
         { name: 'Residents', count: 132, tag: 'SUBSIDISED' },
@@ -975,6 +2311,7 @@ function AccessMock({ isMobile: _isMobile }: { isMobile: boolean }) {
 /* =================================================================== */
 
 function Compliance({ isMobile }: { isMobile: boolean }) {
+    const { ACCENT, ACCENT_SOFT, BG, SURFACE, CARD, BORDER, BORDER_STRONG, TEXT, TEXT_DIM, HEADING, ACCENT_ON } = useTheme();
     const badges = [
         { code: 'OCPP', sub: '1.6J / 2.0.1', label: 'Open protocol' },
         { code: 'OCPI', sub: 'Roaming', label: 'Global hubs' },
@@ -988,9 +2325,9 @@ function Compliance({ isMobile }: { isMobile: boolean }) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-60px' }}
             transition={{ duration: 0.6 }}
-            style={{ marginBottom: isMobile ? 80 : 140 }}
+            style={{ marginBottom: isMobile ? 56 : 140 }}
         >
-            <SectionIndex n="B" label="TECHNICAL & COMPLIANCE" />
+            <SectionIndex n="B" label="ARCHITECTURE & STANDARDS" />
 
             <h2
                 style={{
@@ -998,13 +2335,13 @@ function Compliance({ isMobile }: { isMobile: boolean }) {
                     marginBottom: isMobile ? 24 : 36,
                     fontSize: isMobile ? '1.6rem' : 'clamp(2.2rem, 4vw, 3.4rem)',
                     fontWeight: 800,
-                    color: '#fff',
+                    color: HEADING,
                     letterSpacing: '-0.035em',
                     lineHeight: 1.02,
                     maxWidth: 860,
                 }}
             >
-                Built on open standards.{' '}
+                Engineered on open standards.{' '}
                 <span style={{ color: ACCENT }}>No vendor lock-in.</span>
             </h2>
 
@@ -1064,18 +2401,25 @@ function Compliance({ isMobile }: { isMobile: boolean }) {
 /* =================================================================== */
 
 function Personas({ isMobile }: { isMobile: boolean }) {
+    const { ACCENT, ACCENT_SOFT, BG, SURFACE, CARD, BORDER, BORDER_STRONG, TEXT, TEXT_DIM, HEADING, ACCENT_ON } = useTheme();
     const personas = [
         {
+            icon: <Zap size={22} />,
+            label: 'TRIO FLEET · CUSTOMER #1',
+            title: 'It runs our own fleet, first.',
+            body: 'Every release ships to Trio EV\'s 100+ cab fleet and the New Town charging hub before anything else. The same platform you\'ll run is the one we run our business on — every Kolkata Monday morning.',
+        },
+        {
             icon: <Truck size={22} />,
-            label: 'FLEET MANAGERS',
+            label: 'PARTNER FLEET OPERATORS',
             title: 'Align charging with shifts.',
-            body: 'Schedule windows to match driver routes, monitor state-of-charge, and cut depot energy costs to the kWh.',
+            body: 'Schedule charging windows to match driver routes, monitor state-of-charge across the depot, and cut energy costs to the kWh — the same way we do it for Trio.',
         },
         {
             icon: <Building2 size={22} />,
             label: 'COMMERCIAL REAL ESTATE',
             title: 'Perk by day, profit by weekend.',
-            body: 'Offer free charging to employees as a workplace amenity, then charge a premium public rate for weekend visitors.',
+            body: 'Offer free charging to employees as a workplace amenity, then charge a premium public rate for weekend visitors — separate tariffs, single dashboard.',
         },
         {
             icon: <Globe size={22} />,
@@ -1091,9 +2435,9 @@ function Personas({ isMobile }: { isMobile: boolean }) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-60px' }}
             transition={{ duration: 0.6 }}
-            style={{ marginBottom: isMobile ? 80 : 140 }}
+            style={{ marginBottom: 0 }}
         >
-            <SectionIndex n="C" label="WHO BENEFITS" />
+            <SectionIndex n="C" label="WHO USES THE APP" />
 
             <div style={{ marginTop: isMobile ? 24 : 32 }}>
                 {personas.map((p, i) => (
@@ -1145,7 +2489,7 @@ function Personas({ isMobile }: { isMobile: boolean }) {
                                 style={{
                                     fontSize: isMobile ? '1.4rem' : 'clamp(1.6rem, 2.6vw, 2.1rem)',
                                     fontWeight: 800,
-                                    color: '#fff',
+                                    color: HEADING,
                                     letterSpacing: '-0.03em',
                                     lineHeight: 1.05,
                                 }}
@@ -1172,95 +2516,11 @@ function Personas({ isMobile }: { isMobile: boolean }) {
 }
 
 /* =================================================================== */
-/* CLOSING                                                             */
-/* =================================================================== */
-
-function Closing({
-    isMobile,
-    onPrimaryCta,
-    onSecondaryCta,
-}: {
-    isMobile: boolean;
-    onPrimaryCta?: () => void;
-    onSecondaryCta?: () => void;
-}) {
-    return (
-        <motion.section
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.55 }}
-            style={{
-                paddingTop: isMobile ? 48 : 80,
-                display: 'grid',
-                gridTemplateColumns: isMobile ? '1fr' : '1.2fr 1fr',
-                gap: isMobile ? 24 : 64,
-                alignItems: 'end',
-            }}
-        >
-            <div>
-                <div
-                    className="mono"
-                    style={{
-                        color: ACCENT,
-                        fontSize: '0.65rem',
-                        letterSpacing: '0.24em',
-                        fontWeight: 700,
-                        marginBottom: 18,
-                    }}
-                >
-                    ONE DASHBOARD · EVERY PORT · EVERY POLICY
-                </div>
-                <h2
-                    style={{
-                        fontSize: isMobile ? '1.6rem' : 'clamp(2.2rem, 4.2vw, 3.6rem)',
-                        fontWeight: 800,
-                        color: '#fff',
-                        letterSpacing: '-0.04em',
-                        lineHeight: 1.02,
-                        margin: 0,
-                    }}
-                >
-                    See your network the way an operator should.
-                </h2>
-            </div>
-            <div>
-                <p
-                    style={{
-                        fontSize: isMobile ? '0.95rem' : '1.02rem',
-                        color: TEXT_DIM,
-                        lineHeight: 1.65,
-                        marginBottom: 24,
-                    }}
-                >
-                    Book a 30-minute live walkthrough with a Trio CPMS engineer. Bring your network
-                    — any brand of charger, any size.
-                </p>
-                <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-                    <button
-                        className="btn-accent"
-                        onClick={onPrimaryCta}
-                        style={{
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: 8,
-                            cursor: 'pointer',
-                            fontSize: '0.92rem',
-                        }}
-                    >
-                        Book a demo <ArrowRight size={16} />
-                    </button>
-                </div>
-            </div>
-        </motion.section>
-    );
-}
-
-/* =================================================================== */
 /* SHARED                                                              */
 /* =================================================================== */
 
 function SectionIndex({ n, label }: { n: string; label: string }) {
+    const { ACCENT, ACCENT_SOFT, BG, SURFACE, CARD, BORDER, BORDER_STRONG, TEXT, TEXT_DIM, HEADING, ACCENT_ON } = useTheme();
     return (
         <div
             className="mono"

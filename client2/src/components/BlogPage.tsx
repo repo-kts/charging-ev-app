@@ -4,7 +4,9 @@ import { format } from 'date-fns';
 import { renderTiptap } from '@trio/shared/blog-render';
 import { listPublicPosts, getPublicPost } from '../lib/blogApi';
 import { mediaUrl } from '../lib/mediaUrl';
+import { useTheme } from '../lib/theme';
 
+// Dark fallbacks for any module-level usage; components below shadow with useTheme().
 const ACCENT = '#00FF88';
 const ACCENT_SOFT = '#00CC77';
 const BG = '#0B0F0D';
@@ -16,6 +18,7 @@ const TEXT = '#F5F7F6';
 const TEXT_DIM = '#8C948F';
 
 export function BlogPage() {
+    const { ACCENT, ACCENT_SOFT, BG, SURFACE, CARD, BORDER, BORDER_STRONG, TEXT, TEXT_DIM, HEADING } = useTheme();
     const [slug, setSlug] = useState<string | null>(null);
 
     if (slug) {
@@ -25,6 +28,7 @@ export function BlogPage() {
 }
 
 function BlogList({ onOpen }: { onOpen: (slug: string) => void }) {
+    const { ACCENT, BG, SURFACE, CARD, BORDER, BORDER_STRONG, TEXT, TEXT_DIM, HEADING } = useTheme();
     const [page, setPage] = useState(1);
     const query = useQuery({
         queryKey: ['blog', 'public', page],
@@ -342,6 +346,7 @@ function pagerBtnStyle(disabled: boolean): React.CSSProperties {
 }
 
 function BlogDetail({ slug, onBack }: { slug: string; onBack: () => void }) {
+    const { ACCENT, BG, SURFACE, CARD, BORDER, BORDER_STRONG, TEXT, TEXT_DIM, HEADING } = useTheme();
     const query = useQuery({
         queryKey: ['blog', 'public', 'post', slug],
         queryFn: () => getPublicPost(slug),
