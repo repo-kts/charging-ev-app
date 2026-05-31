@@ -90,13 +90,12 @@ export function CPMSPage({ isMobile, onPrimaryCta, onSecondaryCta }: Props) {
 function Hero({
     isMobile,
     onPrimaryCta,
-    onSecondaryCta,
 }: {
     isMobile: boolean;
     onPrimaryCta?: () => void;
     onSecondaryCta?: () => void;
 }) {
-    const { ACCENT, ACCENT_SOFT, BG, SURFACE, CARD, BORDER, BORDER_STRONG, TEXT, TEXT_DIM, HEADING, ACCENT_ON } = useTheme();
+    const { ACCENT, ACCENT_SOFT, BG, SURFACE, CARD, BORDER, BORDER_STRONG, TEXT_DIM, HEADING } = useTheme();
     return (
         <section style={{ marginBottom: isMobile ? 48 : 120 }}>
             <div
@@ -218,26 +217,6 @@ function Hero({
                             }}
                         >
                             Request a demo <ArrowRight size={16} />
-                        </button>
-                        <button
-                            onClick={onSecondaryCta}
-                            style={{
-                                display: 'inline-flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                gap: 8,
-                                cursor: 'pointer',
-                                fontSize: '0.92rem',
-                                fontWeight: 600,
-                                color: TEXT,
-                                background: 'transparent',
-                                border: `1px solid ${BORDER_STRONG}`,
-                                padding: '10px 18px',
-                                borderRadius: 8,
-                                width: isMobile ? '100%' : 'auto',
-                            }}
-                        >
-                            Read the docs
                         </button>
                     </div>
                 </motion.div>
