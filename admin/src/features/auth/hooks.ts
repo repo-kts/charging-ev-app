@@ -1,5 +1,5 @@
-import { useQuery } from '@tanstack/react-query';
-import { getMe } from './api';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { changePassword, getMe } from './api';
 
 export const ME_QUERY_KEY = ['auth', 'me'] as const;
 
@@ -10,4 +10,8 @@ export function useMe() {
         staleTime: 60_000,
         retry: false,
     });
+}
+
+export function useChangePasswordMutation() {
+    return useMutation({ mutationFn: changePassword });
 }

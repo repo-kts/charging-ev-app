@@ -144,7 +144,7 @@ export default function PostList() {
                         }}
                         className="flex-1 border-b-0"
                     />
-                    <div className="relative">
+                    <div className="relative w-full sm:w-auto">
                         <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
                         <Input
                             placeholder="Search posts…"
@@ -153,7 +153,7 @@ export default function PostList() {
                                 setSearch(e.target.value);
                                 setPage(1);
                             }}
-                            className="w-72 pl-9"
+                            className="w-full pl-9 sm:w-72"
                         />
                     </div>
                 </div>

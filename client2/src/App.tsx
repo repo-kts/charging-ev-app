@@ -82,7 +82,9 @@ const TEXT_DIM = '#8C948F';
 
 // --- HOOKS ---
 function useIsMobile(breakpoint = 1024) {
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(() =>
+    typeof window !== 'undefined' ? window.innerWidth < breakpoint : false,
+  );
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < breakpoint);
     check();

@@ -14,7 +14,7 @@ export function AdminShell() {
             />
             <div className="flex flex-1 flex-col overflow-hidden">
                 <Topbar onOpenSidebar={() => setMobileSidebarOpen(true)} />
-                <main className="flex-1 overflow-y-auto px-3 pb-6 sm:px-6">
+                <main className="flex-1 overflow-y-auto px-3 pb-6 sm:px-6 lg:px-8">
                     <Outlet />
                 </main>
             </div>

@@ -1,9 +1,10 @@
-import { Bell, ChevronDown, LogOut, Menu } from 'lucide-react';
+import { Bell, ChevronDown, KeyRound, LogOut, Menu } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import { useMe } from '@/features/auth/hooks';
 import { logout } from '@/features/auth/api';
+import { ChangePasswordModal } from '@/features/auth/ChangePasswordModal';
 import { Button } from '@/components/ui/Button';
 import { toast } from '@/hooks/useToast';
 
@@ -15,6 +16,7 @@ export function Topbar({ onOpenSidebar }: Props = {}) {
     const me = useMe();
     const nav = useNavigate();
     const [open, setOpen] = useState(false);
+    const [pwOpen, setPwOpen] = useState(false);
 
     const logoutMutation = useMutation({
         mutationFn: logout,
@@ -71,6 +73,18 @@ export function Topbar({ onOpenSidebar }: Props = {}) {
                                 variant="ghost"
                                 size="sm"
                                 className="w-full justify-start rounded-none"
+                                onClick={() => {
+                                    setOpen(false);
+                                    setPwOpen(true);
+                                }}
+                            >
+                                <KeyRound className="h-4 w-4" />
+                                Change password
+                            </Button>
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                className="w-full justify-start rounded-none border-t border-slate-100"
                                 loading={logoutMutation.isPending}
                                 onClick={() => logoutMutation.mutate()}
                             >
@@ -81,6 +95,7 @@ export function Topbar({ onOpenSidebar }: Props = {}) {
                     )}
                 </div>
             </div>
+            <ChangePasswordModal open={pwOpen} onClose={() => setPwOpen(false)} />
         </header>
     );
 }

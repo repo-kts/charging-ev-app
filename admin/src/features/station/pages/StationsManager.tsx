@@ -151,13 +151,14 @@ export default function StationsManager() {
             ) : (
                 <Card>
                     <CardBody className="p-0">
-                        <table className="w-full text-sm">
+                        <div className="overflow-x-auto">
+                        <table className="w-full min-w-[480px] text-sm">
                             <thead className="border-b border-slate-200 bg-slate-50 text-left text-xs uppercase tracking-wider text-slate-500">
                                 <tr>
                                     <th className="px-4 py-3">Name</th>
                                     <th className="px-4 py-3">State</th>
-                                    <th className="px-4 py-3">Lat</th>
-                                    <th className="px-4 py-3">Lon</th>
+                                    <th className="hidden px-4 py-3 md:table-cell">Lat</th>
+                                    <th className="hidden px-4 py-3 md:table-cell">Lon</th>
                                     <th className="px-4 py-3">Status</th>
                                     <th className="px-4 py-3 text-right">Actions</th>
                                 </tr>
@@ -169,10 +170,10 @@ export default function StationsManager() {
                                             {s.name}
                                         </td>
                                         <td className="px-4 py-3 text-slate-600">{s.state}</td>
-                                        <td className="px-4 py-3 text-slate-600">
+                                        <td className="hidden px-4 py-3 text-slate-600 md:table-cell">
                                             {s.lat.toFixed(4)}
                                         </td>
-                                        <td className="px-4 py-3 text-slate-600">
+                                        <td className="hidden px-4 py-3 text-slate-600 md:table-cell">
                                             {s.lon.toFixed(4)}
                                         </td>
                                         <td className="px-4 py-3">
@@ -217,6 +218,7 @@ export default function StationsManager() {
                                 ))}
                             </tbody>
                         </table>
+                        </div>
                     </CardBody>
                 </Card>
             )}

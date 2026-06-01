@@ -62,8 +62,8 @@ export function DataTable<T>({
         data.some((row) => selection.selected.has(selection.getId(row)));
 
     return (
-        <div className={cn('overflow-hidden rounded-xl border border-slate-200 bg-white', className)}>
-            <table className="w-full text-sm">
+        <div className={cn('overflow-x-auto rounded-xl border border-slate-200 bg-white', className)}>
+            <table className="w-full min-w-[640px] text-sm">
                 <thead className="bg-slate-50 text-left text-xs uppercase tracking-wide text-slate-500">
                     {table.getHeaderGroups().map((hg) => (
                         <tr key={hg.id}>

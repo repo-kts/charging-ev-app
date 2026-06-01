@@ -1,4 +1,4 @@
-import type { LoginInput, User } from '@trio/shared/auth';
+import type { ChangePasswordInput, LoginInput, User } from '@trio/shared/auth';
 import { api } from '@/lib/axios';
 
 export async function login(input: LoginInput): Promise<{ user: User; token: string }> {
@@ -12,5 +12,10 @@ export async function logout(): Promise<void> {
 
 export async function getMe(): Promise<User> {
     const { data } = await api.get('/api/auth/me');
+    return data;
+}
+
+export async function changePassword(input: ChangePasswordInput): Promise<{ ok: true }> {
+    const { data } = await api.post('/api/auth/change-password', input);
     return data;
 }

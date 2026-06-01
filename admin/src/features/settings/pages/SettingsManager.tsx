@@ -140,7 +140,7 @@ export default function SettingsManager() {
                         {draft.socials.map((s, i) => (
                             <div
                                 key={i}
-                                className="grid grid-cols-[140px_1fr_auto_auto] items-center gap-2"
+                                className="grid grid-cols-1 gap-2 sm:grid-cols-[140px_1fr_auto_auto] sm:items-center"
                             >
                                 <Select
                                     value={s.platform}

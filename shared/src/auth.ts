@@ -26,6 +26,17 @@ export const registerSchema = z.object({
 });
 export type RegisterInput = z.infer<typeof registerSchema>;
 
+export const changePasswordSchema = z
+    .object({
+        currentPassword: z.string().min(8),
+        newPassword: z.string().min(8).max(200),
+    })
+    .refine((d) => d.newPassword !== d.currentPassword, {
+        message: 'New password must be different from current password',
+        path: ['newPassword'],
+    });
+export type ChangePasswordInput = z.infer<typeof changePasswordSchema>;
+
 export const authResponseSchema = z.object({
     user: userSchema,
     token: z.string().optional(),
