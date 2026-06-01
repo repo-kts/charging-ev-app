@@ -82,7 +82,9 @@ const TEXT_DIM = '#8C948F';
 
 // --- HOOKS ---
 function useIsMobile(breakpoint = 1024) {
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(() =>
+    typeof window !== 'undefined' ? window.innerWidth < breakpoint : false,
+  );
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < breakpoint);
     check();
@@ -1577,7 +1579,7 @@ export default function App() {
             {/* HERO — refined, premium */}
             <HeroCarousel fallback={
               isMobile ? (
-                <section style={{ position: 'relative', overflow: 'hidden', paddingTop: 92, paddingBottom: 40, background: BG, minHeight: 'calc(100vh - 72px)' }}>
+                <section style={{ position: 'relative', overflow: 'hidden', paddingTop: 92, paddingBottom: 48, background: BG }}>
                   {/* Ambient gradients */}
                   <div style={{ position: 'absolute', top: '12%', right: '-35%', width: 480, height: 480, background: `radial-gradient(circle, ${ACCENT_SOFT}28, transparent 65%)`, pointerEvents: 'none', borderRadius: '50%' }} />
                   <div style={{ position: 'absolute', bottom: '-15%', left: '-35%', width: 420, height: 420, background: `radial-gradient(circle, ${ACCENT_SOFT}1c, transparent 70%)`, pointerEvents: 'none', borderRadius: '50%' }} />

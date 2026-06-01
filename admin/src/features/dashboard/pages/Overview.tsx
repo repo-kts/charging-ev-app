@@ -23,7 +23,7 @@ export default function Overview() {
         <div className="mb-4">
             <HeroBanner />
 
-            <div className="mb-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+            <div className="mb-6 grid grid-cols-2 gap-4 lg:grid-cols-3 xl:grid-cols-5">
                 <KpiCard
                     label="Total Inquiries"
                     value={fmt(data?.kpis.totalInquiries)}
