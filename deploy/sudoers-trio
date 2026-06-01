@@ -1,0 +1,8 @@
+# Passwordless restart for the deploy user — install with visudo (validates syntax):
+#   sudo visudo -cf deploy/sudoers-trio && sudo cp deploy/sudoers-trio /etc/sudoers.d/trio
+#   sudo chmod 440 /etc/sudoers.d/trio
+#
+# Grants EC2_USER exactly the systemctl actions the deploy workflow needs — nothing else.
+# Replace __EC2_USER__ with your SSH user (e.g. ubuntu).
+
+__EC2_USER__ ALL=(root) NOPASSWD: /bin/systemctl restart trio-server, /bin/systemctl status trio-server
