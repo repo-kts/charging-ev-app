@@ -1,0 +1,29 @@
+# Trio API server — systemd unit (no Docker, runs from source via bun)
+#
+# Install on the EC2 box:
+#   sudo cp deploy/trio-server.service /etc/systemd/system/trio-server.service
+#   # edit the User / paths below to match your box, then:
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now trio-server
+#
+# Replace __EC2_USER__ with the SSH user that owns the cloned repo (e.g. ubuntu),
+# and adjust WorkingDirectory / EnvironmentFile / ExecStart if EC2_APP_DIR differs
+# from /home/__EC2_USER__/trio-ev-app.
+
+[Unit]
+Description=Trio API server
+After=network.target
+
+[Service]
+Type=simple
+User=__EC2_USER__
+WorkingDirectory=/home/__EC2_USER__/trio-ev-app/server
+EnvironmentFile=/home/__EC2_USER__/trio-ev-app/server/.env
+Environment=NODE_ENV=production
+Environment=PORT=8001
+ExecStart=/home/__EC2_USER__/.bun/bin/bun src/index.ts
+Restart=always
+RestartSec=2
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,110 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# One deploy at a time; let an in-flight deploy finish (don't cancel a release)
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # client2 + admin  ->  build (VITE_API_URL baked) -> S3 sync -> CloudFront
+  # ---------------------------------------------------------------------------
+  frontends:
+    name: Frontends (S3 + CloudFront)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Build client2
+        env:
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}
+        run: bun --cwd client2 run build
+
+      - name: Build admin
+        env:
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}
+        run: bun --cwd admin run build
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      # Hashed assets: long-lived immutable cache. index.html: never cached.
+      - name: Sync client2 to S3
+        run: |
+          aws s3 sync client2/dist "s3://${{ secrets.S3_CLIENT_BUCKET }}" \
+            --delete \
+            --cache-control "public,max-age=31536000,immutable" \
+            --exclude index.html
+          aws s3 cp client2/dist/index.html "s3://${{ secrets.S3_CLIENT_BUCKET }}/index.html" \
+            --cache-control "no-cache"
+
+      - name: Sync admin to S3
+        run: |
+          aws s3 sync admin/dist "s3://${{ secrets.S3_ADMIN_BUCKET }}" \
+            --delete \
+            --cache-control "public,max-age=31536000,immutable" \
+            --exclude index.html
+          aws s3 cp admin/dist/index.html "s3://${{ secrets.S3_ADMIN_BUCKET }}/index.html" \
+            --cache-control "no-cache"
+
+      - name: Invalidate CloudFront (client2)
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id "${{ secrets.CLOUDFRONT_CLIENT_ID }}" \
+            --paths "/*"
+
+      - name: Invalidate CloudFront (admin)
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id "${{ secrets.CLOUDFRONT_ADMIN_ID }}" \
+            --paths "/*"
+
+  # ---------------------------------------------------------------------------
+  # server  ->  SSH to EC2: reset to this SHA, install, migrate, restart
+  # ---------------------------------------------------------------------------
+  server-deploy:
+    name: Server (EC2 systemd)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy over SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          envs: GITHUB_SHA
+          script: |
+            set -euo pipefail
+            export PATH="$HOME/.bun/bin:$PATH"
+            APP_DIR="${{ secrets.EC2_APP_DIR }}"
+            APP_DIR="${APP_DIR:-$HOME/trio-ev-app}"
+            cd "$APP_DIR"
+
+            echo "Deploying $GITHUB_SHA to $APP_DIR"
+            git fetch --all --prune
+            git reset --hard "$GITHUB_SHA"
+
+            bun install --frozen-lockfile
+            bun --cwd server run db:generate
+            bun --cwd server run db:deploy
+
+            sudo systemctl restart trio-server
+            sleep 2
+            sudo systemctl status trio-server --no-pager --lines 0
