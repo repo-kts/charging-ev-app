@@ -310,6 +310,7 @@ export default function App() {
     typeof window !== 'undefined' ? pathToPage(window.location.pathname) : 'home',
   );
   const [showContactForm, setShowContactForm] = useState(false);
+  const previousPageRef = useRef<Page>('home');
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
   const [desktopServicesOpen, setDesktopServicesOpen] = useState(false);
@@ -606,6 +607,11 @@ export default function App() {
 
   useEffect(() => {
     trackPageView('/' + (page === 'home' ? '' : page));
+  }, [page]);
+
+  // Remember the last non-contact page so closing the contact modal restores it
+  useEffect(() => {
+    if (page !== 'contact-us') previousPageRef.current = page;
   }, [page]);
 
   // Keep /contact-us and the Contact Sales form modal in sync (works in both directions)
@@ -1399,7 +1405,10 @@ export default function App() {
         open={showContactForm}
         onClose={() => {
           setShowContactForm(false);
-          if (page === 'contact-us') setPage('home');
+          if (page === 'contact-us') {
+            const back = previousPageRef.current;
+            setPage(back === 'contact-us' ? 'home' : back);
+          }
         }}
       />
 
@@ -2666,7 +2675,7 @@ export default function App() {
                   }}>
                     <iframe
                       ref={dashboardIframeRef}
-                      src={`/dashboard.html?apiUrl=${iframeApiBase}`}
+                      src={`/dashboard.html?apiUrl=${iframeApiBase}&v=live7`}
                       style={{
                         width: '100%',
                         height: '100%',
@@ -3551,7 +3560,7 @@ export default function App() {
               <iframe
                 ref={findStationsIframeRef}
                 className="find-stations-iframe"
-                src={`/find-stations.html?apiUrl=${iframeApiBase}&v=dir5`}
+                src={`/find-stations.html?apiUrl=${iframeApiBase}&v=dir7`}
                 scrolling="yes"
                 style={{
                   width: '100%',
