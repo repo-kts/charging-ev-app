@@ -1624,7 +1624,7 @@ export default function App() {
                       transition={{ delay: 0.3, duration: 0.6 }}
                       style={{ color: TEXT_DIM, fontSize: '0.95rem', lineHeight: 1.6, marginBottom: 24, maxWidth: 340 }}
                     >
-                      The intelligence layer for industrial scale charging — from grid to vehicle, in real time.
+                      The intelligence layer for industrial scale charging from grid to vehicle, in real time.
                     </motion.p>
 
                     {/* Charger showcase */}
