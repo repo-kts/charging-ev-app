@@ -5,4 +5,4 @@
 # Grants EC2_USER exactly the systemctl actions the deploy workflow needs — nothing else.
 # Replace __EC2_USER__ with your SSH user (e.g. ubuntu).
 
-__EC2_USER__ ALL=(root) NOPASSWD: /bin/systemctl restart trio-server, /bin/systemctl status trio-server
+__EC2_USER__ ALL=(root) NOPASSWD: /bin/systemctl restart trio-ev-charging-server, /bin/systemctl status trio-ev-charging-server

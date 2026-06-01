@@ -5,6 +5,7 @@ import { loginSchema, type LoginInput } from '@trio/shared/auth';
 import { Form } from '@/components/forms/Form';
 import { Field } from '@/components/forms/Field';
 import { Input } from '@/components/ui/Input';
+import { PasswordInput } from '@/components/ui/PasswordInput';
 import { Button } from '@/components/ui/Button';
 import { useFormContext } from 'react-hook-form';
 import { login } from '../api';
@@ -19,7 +20,7 @@ function Fields() {
                 <Input type="email" autoComplete="email" {...register('email')} />
             </Field>
             <Field name="password" label="Password">
-                <Input type="password" autoComplete="current-password" {...register('password')} />
+                <PasswordInput autoComplete="current-password" {...register('password')} />
             </Field>
         </div>
     );

@@ -1,10 +1,10 @@
 # Trio API server — systemd unit (no Docker, runs from source via bun)
 #
 # Install on the EC2 box:
-#   sudo cp deploy/trio-server.service /etc/systemd/system/trio-server.service
+#   sudo cp deploy/trio-ev-charging-server.service /etc/systemd/system/trio-ev-charging-server.service
 #   # edit the User / paths below to match your box, then:
 #   sudo systemctl daemon-reload
-#   sudo systemctl enable --now trio-server
+#   sudo systemctl enable --now trio-ev-charging-server
 #
 # Replace __EC2_USER__ with the SSH user that owns the cloned repo (e.g. ubuntu),
 # and adjust WorkingDirectory / EnvironmentFile / ExecStart if EC2_APP_DIR differs

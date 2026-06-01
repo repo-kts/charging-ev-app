@@ -3,7 +3,7 @@ import { useFormContext } from 'react-hook-form';
 import { Modal } from '@/components/ui/Modal';
 import { Form } from '@/components/forms/Form';
 import { Field } from '@/components/forms/Field';
-import { Input } from '@/components/ui/Input';
+import { PasswordInput } from '@/components/ui/PasswordInput';
 import { Button } from '@/components/ui/Button';
 import { toast } from '@/hooks/useToast';
 import { useChangePasswordMutation } from './hooks';
@@ -31,18 +31,16 @@ function Fields() {
     return (
         <div className="space-y-4">
             <Field name="currentPassword" label="Current password">
-                <Input
-                    type="password"
+                <PasswordInput
                     autoComplete="current-password"
                     {...register('currentPassword')}
                 />
             </Field>
             <Field name="newPassword" label="New password">
-                <Input type="password" autoComplete="new-password" {...register('newPassword')} />
+                <PasswordInput autoComplete="new-password" {...register('newPassword')} />
             </Field>
             <Field name="confirmPassword" label="Confirm new password">
-                <Input
-                    type="password"
+                <PasswordInput
                     autoComplete="new-password"
                     {...register('confirmPassword')}
                 />

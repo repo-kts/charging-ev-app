@@ -12,7 +12,7 @@ client2/dist ─┐
 admin/dist   ─┤→ S3 → CloudFront        (static SPAs)
               │
 server ───────┴─ EC2: git reset --hard <sha> + bun install
-                      + prisma migrate deploy + systemctl restart trio-server
+                      + prisma migrate deploy + systemctl restart trio-ev-charging-server
                       (bun, no Docker)
 
 media → s3://<media bucket>             (runtime, server/src/lib/storage.ts — unchanged)
@@ -21,7 +21,7 @@ media → s3://<media bucket>             (runtime, server/src/lib/storage.ts �
 `deploy.yml` has two independent jobs:
 
 - **frontends** — builds `client2/` + `admin/` with `VITE_API_URL` baked in, syncs each `dist/` to its S3 bucket (hashed assets `immutable`, `index.html` `no-cache`), then invalidates the matching CloudFront distribution (`/*`).
-- **server-deploy** — SSHes to EC2 and runs: `git reset --hard <sha>` → `bun install` → `prisma generate` → `prisma migrate deploy` → `sudo systemctl restart trio-server`.
+- **server-deploy** — SSHes to EC2 and runs: `git reset --hard <sha>` → `bun install` → `prisma generate` → `prisma migrate deploy` → `sudo systemctl restart trio-ev-charging-server`.
 
 > The old `client/` workspace is **not** deployed — the public site is `client2/`.
 
@@ -50,7 +50,7 @@ Settings → Secrets and variables → Actions.
 | `EC2_SSH_KEY` | private key (PEM) for that user |
 | `EC2_APP_DIR` | absolute path of the cloned repo (optional; defaults to `$HOME/trio-ev-app`) |
 
-No registry — the server runs straight from source via bun under the `trio-server` systemd unit.
+No registry — the server runs straight from source via bun under the `trio-ev-charging-server` systemd unit.
 
 ## One-time S3 + CloudFront setup (per frontend)
 
@@ -64,13 +64,13 @@ No registry — the server runs straight from source via bun under the `trio-ser
 Repo cloned + bun installed already. Remaining wiring (templates live in [`deploy/`](../deploy)):
 
 1. **`server/.env`** (chmod 600, never committed) — see [`deploy/server.env.example`](../deploy/server.env.example). Point `DATABASE_URL` at local Postgres / RDS.
-2. **systemd unit** — install [`deploy/trio-server.service`](../deploy/trio-server.service):
+2. **systemd unit** — install [`deploy/trio-ev-charging-server.service`](../deploy/trio-ev-charging-server.service):
    ```bash
-   sudo cp deploy/trio-server.service /etc/systemd/system/trio-server.service
+   sudo cp deploy/trio-ev-charging-server.service /etc/systemd/system/trio-ev-charging-server.service
    # replace __EC2_USER__ / paths to match the box
-   sudo systemctl daemon-reload && sudo systemctl enable --now trio-server
+   sudo systemctl daemon-reload && sudo systemctl enable --now trio-ev-charging-server
    ```
-3. **Passwordless restart** — the deploy SSHes as `EC2_USER` and runs `sudo systemctl restart trio-server`. Grant exactly that with [`deploy/sudoers-trio`](../deploy/sudoers-trio):
+3. **Passwordless restart** — the deploy SSHes as `EC2_USER` and runs `sudo systemctl restart trio-ev-charging-server`. Grant exactly that with [`deploy/sudoers-trio`](../deploy/sudoers-trio):
    ```bash
    sudo visudo -cf deploy/sudoers-trio && sudo cp deploy/sudoers-trio /etc/sudoers.d/trio
    sudo chmod 440 /etc/sudoers.d/trio
@@ -80,5 +80,5 @@ Repo cloned + bun installed already. Remaining wiring (templates live in [`deplo
 ## Notes
 
 - Deploy is `git reset --hard <sha>` — local edits on the box are wiped. Keep config only in `server/.env`, never in tracked files.
-- **Rollback**: re-run `deploy.yml` via `workflow_dispatch` from an older commit/tag (the SSH step resets to that SHA), or on the box: `git reset --hard <old sha> && sudo systemctl restart trio-server`.
+- **Rollback**: re-run `deploy.yml` via `workflow_dispatch` from an older commit/tag (the SSH step resets to that SHA), or on the box: `git reset --hard <old sha> && sudo systemctl restart trio-ev-charging-server`.
 - `docker-compose.prod.yml` (all three services containerized on one box) remains as an alternative single-box deploy.
