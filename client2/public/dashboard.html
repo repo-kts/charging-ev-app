@@ -133,9 +133,14 @@ document.addEventListener('DOMContentLoaded', async function() {
                 'window.EV_STATIONS = STATIONS;\n' +
                 'window.__evStationListeners = window.__evStationListeners || new Set();\n' +
                 'function __evNotifyStations(){ window.__evStationListeners.forEach(function(fn){ try{ fn(); }catch(e){} }); }\n' +
-                'function __evMapStations(arr){ return (arr||[]).map(function(s){ return { id:s.id, name:s.name, state:s.state, lon:s.lon, lat:s.lat, kw:s.kw, conn:(s.connector||s.conn) }; }); }\n' +
+                'function __evMapStations(arr){ return (arr||[]).map(function(s){ return { id:s.id, name:s.name, state:s.state, lon:s.lon, lat:s.lat, kw:s.kw, conn:(s.connector||s.conn), tariff:s.tariff, stalls:s.stalls }; }); }\n' +
                 'function __evSetStations(arr){ STATIONS = __evMapStations(arr); window.EV_STATIONS = STATIONS; __evNotifyStations(); }\n' +
-                '(async function(){ try { var apiUrl = new URLSearchParams(window.location.search).get("apiUrl") || ""; var r = await fetch(apiUrl + "/api/stations", { credentials: "omit" }); if (r.ok) { __evSetStations(await r.json()); } } catch(e) { console.warn("[ev-stations] fetch failed", e); } })();\n' +
+                'window.__evApiUrl = new URLSearchParams(window.location.search).get("apiUrl") || "";\n' +
+                'async function __evFetchStations(){ try { var r = await fetch(window.__evApiUrl + "/api/stations", { credentials: "omit", cache: "no-store" }); if (r.ok) { __evSetStations(await r.json()); } } catch(e) { console.warn("[ev-stations] fetch failed", e); } }\n' +
+                '__evFetchStations();\n' +
+                'window.__evPollId = window.__evPollId || setInterval(__evFetchStations, 15000);\n' +
+                'window.addEventListener("focus", __evFetchStations);\n' +
+                'document.addEventListener("visibilitychange", function(){ if (document.visibilityState === "visible") __evFetchStations(); });\n' +
                 'window.addEventListener("message", function(e){ if (e && e.data && e.data.type === "ev-stations-update" && Array.isArray(e.data.stations)) { __evSetStations(e.data.stations); } });\n';
               __txt = __txt.slice(0, __arrStart) + __bootstrap + __txt.slice(__arrEnd);
               __txt = __txt.replace(
@@ -144,6 +149,43 @@ document.addEventListener('DOMContentLoaded', async function() {
               );
               __txt = __txt.replace('}, [proj]);', '}, [proj, __stationTick]);');
               __txt = __txt.replace('.filter(s => STATION_STATES.includes(s.state))', '');
+              finalBytes = new TextEncoder().encode(__txt);
+            }
+
+            // === LABEL PATCH: rename Tariff → Rate in popup row label ===
+            if (__txt.indexOf('<label>Tariff</label>') !== -1) {
+              __txt = __txt.replace('<label>Tariff</label>', '<label>Rate</label>');
+              finalBytes = new TextEncoder().encode(__txt);
+            }
+
+            // === REAL TARIFF PATCH: use station.tariff from API instead of hardcoded mock formula ===
+            if (__txt.indexOf('(18 + (station.kw / 10)).toFixed(0)') !== -1) {
+              __txt = __txt.replace(
+                '(18 + (station.kw / 10)).toFixed(0)',
+                '(station.tariff != null ? station.tariff : (18 + (station.kw / 10))).toFixed(0)'
+              );
+              // similarly, prefer real stalls count if present
+              __txt = __txt.replace(
+                'Math.max(2, Math.round(station.kw / 50))',
+                '(station.stalls != null ? station.stalls : Math.max(2, Math.round(station.kw / 50)))'
+              );
+              finalBytes = new TextEncoder().encode(__txt);
+            }
+
+            // === GET DIRECTIONS PATCH: compact inline link inside the status row, single line ===
+            if (__txt.indexOf('<div className="pp-status"><i/> ONLINE') !== -1) {
+              var __dirLink =
+                '<div className="pp-status" style={{whiteSpace:"nowrap",fontSize:10,letterSpacing:"0.1em",gap:5}}>' +
+                '<i/> ONLINE · ACCEPTING · ' +
+                '<a href={"https://www.google.com/maps/dir/?api=1&destination=" + (station && station.lat) + "," + (station && station.lon)} target="_blank" rel="noopener noreferrer" title="Get directions" ' +
+                'style={{color:"#5ec8ff",textDecoration:"none",display:"inline-flex",alignItems:"center",gap:3,fontWeight:700,cursor:"pointer"}}>' +
+                '<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>' +
+                'DIRECTIONS' +
+                '</a></div>';
+              __txt = __txt.replace(
+                '<div className="pp-status"><i/> ONLINE · ACCEPTING SESSIONS</div>',
+                __dirLink
+              );
               finalBytes = new TextEncoder().encode(__txt);
             }
           } catch(__patchErr) { console.warn('[ev-stations] patch skipped', __patchErr); }

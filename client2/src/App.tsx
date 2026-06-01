@@ -312,6 +312,7 @@ export default function App() {
     typeof window !== 'undefined' ? pathToPage(window.location.pathname) : 'home',
   );
   const [showContactForm, setShowContactForm] = useState(false);
+  const previousPageRef = useRef<Page>('home');
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
   const [desktopServicesOpen, setDesktopServicesOpen] = useState(false);
@@ -608,6 +609,11 @@ export default function App() {
 
   useEffect(() => {
     trackPageView('/' + (page === 'home' ? '' : page));
+  }, [page]);
+
+  // Remember the last non-contact page so closing the contact modal restores it
+  useEffect(() => {
+    if (page !== 'contact-us') previousPageRef.current = page;
   }, [page]);
 
   // Keep /contact-us and the Contact Sales form modal in sync (works in both directions)
@@ -951,8 +957,10 @@ export default function App() {
           .services-h2 { font-size: 2.4rem !important; }
           .services-tag { font-size: 0.95rem !important; }
 
-          /* HERO TICKER hidden on mobile (overflow) */
-          .ticker { display: none !important; }
+          /* HERO TICKER — compact on mobile (Siemens partner mark) */
+          .ticker { padding: 12px 0 !important; }
+          .ticker-track { gap: 36px !important; animation-duration: 60s !important; }
+          .ticker-item { font-size: 0.7rem !important; }
 
           /* INDIA COVERAGE */
           .network-inner { padding: 0 16px !important; }
@@ -1401,7 +1409,10 @@ export default function App() {
         open={showContactForm}
         onClose={() => {
           setShowContactForm(false);
-          if (page === 'contact-us') setPage('home');
+          if (page === 'contact-us') {
+            const back = previousPageRef.current;
+            setPage(back === 'contact-us' ? 'home' : back);
+          }
         }}
       />
 
@@ -1579,7 +1590,7 @@ export default function App() {
             {/* HERO — refined, premium */}
             <HeroCarousel fallback={
               isMobile ? (
-                <section style={{ position: 'relative', overflow: 'hidden', paddingTop: 92, paddingBottom: 48, background: BG }}>
+                <section style={{ position: 'relative', overflow: 'hidden', paddingTop: 92, paddingBottom: 8, background: BG }}>
                   {/* Ambient gradients */}
                   <div style={{ position: 'absolute', top: '12%', right: '-35%', width: 480, height: 480, background: `radial-gradient(circle, ${ACCENT_SOFT}28, transparent 65%)`, pointerEvents: 'none', borderRadius: '50%' }} />
                   <div style={{ position: 'absolute', bottom: '-15%', left: '-35%', width: 420, height: 420, background: `radial-gradient(circle, ${ACCENT_SOFT}1c, transparent 70%)`, pointerEvents: 'none', borderRadius: '50%' }} />
@@ -1850,6 +1861,40 @@ export default function App() {
                         </div>
                       ))}
                     </motion.div>
+                  </div>
+
+                  {/* Mobile Siemens partnership ticker */}
+                  <div className="ticker" style={{ position: 'relative', marginTop: 24, padding: '8px 0', background: 'transparent', borderTop: 'none', borderBottom: 'none' }}>
+                    <div className="ticker-track" style={{ gap: 36, animationDuration: '60s' }}>
+                      {Array.from({ length: 16 }).map((_, i) => (
+                        <span
+                          key={i}
+                          className="ticker-item"
+                          style={{ display: 'inline-flex', alignItems: 'center', gap: 10, fontSize: '0.7rem' }}
+                        >
+                          <span style={{ color: ACCENT_SOFT }}>●</span>
+                          <span style={{ color: TEXT, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+                            Eastern India's only e-mobility partner of
+                          </span>
+                          <span style={{ display: 'inline-flex', alignItems: 'baseline', gap: 4 }}>
+                            <span
+                              style={{
+                                fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif',
+                                fontSize: '1rem',
+                                fontWeight: 700,
+                                letterSpacing: '0.02em',
+                                color: '#009999',
+                              }}
+                            >
+                              SIEMENS
+                            </span>
+                            <span style={{ color: TEXT, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', fontSize: '0.62rem' }}>
+                              energy
+                            </span>
+                          </span>
+                        </span>
+                      ))}
+                    </div>
                   </div>
                 </section>
               ) : (
@@ -2668,7 +2713,7 @@ export default function App() {
                   }}>
                     <iframe
                       ref={dashboardIframeRef}
-                      src={`/dashboard.html?apiUrl=${iframeApiBase}`}
+                      src={`/dashboard.html?apiUrl=${iframeApiBase}&v=live7`}
                       style={{
                         width: '100%',
                         height: '100%',
@@ -3553,7 +3598,7 @@ export default function App() {
               <iframe
                 ref={findStationsIframeRef}
                 className="find-stations-iframe"
-                src={`/find-stations.html?apiUrl=${iframeApiBase}&v=dir5`}
+                src={`/find-stations.html?apiUrl=${iframeApiBase}&v=dir7`}
                 scrolling="yes"
                 style={{
                   width: '100%',

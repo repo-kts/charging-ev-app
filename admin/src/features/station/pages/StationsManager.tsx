@@ -89,7 +89,7 @@ export default function StationsManager() {
             return;
         }
         if (!Number.isFinite(draft.tariff) || draft.tariff < 0) {
-            toast.error('Tariff must be 0 or higher');
+            toast.error('Rate must be 0 or higher');
             return;
         }
         try {
@@ -330,7 +330,7 @@ export default function StationsManager() {
                                 }
                             />
                         </Field>
-                        <Field label="Tariff (₹/kWh)">
+                        <Field label="Rates (₹/kWh)">
                             <Input
                                 type="number"
                                 step="any"

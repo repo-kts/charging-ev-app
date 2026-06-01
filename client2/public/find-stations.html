@@ -181,6 +181,45 @@
         } catch (__remErr) { console.warn('[ev-stations] footer directions removal skipped', __remErr); }
         // === END REMOVE FOOTER DIRECTIONS ===
 
+        // === LABEL PATCH: rename Tariff → Rates ===
+        try {
+          template = template.replace(
+            '<span className="spec-label">Tariff</span>\n                    <span className="spec-val">₹{sel.tariff}<span className="u">/ kWh</span></span>',
+            '<span className="spec-label">Rates</span>\n                    <span className="spec-val">₹{sel.tariff}<span className="u">/ kWh</span></span>'
+          );
+        } catch (__lblErr) { console.warn('[ev-stations] label patch skipped', __lblErr); }
+        // === END LABEL PATCH ===
+
+        // === ADMIN VALUES WIN PATCH: real tariff/stalls from API override mock state ===
+        try {
+          template = template.replace(
+            'const enriched = React.useMemo(() => stations.map(s => ({ ...s, ...stationState(s) })), [stations]);',
+            'const enriched = React.useMemo(() => stations.map(s => ({ ...stationState(s), ...s })), [stations]);'
+          );
+        } catch (__advErr) { console.warn('[ev-stations] admin-values-win patch skipped', __advErr); }
+        // === END ADMIN VALUES WIN PATCH ===
+
+        // === DISTANCE PATCH: compute real km from user geolocation to station ===
+        try {
+          // 1) inject userPos state + geolocation effect + haversine helper next to selId state
+          // (anchoring on selId because POWER RANGE PATCH already modifies the minKw line)
+          var __geoSnippet =
+            "const [selId, setSelId] = React.useState('WB-410');\n" +
+            "  const [userPos, setUserPos] = React.useState(null);\n" +
+            "  React.useEffect(function(){ if (typeof navigator === 'undefined' || !navigator.geolocation) return; navigator.geolocation.getCurrentPosition(function(p){ setUserPos({ lat: p.coords.latitude, lon: p.coords.longitude }); }, function(){}, { enableHighAccuracy: false, timeout: 6000, maximumAge: 60000 }); }, []);\n" +
+            "  function __haversineKm(a, b){ if (!a || !b) return null; var R = 6371; var toRad = function(d){ return d * Math.PI / 180; }; var dLat = toRad(b.lat - a.lat); var dLon = toRad(b.lon - a.lon); var s1 = Math.sin(dLat/2); var s2 = Math.sin(dLon/2); var x = s1*s1 + Math.cos(toRad(a.lat)) * Math.cos(toRad(b.lat)) * s2*s2; return 2 * R * Math.atan2(Math.sqrt(x), Math.sqrt(1-x)); }";
+          template = template.replace(
+            "const [selId, setSelId] = React.useState('WB-410');",
+            __geoSnippet
+          );
+          // 2) replace the fake distance computation with the real haversine distance (fallback to mock if no geolocation)
+          template = template.replace(
+            '<span className="spec-val">{(sel.eta * 0.7).toFixed(1)}<span className="u">km</span></span>',
+            '<span className="spec-val">{(userPos ? __haversineKm(userPos, sel) : (sel.eta * 0.7)).toFixed(1)}<span className="u">km</span></span>'
+          );
+        } catch (__distErr) { console.warn('[ev-stations] distance patch skipped', __distErr); }
+        // === END DISTANCE PATCH ===
+
         const uuids = Object.keys(manifest);
         setStatus('Unpacking ' + uuids.length + ' assets...');
 
@@ -228,9 +267,16 @@
                     'window.EV_STATIONS = STATIONS;\n' +
                     'window.__evStationListeners = window.__evStationListeners || new Set();\n' +
                     'function __evNotifyStations(){ window.__evStationListeners.forEach(function(fn){ try{ fn(); }catch(e){} }); }\n' +
-                    'function __evMapStations(arr){ return (arr||[]).map(function(s){ return { id:s.id, name:s.name, state:s.state, lon:s.lon, lat:s.lat, kw:s.kw, conn:(s.connector||s.conn) }; }); }\n' +
+                    'function __evMapStations(arr){ return (arr||[]).map(function(s){ return { id:s.id, name:s.name, state:s.state, lon:s.lon, lat:s.lat, kw:s.kw, conn:(s.connector||s.conn), tariff:s.tariff, stalls:s.stalls }; }); }\n' +
                     'function __evSetStations(arr){ STATIONS = __evMapStations(arr); window.EV_STATIONS = STATIONS; __evNotifyStations(); }\n' +
-                    '(async function(){ try { var apiUrl = new URLSearchParams(window.location.search).get("apiUrl") || ""; var r = await fetch(apiUrl + "/api/stations", { credentials: "omit" }); if (r.ok) { __evSetStations(await r.json()); } } catch(e) { console.warn("[ev-stations] fetch failed", e); } })();\n' +
+                    'window.__evApiUrl = new URLSearchParams(window.location.search).get("apiUrl") || "";\n' +
+                    'async function __evFetchStations(){ try { var r = await fetch(window.__evApiUrl + "/api/stations", { credentials: "omit", cache: "no-store" }); if (r.ok) { __evSetStations(await r.json()); } } catch(e) { console.warn("[ev-stations] fetch failed", e); } }\n' +
+                    '__evFetchStations();\n' +
+                    // poll for admin updates every 15s so the map + list reflect changes without a reload
+                    'window.__evPollId = window.__evPollId || setInterval(__evFetchStations, 15000);\n' +
+                    // refresh immediately when the tab regains focus or visibility (operator just left admin → back here)
+                    'window.addEventListener("focus", __evFetchStations);\n' +
+                    'document.addEventListener("visibilitychange", function(){ if (document.visibilityState === "visible") __evFetchStations(); });\n' +
                     'window.addEventListener("message", function(e){ if (e && e.data && e.data.type === "ev-stations-update" && Array.isArray(e.data.stations)) { __evSetStations(e.data.stations); } });\n';
                   __txt = __txt.slice(0, __arrStart) + __bootstrap + __txt.slice(__arrEnd);
                   __txt = __txt.replace(
