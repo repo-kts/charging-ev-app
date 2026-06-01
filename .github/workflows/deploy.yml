@@ -31,12 +31,12 @@ jobs:
       - name: Build client2
         env:
           VITE_API_URL: ${{ secrets.VITE_API_URL }}
-        run: bun --cwd client2 run build
+        run: bun run --cwd client2 build
 
       - name: Build admin
         env:
           VITE_API_URL: ${{ secrets.VITE_API_URL }}
-        run: bun --cwd admin run build
+        run: bun run --cwd admin build
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -102,9 +102,9 @@ jobs:
             git reset --hard "$GITHUB_SHA"
 
             bun install --frozen-lockfile
-            bun --cwd server run db:generate
-            bun --cwd server run db:deploy
+            bun run --cwd server db:generate
+            bun run --cwd server db:deploy
 
-            sudo systemctl restart trio-server
+            sudo systemctl restart trio-ev-charging-server
             sleep 2
-            sudo systemctl status trio-server --no-pager --lines 0
+            sudo systemctl status trio-ev-charging-server --no-pager --lines 0

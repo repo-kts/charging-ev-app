@@ -1,8 +1,8 @@
 import { Bell, ChevronDown, KeyRound, LogOut, Menu } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useMutation } from '@tanstack/react-query';
-import { useMe } from '@/features/auth/hooks';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMe, ME_QUERY_KEY } from '@/features/auth/hooks';
 import { logout } from '@/features/auth/api';
 import { ChangePasswordModal } from '@/features/auth/ChangePasswordModal';
 import { Button } from '@/components/ui/Button';
@@ -15,12 +15,16 @@ interface Props {
 export function Topbar({ onOpenSidebar }: Props = {}) {
     const me = useMe();
     const nav = useNavigate();
+    const qc = useQueryClient();
     const [open, setOpen] = useState(false);
     const [pwOpen, setPwOpen] = useState(false);
 
     const logoutMutation = useMutation({
         mutationFn: logout,
         onSuccess: () => {
+            // Drop the cached session so guards see "logged out" and don't bounce back.
+            qc.setQueryData(ME_QUERY_KEY, null);
+            qc.removeQueries({ queryKey: ME_QUERY_KEY });
             toast.success('Signed out');
             nav('/login', { replace: true });
         },
