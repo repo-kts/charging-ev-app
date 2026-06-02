@@ -391,7 +391,7 @@ export default function App() {
     return {
       registeredAddress: s?.registeredAddress?.trim() || '29E, Raipur Mondal Para Road, P.S. Netaji Nagar, Naktala, Kolkata - 700047, West Bengal, India',
       officeAddress: s?.officeAddress?.trim() || 'Shilpata More, Mahammadpur Road (Opposite Curiosity), New Town, Kolkata - 700135, West Bengal, India',
-      phone: s?.phone?.trim() || '+91 62918 42000',
+      phone: s?.phone?.trim() || '+91 62918 42407',
       email: s?.email?.trim() || 'info@trioev.com',
       socials: (s?.socials ?? []).filter((x) => x.enabled !== false && x.url?.trim()),
     };
@@ -1624,7 +1624,7 @@ export default function App() {
                       transition={{ delay: 0.3, duration: 0.6 }}
                       style={{ color: TEXT_DIM, fontSize: '0.95rem', lineHeight: 1.6, marginBottom: 24, maxWidth: 340 }}
                     >
-                      The intelligence layer for industrial scale charging — from grid to vehicle, in real time.
+                      The intelligence layer for industrial scale charging from grid to vehicle, in real time.
                     </motion.p>
 
                     {/* Charger showcase */}
