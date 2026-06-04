@@ -1,0 +1,5 @@
+# Local-disk upload storage (STORAGE_DRIVER=local) — never commit uploaded files
+local-uploads/
+
+# Secrets
+.env

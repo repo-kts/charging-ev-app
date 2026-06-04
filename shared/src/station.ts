@@ -1,5 +1,15 @@
 import { z } from 'zod';
 
+export const STATION_IMAGES_MAX = 7;
+
+export const stationImageSchema = z.object({
+    url: z.string().url(),
+    thumbUrl: z.string().url().optional(),
+    mediaId: z.string().optional(),
+    alt: z.string().max(300).optional(),
+});
+export type StationImage = z.infer<typeof stationImageSchema>;
+
 export const stationSchema = z.object({
     id: z.string(),
     name: z.string(),
@@ -12,6 +22,7 @@ export const stationSchema = z.object({
     tariff: z.number(),
     enabled: z.boolean(),
     order: z.number().int(),
+    images: z.array(stationImageSchema).default([]),
 });
 export type Station = z.infer<typeof stationSchema>;
 
@@ -26,6 +37,7 @@ export const stationUpsertSchema = z.object({
     tariff: z.number().min(0).max(10000),
     enabled: z.boolean().optional(),
     order: z.number().int().min(0).max(9999).optional(),
+    images: z.array(stationImageSchema).max(STATION_IMAGES_MAX).optional(),
 });
 export type StationUpsertInput = z.infer<typeof stationUpsertSchema>;
 

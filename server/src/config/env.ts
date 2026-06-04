@@ -16,10 +16,15 @@ const schema = z.object({
                 .filter(Boolean),
         ),
     LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace']).default('info'),
-    S3_REGION: z.string().min(1),
-    S3_BUCKET: z.string().min(1),
-    S3_ACCESS_KEY_ID: z.string().min(1),
-    S3_SECRET_ACCESS_KEY: z.string().min(1),
+    // Storage backend: 'local' writes to disk + serves via /static (dev/testing); 's3' uses AWS/S3.
+    STORAGE_DRIVER: z.enum(['local', 's3']).default('s3'),
+    LOCAL_UPLOAD_DIR: z.string().optional(),
+    // Base URL the server is reachable at, used to build local file URLs (defaults to http://localhost:<PORT>).
+    PUBLIC_BASE_URL: z.string().url().optional(),
+    S3_REGION: z.string().min(1).optional(),
+    S3_BUCKET: z.string().min(1).optional(),
+    S3_ACCESS_KEY_ID: z.string().min(1).optional(),
+    S3_SECRET_ACCESS_KEY: z.string().min(1).optional(),
     S3_ENDPOINT: z.string().url().optional(),
     S3_FORCE_PATH_STYLE: z
         .string()
@@ -35,6 +40,23 @@ const schema = z.object({
     SMTP_USER: z.string().optional(),
     SMTP_PASS: z.string().optional(),
     SMTP_FROM: z.string().optional(),
+}).superRefine((val, ctx) => {
+    if (val.STORAGE_DRIVER === 's3') {
+        for (const key of [
+            'S3_REGION',
+            'S3_BUCKET',
+            'S3_ACCESS_KEY_ID',
+            'S3_SECRET_ACCESS_KEY',
+        ] as const) {
+            if (!val[key]) {
+                ctx.addIssue({
+                    code: z.ZodIssueCode.custom,
+                    path: [key],
+                    message: `${key} is required when STORAGE_DRIVER=s3`,
+                });
+            }
+        }
+    }
 });
 
 const parsed = schema.safeParse(process.env);
