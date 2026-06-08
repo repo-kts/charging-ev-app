@@ -959,7 +959,7 @@ export default function App() {
 
           /* HERO TICKER — compact on mobile (Siemens partner mark) */
           .ticker { padding: 12px 0 !important; }
-          .ticker-track { gap: 36px !important; animation-duration: 60s !important; }
+          .ticker-track { gap: 36px !important; animation-duration: 12s !important; }
           .ticker-item { font-size: 0.7rem !important; }
 
           /* INDIA COVERAGE */
@@ -1865,7 +1865,7 @@ export default function App() {
 
                   {/* Mobile Siemens partnership ticker */}
                   <div className="ticker" style={{ position: 'relative', marginTop: 24, padding: '8px 0', background: 'transparent', borderTop: 'none', borderBottom: 'none' }}>
-                    <div className="ticker-track" style={{ gap: 36, animationDuration: '60s' }}>
+                    <div className="ticker-track" style={{ gap: 36, animationDuration: '12s' }}>
                       {Array.from({ length: 16 }).map((_, i) => (
                         <span
                           key={i}
