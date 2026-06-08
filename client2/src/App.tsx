@@ -80,6 +80,23 @@ const BORDER_STRONG = 'rgba(0,255,136,0.18)';
 const TEXT = '#F5F7F6';
 const TEXT_DIM = '#8C948F';
 
+// --- SHARED CONTENT (single source of truth) ---
+// Copy that appears in BOTH the mobile and desktop layouts lives here so it
+// only has to be edited once. Reference these values inside the isMobile
+// branches instead of typing the text twice.
+const CONTENT = {
+  // Siemens Energy partnership ticker (hero mobile + bottom desktop)
+  partnerLead: "Eastern India's only e-mobility partner of",
+  partnerBrand: 'SIEMENS',
+  partnerBrandSuffix: 'energy',
+  // Hero headline (mobile + desktop) — same words, the subtitle below it
+  // intentionally differs per layout so it is NOT shared here.
+  heroTitleLine1: 'EV power,',
+  heroTitleLine2: 'redefined.',
+  // Primary hero CTA label (mobile + desktop)
+  ctaFindStation: 'Find a station',
+};
+
 // --- HOOKS ---
 function useIsMobile(breakpoint = 1024) {
   const [isMobile, setIsMobile] = useState(() =>
@@ -1610,10 +1627,10 @@ export default function App() {
                     {/* Title */}
                     <h1 style={{ fontSize: '2.6rem', lineHeight: 1.0, marginBottom: 14, fontWeight: 700, letterSpacing: '-0.035em' }}>
                       <motion.span initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} style={{ display: 'block' }}>
-                        EV power,
+                        {CONTENT.heroTitleLine1}
                       </motion.span>
                       <motion.span initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.1 }} style={{ display: 'block', color: ACCENT }}>
-                        redefined.
+                        {CONTENT.heroTitleLine2}
                       </motion.span>
                     </h1>
 
@@ -1812,7 +1829,7 @@ export default function App() {
                         onClick={() => setPage('find-stations')}
                         style={{ flex: 1, padding: '15px 20px', fontSize: '0.92rem', fontWeight: 700, justifyContent: 'center' }}
                       >
-                        Find a station <span style={{ fontSize: '1.05rem' }}>→</span>
+                        {CONTENT.ctaFindStation} <span style={{ fontSize: '1.05rem' }}>→</span>
                       </button>
                       <button
                         onClick={() => { const el = document.querySelector('#network'); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }}
@@ -1874,7 +1891,7 @@ export default function App() {
                         >
                           <span style={{ color: ACCENT_SOFT }}>●</span>
                           <span style={{ color: TEXT, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
-                            Eastern India's only e-mobility partner of
+                            {CONTENT.partnerLead}
                           </span>
                           <span style={{ display: 'inline-flex', alignItems: 'baseline', gap: 4 }}>
                             <span
@@ -1886,10 +1903,10 @@ export default function App() {
                                 color: '#009999',
                               }}
                             >
-                              SIEMENS
+                              {CONTENT.partnerBrand}
                             </span>
                             <span style={{ color: TEXT, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', fontSize: '0.62rem' }}>
-                              energy
+                              {CONTENT.partnerBrandSuffix}
                             </span>
                           </span>
                         </span>
@@ -1916,10 +1933,10 @@ export default function App() {
                         {/* TITLE */}
                         <h1 style={{ fontSize: 'clamp(2.4rem, 4.8vw, 4.8rem)', lineHeight: 1.02, marginBottom: 28, fontWeight: 600 }}>
                           <motion.span initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }} style={{ display: 'block' }}>
-                            EV power,
+                            {CONTENT.heroTitleLine1}
                           </motion.span>
                           <motion.span initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }} style={{ display: 'block', color: ACCENT }}>
-                            redefined.
+                            {CONTENT.heroTitleLine2}
                           </motion.span>
                         </h1>
 
@@ -1939,7 +1956,7 @@ export default function App() {
                             className="btn-accent"
                             onClick={() => setPage('find-stations')}
                           >
-                            Find a station <span style={{ fontSize: '1rem' }}>→</span>
+                            {CONTENT.ctaFindStation} <span style={{ fontSize: '1rem' }}>→</span>
                           </button>
                         </motion.div>
 
@@ -2070,7 +2087,7 @@ export default function App() {
                         >
                           <span style={{ color: ACCENT_SOFT }}>●</span>
                           <span style={{ color: TEXT, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
-                            Eastern India's only e-mobility partner of
+                            {CONTENT.partnerLead}
                           </span>
                           <span style={{ display: 'inline-flex', alignItems: 'baseline', gap: 6 }}>
                             <span
@@ -2082,10 +2099,10 @@ export default function App() {
                                 color: '#009999',
                               }}
                             >
-                              SIEMENS
+                              {CONTENT.partnerBrand}
                             </span>
                             <span style={{ color: TEXT, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-                              energy
+                              {CONTENT.partnerBrandSuffix}
                             </span>
                           </span>
                         </span>
