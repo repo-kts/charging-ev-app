@@ -1,6 +1,19 @@
-import { useState } from 'react';
-import { BookOpen, Edit2, Loader2, MapPin, Plus, Trash2, Youtube } from 'lucide-react';
-import type { Station, StationUpsertInput } from '@trio/shared/station';
+import { useRef, useState } from 'react';
+import {
+    ArrowLeft,
+    ArrowRight,
+    BookOpen,
+    Edit2,
+    ImagePlus,
+    Loader2,
+    MapPin,
+    Plus,
+    Trash2,
+    X,
+    Youtube,
+} from 'lucide-react';
+import type { Station, StationImage, StationUpsertInput } from '@trio/shared/station';
+import { STATION_IMAGES_MAX } from '@trio/shared/station';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { Card, CardBody } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
@@ -9,6 +22,8 @@ import { Modal } from '@/components/ui/Modal';
 import { Badge } from '@/components/ui/Badge';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { toast } from '@/hooks/useToast';
+import { preflightFile, extractUploadError } from '@/lib/uploadError';
+import { uploadStationImage } from '../api';
 import {
     useCreateStationMutation,
     useDeleteStationMutation,
@@ -27,6 +42,7 @@ const EMPTY_DRAFT: StationUpsertInput = {
     stalls: 2,
     tariff: 20,
     enabled: true,
+    images: [],
 };
 
 export default function StationsManager() {
@@ -39,6 +55,58 @@ export default function StationsManager() {
     const [editing, setEditing] = useState<Station | null>(null);
     const [draftOpen, setDraftOpen] = useState(false);
     const [draft, setDraft] = useState<StationUpsertInput>(EMPTY_DRAFT);
+    const [uploading, setUploading] = useState(false);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const images: StationImage[] = draft.images ?? [];
+    const setImages = (next: StationImage[]) => setDraft((d) => ({ ...d, images: next }));
+
+    const handleFiles = async (fileList: FileList | null) => {
+        if (!fileList || fileList.length === 0) return;
+        const current = draft.images ?? [];
+        const room = STATION_IMAGES_MAX - current.length;
+        if (room <= 0) {
+            toast.error(`Max ${STATION_IMAGES_MAX} images per station`);
+            return;
+        }
+        const picked = Array.from(fileList);
+        const toUpload = picked.slice(0, room);
+        if (picked.length > room) {
+            toast.error(`Only ${room} more image${room === 1 ? '' : 's'} allowed (max ${STATION_IMAGES_MAX})`);
+        }
+        setUploading(true);
+        const added: StationImage[] = [];
+        for (const file of toUpload) {
+            const problem = preflightFile(file, 'image');
+            if (problem) {
+                toast.error(`${file.name}: ${problem}`);
+                continue;
+            }
+            try {
+                const media = await uploadStationImage(file);
+                added.push({
+                    url: media.url,
+                    thumbUrl: media.thumbUrl ?? undefined,
+                    mediaId: media.id,
+                    alt: media.alt ?? undefined,
+                });
+            } catch (err) {
+                toast.error(`${file.name}: ${extractUploadError(err)}`);
+            }
+        }
+        if (added.length) setImages([...(draft.images ?? []), ...added]);
+        setUploading(false);
+    };
+
+    const removeImage = (idx: number) => setImages(images.filter((_, i) => i !== idx));
+
+    const moveImage = (idx: number, dir: -1 | 1) => {
+        const target = idx + dir;
+        if (target < 0 || target >= images.length) return;
+        const next = [...images];
+        [next[idx], next[target]] = [next[target], next[idx]];
+        setImages(next);
+    };
 
     const openCreate = () => {
         setEditing(null);
@@ -59,6 +127,7 @@ export default function StationsManager() {
             tariff: s.tariff,
             enabled: s.enabled,
             order: s.order,
+            images: s.images ?? [],
         });
         setDraftOpen(true);
     };
@@ -354,6 +423,92 @@ export default function StationsManager() {
                             }
                         />
                     </label>
+
+                    <Field label={`Station images (max ${STATION_IMAGES_MAX})`}>
+                        <p className="-mt-0.5 mb-1.5 text-xs text-slate-500">
+                            Shown as a slideshow in place of the India map on the public
+                            find-stations page. Drag-free reorder with the arrows; the first image
+                            shows first.
+                        </p>
+                        <input
+                            ref={fileInputRef}
+                            type="file"
+                            accept="image/*"
+                            multiple
+                            className="hidden"
+                            onChange={(e) => {
+                                void handleFiles(e.target.files);
+                                e.target.value = '';
+                            }}
+                        />
+                        {images.length > 0 && (
+                            <div className="mb-2 grid grid-cols-3 gap-2 sm:grid-cols-4">
+                                {images.map((img, idx) => (
+                                    <div
+                                        key={`${img.url}-${idx}`}
+                                        className="group relative aspect-square overflow-hidden rounded-md border border-slate-200 bg-slate-50"
+                                    >
+                                        <img
+                                            src={img.thumbUrl || img.url}
+                                            alt={img.alt || `Station image ${idx + 1}`}
+                                            className="h-full w-full object-cover"
+                                        />
+                                        {idx === 0 && (
+                                            <span className="absolute left-1 top-1 rounded bg-emerald-600/90 px-1 py-0.5 text-[10px] font-semibold text-white">
+                                                Cover
+                                            </span>
+                                        )}
+                                        <button
+                                            type="button"
+                                            onClick={() => removeImage(idx)}
+                                            aria-label="Remove image"
+                                            className="absolute right-1 top-1 rounded-full bg-black/55 p-0.5 text-white opacity-0 transition group-hover:opacity-100"
+                                        >
+                                            <X className="h-3.5 w-3.5" />
+                                        </button>
+                                        <div className="absolute inset-x-0 bottom-0 flex justify-between bg-black/45 px-1 py-0.5 opacity-0 transition group-hover:opacity-100">
+                                            <button
+                                                type="button"
+                                                onClick={() => moveImage(idx, -1)}
+                                                disabled={idx === 0}
+                                                aria-label="Move left"
+                                                className="text-white disabled:opacity-30"
+                                            >
+                                                <ArrowLeft className="h-3.5 w-3.5" />
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => moveImage(idx, 1)}
+                                                disabled={idx === images.length - 1}
+                                                aria-label="Move right"
+                                                className="text-white disabled:opacity-30"
+                                            >
+                                                <ArrowRight className="h-3.5 w-3.5" />
+                                            </button>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                        <Button
+                            type="button"
+                            variant="secondary"
+                            onClick={() => fileInputRef.current?.click()}
+                            disabled={uploading || images.length >= STATION_IMAGES_MAX}
+                        >
+                            {uploading ? (
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                            ) : (
+                                <ImagePlus className="h-4 w-4" />
+                            )}
+                            {uploading
+                                ? 'Uploading…'
+                                : images.length === 0
+                                  ? 'Upload images'
+                                  : `Add more (${images.length}/${STATION_IMAGES_MAX})`}
+                        </Button>
+                    </Field>
+
                     <div className="flex justify-end gap-2 pt-2">
                         <Button variant="ghost" onClick={() => setDraftOpen(false)}>
                             Cancel

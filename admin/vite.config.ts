@@ -11,6 +11,7 @@ export default defineConfig({
             { find: '@trio/shared/dashboard', replacement: path.resolve(__dirname, '../shared/src/dashboard.ts') },
             { find: '@trio/shared/blog-render', replacement: path.resolve(__dirname, '../shared/src/blog-render.ts') },
             { find: '@trio/shared/blog', replacement: path.resolve(__dirname, '../shared/src/blog.ts') },
+            { find: '@trio/shared/station', replacement: path.resolve(__dirname, '../shared/src/station.ts') },
             { find: '@trio/shared', replacement: path.resolve(__dirname, '../shared/src/index.ts') },
             { find: '@', replacement: path.resolve(__dirname, './src') },
         ],
