@@ -19,9 +19,8 @@ import { api } from './lib/axios';
 import { useTheme, useThemeToggle } from './lib/theme';
 import professorImg from './assets/Screenshot_2026-05-08_003804-removebg-preview.png'
 
-type StationImage = { url: string; thumbUrl?: string | null; mediaId?: string; alt?: string | null };
-type ApiStation = { id: string; name: string; state: string; lat: number; lon: number; kw: number; connector: string; stalls: number; tariff: number; enabled: boolean; order: number; images?: StationImage[] };
-type LocalStation = { id: string; name: string; state: string; lon: number; lat: number; kw: number; conn: string; stalls: number; tariff: number; images: StationImage[] };
+type ApiStation = { id: string; name: string; state: string; lat: number; lon: number; kw: number; connector: string; stalls: number; tariff: number; enabled: boolean; order: number };
+type LocalStation = { id: string; name: string; state: string; lon: number; lat: number; kw: number; conn: string; stalls: number; tariff: number };
 async function fetchStations(): Promise<LocalStation[]> {
   const { data } = await api.get<ApiStation[]>('/api/stations');
   return (data ?? []).map((s) => ({
@@ -34,7 +33,6 @@ async function fetchStations(): Promise<LocalStation[]> {
     conn: s.connector,
     stalls: s.stalls,
     tariff: s.tariff,
-    images: Array.isArray(s.images) ? s.images : [],
   }));
 }
 
@@ -381,7 +379,6 @@ export default function App() {
       stations: STATIONS.map((s) => ({
         id: s.id, name: s.name, state: s.state,
         lon: s.lon, lat: s.lat, kw: s.kw, connector: s.conn,
-        images: s.images,
       })),
     };
     dashboardIframeRef.current?.contentWindow?.postMessage(payload, '*');
@@ -962,7 +959,7 @@ export default function App() {
 
           /* HERO TICKER — compact on mobile (Siemens partner mark) */
           .ticker { padding: 12px 0 !important; }
-          .ticker-track { gap: 36px !important; animation-duration: 15s !important; }
+          .ticker-track { gap: 36px !important; animation-duration: 60s !important; }
           .ticker-item { font-size: 0.7rem !important; }
 
           /* INDIA COVERAGE */
@@ -1868,7 +1865,7 @@ export default function App() {
 
                   {/* Mobile Siemens partnership ticker */}
                   <div className="ticker" style={{ position: 'relative', marginTop: 24, padding: '8px 0', background: 'transparent', borderTop: 'none', borderBottom: 'none' }}>
-                    <div className="ticker-track" style={{ gap: 36, animationDuration: '15s' }}>
+                    <div className="ticker-track" style={{ gap: 36, animationDuration: '60s' }}>
                       {Array.from({ length: 16 }).map((_, i) => (
                         <span
                           key={i}
@@ -2716,7 +2713,7 @@ export default function App() {
                   }}>
                     <iframe
                       ref={dashboardIframeRef}
-                      src={`/dashboard.html?apiUrl=${iframeApiBase}&v=live8`}
+                      src={`/dashboard.html?apiUrl=${iframeApiBase}&v=live7`}
                       style={{
                         width: '100%',
                         height: '100%',
@@ -3601,7 +3598,7 @@ export default function App() {
               <iframe
                 ref={findStationsIframeRef}
                 className="find-stations-iframe"
-                src={`/find-stations.html?apiUrl=${iframeApiBase}&v=dir12`}
+                src={`/find-stations.html?apiUrl=${iframeApiBase}&v=dir7`}
                 scrolling="yes"
                 style={{
                   width: '100%',

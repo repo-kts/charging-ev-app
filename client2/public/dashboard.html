@@ -1,319 +1,266 @@
 <!DOCTYPE html>
 <html>
-
 <head>
   <meta charset="utf-8">
   <title>EV Charger — Network Map</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      background: #0c0e0d;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-    }
-
-    #__bundler_loading {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      font: 13px/1.4 -apple-system, BlinkMacSystemFont, sans-serif;
-      color: #666;
-      background: #fff;
-      padding: 8px 14px;
-      border-radius: 8px;
-      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
-      z-index: 10000;
-    }
-
-    #__bundler_thumbnail {
-      position: fixed;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #0c0e0d;
-      z-index: 9999;
-    }
-
-    #__bundler_thumbnail svg {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-    }
-
-    #__bundler_placeholder {
-      color: #999;
-      font-size: 14px;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #0c0e0d; display: flex; align-items: center; justify-content: center; min-height: 100vh; font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
+    #__bundler_loading { position: fixed; bottom: 20px; right: 20px; font: 13px/1.4 -apple-system, BlinkMacSystemFont, sans-serif; color: #666; background: #fff; padding: 8px 14px; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.12); z-index: 10000; }
+    #__bundler_thumbnail { position: fixed; inset: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #0c0e0d; z-index: 9999; }
+    #__bundler_thumbnail svg { width: 100%; height: 100%; object-fit: contain; }
+    #__bundler_placeholder { color: #999; font-size: 14px; }
   </style>
   <noscript>
-    <style>
-      #__bundler_loading {
-        display: none;
-      }
-    </style>
-    <div
-      style="position:fixed;bottom:12px;left:12px;font:13px/1.4 -apple-system,BlinkMacSystemFont,sans-serif;color:#999;background:rgba(255,255,255,0.9);padding:6px 12px;border-radius:6px;box-shadow:0 1px 4px rgba(0,0,0,0.08);z-index:10000;">
+    <style>#__bundler_loading { display: none; }</style>
+    <div style="position:fixed;bottom:12px;left:12px;font:13px/1.4 -apple-system,BlinkMacSystemFont,sans-serif;color:#999;background:rgba(255,255,255,0.9);padding:6px 12px;border-radius:6px;box-shadow:0 1px 4px rgba(0,0,0,0.08);z-index:10000;">
       This page requires JavaScript to display.
     </div>
   </noscript>
 </head>
-
 <body>
   <div id="__bundler_thumbnail">
-    <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
-      <rect width="1200" height="800" fill="#0c0e0d"></rect>
-      <circle cx="600" cy="400" r="220" fill="none" stroke="#00FF88" stroke-width="2" opacity="0.4"></circle>
-      <circle cx="600" cy="400" r="160" fill="none" stroke="#00FF88" stroke-width="1.5" opacity="0.25"
-        stroke-dasharray="4 6"></circle>
-      <path d="M 610 320 L 560 410 L 600 410 L 580 480 L 640 380 L 600 380 L 620 320 Z" fill="#00FF88" opacity="0.95">
-      </path>
-    </svg>
-  </div>
+  <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+    <rect width="1200" height="800" fill="#0c0e0d"></rect>
+    <circle cx="600" cy="400" r="220" fill="none" stroke="#00FF88" stroke-width="2" opacity="0.4"></circle>
+    <circle cx="600" cy="400" r="160" fill="none" stroke="#00FF88" stroke-width="1.5" opacity="0.25" stroke-dasharray="4 6"></circle>
+    <path d="M 610 320 L 560 410 L 600 410 L 580 480 L 640 380 L 600 380 L 620 320 Z" fill="#00FF88" opacity="0.95"></path>
+  </svg>
+</div>
   <div id="__bundler_loading">Unpacking...</div>
 
   <script>
+    
+document.addEventListener('DOMContentLoaded', async function() {
+  const loading = document.getElementById('__bundler_loading');
+  function setStatus(msg) { if (loading) loading.textContent = msg; }
 
-    document.addEventListener('DOMContentLoaded', async function () {
-      const loading = document.getElementById('__bundler_loading');
-      function setStatus(msg) { if (loading) loading.textContent = msg; }
+  // Error sink persists across replaceWith since it's on window, not the DOM.
+  window.addEventListener('error', function(e) {
+    var p = document.body || document.documentElement;
+    var d = document.getElementById('__bundler_err') || p.appendChild(document.createElement('div'));
+    d.id = '__bundler_err';
+    d.style.cssText = 'position:fixed;bottom:12px;left:12px;right:12px;font:12px/1.4 ui-monospace,monospace;background:#2a1215;color:#ff8a80;padding:10px 14px;border-radius:8px;border:1px solid #5c2b2e;z-index:99999;white-space:pre-wrap;max-height:40vh;overflow:auto';
+    d.textContent = (d.textContent ? d.textContent + String.fromCharCode(10) : '') +
+      '[bundle] ' + (e.message || e.type) +
+      (e.filename ? ' (' + e.filename.slice(0, 60) + ':' + e.lineno + ')' : '');
+  }, true);
 
-      // Error sink persists across replaceWith since it's on window, not the DOM.
-      window.addEventListener('error', function (e) {
-        var p = document.body || document.documentElement;
-        var d = document.getElementById('__bundler_err') || p.appendChild(document.createElement('div'));
-        d.id = '__bundler_err';
-        d.style.cssText = 'position:fixed;bottom:12px;left:12px;right:12px;font:12px/1.4 ui-monospace,monospace;background:#2a1215;color:#ff8a80;padding:10px 14px;border-radius:8px;border:1px solid #5c2b2e;z-index:99999;white-space:pre-wrap;max-height:40vh;overflow:auto';
-        d.textContent = (d.textContent ? d.textContent + String.fromCharCode(10) : '') +
-          '[bundle] ' + (e.message || e.type) +
-          (e.filename ? ' (' + e.filename.slice(0, 60) + ':' + e.lineno + ')' : '');
-      }, true);
+  try {
+    const manifestEl = document.querySelector('script[type="__bundler/manifest"]');
+    const templateEl = document.querySelector('script[type="__bundler/template"]');
+    if (!manifestEl || !templateEl) {
+      setStatus('Error: missing bundle data');
+      console.error('[bundler] Missing script tags — manifestEl:', !!manifestEl, 'templateEl:', !!templateEl);
+      return;
+    }
 
+    const manifest = JSON.parse(manifestEl.textContent);
+    let template = JSON.parse(templateEl.textContent);
+
+    // === TEMPLATE PATCH: subscribe station-consuming components to live updates ===
+    try {
+      var __subSnippet = '\n  const [__stationTick, __setStationTick] = React.useState(0);\n  React.useEffect(function(){ if (!window.__evStationListeners) return; var fn = function(){ __setStationTick(function(t){ return t + 1; }); }; window.__evStationListeners.add(fn); return function(){ window.__evStationListeners.delete(fn); }; }, []);';
+      template = template.replace(
+        'const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);',
+        'const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);' + __subSnippet
+      );
+      // Defensive fallback so the dashboard HUD doesn't crash when stations have not loaded yet
+      template = template.replace(
+        "const selected = focused || stations.find(s => s.id === 'WB-410') || stations[0];",
+        "const selected = focused || stations.find(s => s.id === 'WB-410') || stations[0] || { id: '—', name: '—', kw: 0, conn: '—' };"
+      );
+    } catch(__tplErr) { console.warn('[ev-stations] template patch skipped', __tplErr); }
+    // === END TEMPLATE PATCH ===
+
+    // === HOVER PATCH: open station / cluster popups only on click, not hover ===
+    try {
+      template = template.replace(
+        'onStationHover={(s) => { if (s) openStation(s); else scheduleClose(); }}',
+        'onStationHover={() => {}}'
+      );
+      template = template.replace(
+        'onClusterHover={(c) => { if (c) openCluster(c); else scheduleClose(); }}',
+        'onClusterHover={() => {}}'
+      );
+    } catch(__hoverErr) { console.warn('[ev-stations] hover patch skipped', __hoverErr); }
+    // === END HOVER PATCH ===
+
+    const uuids = Object.keys(manifest);
+    setStatus('Unpacking ' + uuids.length + ' assets...');
+
+    const blobUrls = {};
+    await Promise.all(uuids.map(async (uuid) => {
+      const entry = manifest[uuid];
       try {
-        const manifestEl = document.querySelector('script[type="__bundler/manifest"]');
-        const templateEl = document.querySelector('script[type="__bundler/template"]');
-        if (!manifestEl || !templateEl) {
-          setStatus('Error: missing bundle data');
-          console.error('[bundler] Missing script tags — manifestEl:', !!manifestEl, 'templateEl:', !!templateEl);
-          return;
+        const binaryStr = atob(entry.data);
+        const bytes = new Uint8Array(binaryStr.length);
+        for (let i = 0; i < binaryStr.length; i++) bytes[i] = binaryStr.charCodeAt(i);
+
+        let finalBytes = bytes;
+        if (entry.compressed) {
+          if (typeof DecompressionStream !== 'undefined') {
+            const ds = new DecompressionStream('gzip');
+            const writer = ds.writable.getWriter();
+            const reader = ds.readable.getReader();
+            writer.write(bytes);
+            writer.close();
+            const chunks = [];
+            let totalLen = 0;
+            while (true) {
+              const { done, value } = await reader.read();
+              if (done) break;
+              chunks.push(value);
+              totalLen += value.length;
+            }
+            finalBytes = new Uint8Array(totalLen);
+            let offset = 0;
+            for (const chunk of chunks) { finalBytes.set(chunk, offset); offset += chunk.length; }
+          } else {
+            console.warn('DecompressionStream not available, asset ' + uuid + ' may not render');
+          }
         }
 
-        const manifest = JSON.parse(manifestEl.textContent);
-        let template = JSON.parse(templateEl.textContent);
-
-        // === TEMPLATE PATCH: subscribe station-consuming components to live updates ===
-        try {
-          var __subSnippet = '\n  const [__stationTick, __setStationTick] = React.useState(0);\n  React.useEffect(function(){ if (!window.__evStationListeners) return; var fn = function(){ __setStationTick(function(t){ return t + 1; }); }; window.__evStationListeners.add(fn); return function(){ window.__evStationListeners.delete(fn); }; }, []);';
-          template = template.replace(
-            'const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);',
-            'const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);' + __subSnippet
-          );
-          // Defensive fallback so the dashboard HUD doesn't crash when stations have not loaded yet
-          template = template.replace(
-            "const selected = focused || stations.find(s => s.id === 'WB-410') || stations[0];",
-            "const selected = focused || stations.find(s => s.id === 'WB-410') || stations[0] || { id: '—', name: '—', kw: 0, conn: '—' };"
-          );
-        } catch (__tplErr) { console.warn('[ev-stations] template patch skipped', __tplErr); }
-        // === END TEMPLATE PATCH ===
-
-        // === HOVER PATCH: open station / cluster popups only on click, not hover ===
-        try {
-          template = template.replace(
-            'onStationHover={(s) => { if (s) openStation(s); else scheduleClose(); }}',
-            'onStationHover={() => {}}'
-          );
-          template = template.replace(
-            'onClusterHover={(c) => { if (c) openCluster(c); else scheduleClose(); }}',
-            'onClusterHover={() => {}}'
-          );
-        } catch (__hoverErr) { console.warn('[ev-stations] hover patch skipped', __hoverErr); }
-        // === END HOVER PATCH ===
-
-        const uuids = Object.keys(manifest);
-        setStatus('Unpacking ' + uuids.length + ' assets...');
-
-        const blobUrls = {};
-        await Promise.all(uuids.map(async (uuid) => {
-          const entry = manifest[uuid];
+        // === STATIONS PATCH: rewrite hardcoded station data to live API/postMessage ===
+        if (entry.mime && entry.mime.indexOf('javascript') !== -1 && finalBytes.length < 200000) {
           try {
-            const binaryStr = atob(entry.data);
-            const bytes = new Uint8Array(binaryStr.length);
-            for (let i = 0; i < binaryStr.length; i++) bytes[i] = binaryStr.charCodeAt(i);
-
-            let finalBytes = bytes;
-            if (entry.compressed) {
-              if (typeof DecompressionStream !== 'undefined') {
-                const ds = new DecompressionStream('gzip');
-                const writer = ds.writable.getWriter();
-                const reader = ds.readable.getReader();
-                writer.write(bytes);
-                writer.close();
-                const chunks = [];
-                let totalLen = 0;
-                while (true) {
-                  const { done, value } = await reader.read();
-                  if (done) break;
-                  chunks.push(value);
-                  totalLen += value.length;
-                }
-                finalBytes = new Uint8Array(totalLen);
-                let offset = 0;
-                for (const chunk of chunks) { finalBytes.set(chunk, offset); offset += chunk.length; }
-              } else {
-                console.warn('DecompressionStream not available, asset ' + uuid + ' may not render');
-              }
+            var __txt = new TextDecoder().decode(finalBytes);
+            if (__txt.indexOf('const STATIONS = [') !== -1 && __txt.indexOf('Major Indian cities') !== -1) {
+              var __arrStart = __txt.indexOf('const STATIONS = [');
+              var __arrEnd = __txt.indexOf('];', __arrStart) + 2;
+              var __bootstrap =
+                'let STATIONS = [];\n' +
+                'window.EV_STATIONS = STATIONS;\n' +
+                'window.__evStationListeners = window.__evStationListeners || new Set();\n' +
+                'function __evNotifyStations(){ window.__evStationListeners.forEach(function(fn){ try{ fn(); }catch(e){} }); }\n' +
+                'function __evMapStations(arr){ return (arr||[]).map(function(s){ return { id:s.id, name:s.name, state:s.state, lon:s.lon, lat:s.lat, kw:s.kw, conn:(s.connector||s.conn), tariff:s.tariff, stalls:s.stalls }; }); }\n' +
+                'function __evSetStations(arr){ STATIONS = __evMapStations(arr); window.EV_STATIONS = STATIONS; __evNotifyStations(); }\n' +
+                'window.__evApiUrl = new URLSearchParams(window.location.search).get("apiUrl") || "";\n' +
+                'async function __evFetchStations(){ try { var r = await fetch(window.__evApiUrl + "/api/stations", { credentials: "omit", cache: "no-store" }); if (r.ok) { __evSetStations(await r.json()); } } catch(e) { console.warn("[ev-stations] fetch failed", e); } }\n' +
+                '__evFetchStations();\n' +
+                'window.__evPollId = window.__evPollId || setInterval(__evFetchStations, 15000);\n' +
+                'window.addEventListener("focus", __evFetchStations);\n' +
+                'document.addEventListener("visibilitychange", function(){ if (document.visibilityState === "visible") __evFetchStations(); });\n' +
+                'window.addEventListener("message", function(e){ if (e && e.data && e.data.type === "ev-stations-update" && Array.isArray(e.data.stations)) { __evSetStations(e.data.stations); } });\n';
+              __txt = __txt.slice(0, __arrStart) + __bootstrap + __txt.slice(__arrEnd);
+              __txt = __txt.replace(
+                'const [tick, setTick] = React.useState(0);',
+                'const [tick, setTick] = React.useState(0);\n  const [__stationTick, __setStationTick] = React.useState(0);\n  React.useEffect(function(){ var fn = function(){ __setStationTick(function(t){ return t + 1; }); }; window.__evStationListeners.add(fn); return function(){ window.__evStationListeners.delete(fn); }; }, []);'
+              );
+              __txt = __txt.replace('}, [proj]);', '}, [proj, __stationTick]);');
+              __txt = __txt.replace('.filter(s => STATION_STATES.includes(s.state))', '');
+              finalBytes = new TextEncoder().encode(__txt);
             }
 
-            // === STATIONS PATCH: rewrite hardcoded station data to live API/postMessage ===
-            if (entry.mime && entry.mime.indexOf('javascript') !== -1 && finalBytes.length < 200000) {
-              try {
-                var __txt = new TextDecoder().decode(finalBytes);
-                if (__txt.indexOf('const STATIONS = [') !== -1 && __txt.indexOf('Major Indian cities') !== -1) {
-                  var __arrStart = __txt.indexOf('const STATIONS = [');
-                  var __arrEnd = __txt.indexOf('];', __arrStart) + 2;
-                  var __bootstrap =
-                    'let STATIONS = [];\n' +
-                    'window.EV_STATIONS = STATIONS;\n' +
-                    'window.__evStationListeners = window.__evStationListeners || new Set();\n' +
-                    'function __evNotifyStations(){ window.__evStationListeners.forEach(function(fn){ try{ fn(); }catch(e){} }); }\n' +
-                    'function __evMapStations(arr){ return (arr||[]).map(function(s){ return { id:s.id, name:s.name, state:s.state, lon:s.lon, lat:s.lat, kw:s.kw, conn:(s.connector||s.conn), tariff:s.tariff, stalls:s.stalls }; }); }\n' +
-                    'function __evSetStations(arr){ STATIONS = __evMapStations(arr); window.EV_STATIONS = STATIONS; __evNotifyStations(); }\n' +
-                    'window.__evApiUrl = new URLSearchParams(window.location.search).get("apiUrl") || "";\n' +
-                    'async function __evFetchStations(){ try { var r = await fetch(window.__evApiUrl + "/api/stations", { credentials: "omit", cache: "no-store" }); if (r.ok) { __evSetStations(await r.json()); } } catch(e) { console.warn("[ev-stations] fetch failed", e); } }\n' +
-                    '__evFetchStations();\n' +
-                    'window.__evPollId = window.__evPollId || setInterval(__evFetchStations, 15000);\n' +
-                    'window.addEventListener("focus", __evFetchStations);\n' +
-                    'document.addEventListener("visibilitychange", function(){ if (document.visibilityState === "visible") __evFetchStations(); });\n' +
-                    'window.addEventListener("message", function(e){ if (e && e.data && e.data.type === "ev-stations-update" && Array.isArray(e.data.stations)) { __evSetStations(e.data.stations); } });\n';
-                  __txt = __txt.slice(0, __arrStart) + __bootstrap + __txt.slice(__arrEnd);
-                  __txt = __txt.replace(
-                    'const [tick, setTick] = React.useState(0);',
-                    'const [tick, setTick] = React.useState(0);\n  const [__stationTick, __setStationTick] = React.useState(0);\n  React.useEffect(function(){ var fn = function(){ __setStationTick(function(t){ return t + 1; }); }; window.__evStationListeners.add(fn); return function(){ window.__evStationListeners.delete(fn); }; }, []);'
-                  );
-                  __txt = __txt.replace('}, [proj]);', '}, [proj, __stationTick]);');
-                  __txt = __txt.replace('.filter(s => STATION_STATES.includes(s.state))', '');
-                  finalBytes = new TextEncoder().encode(__txt);
-                }
-
-                // === LABEL PATCH: rename Tariff → Rate in popup row label ===
-                if (__txt.indexOf('<label>Tariff</label>') !== -1) {
-                  __txt = __txt.replace('<label>Tariff</label>', '<label>Rate</label>');
-                  finalBytes = new TextEncoder().encode(__txt);
-                }
-
-                // === REAL TARIFF PATCH: use station.tariff from API instead of hardcoded mock formula ===
-                if (__txt.indexOf('(18 + (station.kw / 10)).toFixed(0)') !== -1) {
-                  __txt = __txt.replace(
-                    '(18 + (station.kw / 10)).toFixed(0)',
-                    '(station.tariff != null ? station.tariff : (18 + (station.kw / 10))).toFixed(0)'
-                  );
-                  // similarly, prefer real stalls count if present
-                  __txt = __txt.replace(
-                    'Math.max(2, Math.round(station.kw / 50))',
-                    '(station.stalls != null ? station.stalls : Math.max(2, Math.round(station.kw / 50)))'
-                  );
-                  finalBytes = new TextEncoder().encode(__txt);
-                }
-
-                // === GET DIRECTIONS PATCH: compact inline link inside the status row, single line ===
-                if (__txt.indexOf('<div className="pp-status"><i/> ONLINE') !== -1) {
-                  var __dirLink =
-                    '<div style={{display:"flex",flexDirection:"column",alignItems:"flex-start",gap:10}}>' +
-                    '<div className="pp-status" style={{whiteSpace:"nowrap",fontSize:10,letterSpacing:"0.1em",gap:5}}><i/> ONLINE · ACCEPTING SESSIONS</div>' +
-                    '<a href={"https://www.google.com/maps/dir/?api=1&destination=" + (station && station.lat) + "," + (station && station.lon)} target="_blank" rel="noopener noreferrer" title="Get directions" ' +
-                    'style={{display:"inline-flex",alignItems:"center",gap:7,padding:"5px 5px",background:"#5ec8ff",color:"#06121c",textDecoration:"none",fontWeight:700,fontSize:12,letterSpacing:"0.08em",borderRadius:8,cursor:"pointer",boxShadow:"0 4px 14px rgba(94,200,255,0.3)"}}>' +
-                    '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>' +
-                    'DIRECTIONS' +
-                    '</a></div>';
-                  __txt = __txt.replace(
-                    '<div className="pp-status"><i/> ONLINE · ACCEPTING SESSIONS</div>',
-                    __dirLink
-                  );
-                  finalBytes = new TextEncoder().encode(__txt);
-                }
-              } catch (__patchErr) { console.warn('[ev-stations] patch skipped', __patchErr); }
+            // === LABEL PATCH: rename Tariff → Rate in popup row label ===
+            if (__txt.indexOf('<label>Tariff</label>') !== -1) {
+              __txt = __txt.replace('<label>Tariff</label>', '<label>Rate</label>');
+              finalBytes = new TextEncoder().encode(__txt);
             }
-            // === END STATIONS PATCH ===
-            blobUrls[uuid] = URL.createObjectURL(new Blob([finalBytes], { type: entry.mime }));
-          } catch (err) {
-            console.error('Failed to decode asset ' + uuid + ':', err);
-            blobUrls[uuid] = URL.createObjectURL(new Blob([], { type: entry.mime }));
-          }
-        }));
 
-        const extResEl = document.querySelector('script[type="__bundler/ext_resources"]');
-        const extResources = extResEl ? JSON.parse(extResEl.textContent) : [];
-        const resourceMap = {};
-        for (const entry of extResources) {
-          if (blobUrls[entry.uuid]) resourceMap[entry.id] = blobUrls[entry.uuid];
+            // === REAL TARIFF PATCH: use station.tariff from API instead of hardcoded mock formula ===
+            if (__txt.indexOf('(18 + (station.kw / 10)).toFixed(0)') !== -1) {
+              __txt = __txt.replace(
+                '(18 + (station.kw / 10)).toFixed(0)',
+                '(station.tariff != null ? station.tariff : (18 + (station.kw / 10))).toFixed(0)'
+              );
+              // similarly, prefer real stalls count if present
+              __txt = __txt.replace(
+                'Math.max(2, Math.round(station.kw / 50))',
+                '(station.stalls != null ? station.stalls : Math.max(2, Math.round(station.kw / 50)))'
+              );
+              finalBytes = new TextEncoder().encode(__txt);
+            }
+
+            // === GET DIRECTIONS PATCH: compact inline link inside the status row, single line ===
+            if (__txt.indexOf('<div className="pp-status"><i/> ONLINE') !== -1) {
+              var __dirLink =
+                '<div className="pp-status" style={{whiteSpace:"nowrap",fontSize:10,letterSpacing:"0.1em",gap:5}}>' +
+                '<i/> ONLINE · ACCEPTING · ' +
+                '<a href={"https://www.google.com/maps/dir/?api=1&destination=" + (station && station.lat) + "," + (station && station.lon)} target="_blank" rel="noopener noreferrer" title="Get directions" ' +
+                'style={{color:"#5ec8ff",textDecoration:"none",display:"inline-flex",alignItems:"center",gap:3,fontWeight:700,cursor:"pointer"}}>' +
+                '<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>' +
+                'DIRECTIONS' +
+                '</a></div>';
+              __txt = __txt.replace(
+                '<div className="pp-status"><i/> ONLINE · ACCEPTING SESSIONS</div>',
+                __dirLink
+              );
+              finalBytes = new TextEncoder().encode(__txt);
+            }
+          } catch(__patchErr) { console.warn('[ev-stations] patch skipped', __patchErr); }
         }
-
-        setStatus('Rendering...');
-        for (const uuid of uuids) template = template.split(uuid).join(blobUrls[uuid]);
-
-        // Strip integrity + crossorigin — blob URLs from a file:// document inherit
-        // a null origin, so crossorigin forces a CORS fetch that SRI then rejects.
-        // The manifest bytes are ours; SRI protects against CDN compromise, not this.
-        template = template.replace(/\s+integrity="[^"]*"/gi, '').replace(/\s+crossorigin="[^"]*"/gi, '');
-
-        const resourceScript = '<script>window.__resources = ' +
-          JSON.stringify(resourceMap).split('</' + 'script>').join('<\\/' + 'script>') +
-          ';</' + 'script>';
-        // Inject after <head> so the DOCTYPE stays first; prepending the script
-        // would push the parser into quirks mode. DOMParser always emits a <head>
-        // (synthesizing one if the source HTML omitted it) but may carry
-        // attributes through, so match the full opening tag. slice() rather than
-        // replace() keeps us clear of $-pattern substitution in resourceScript.
-        const headOpen = template.match(/<head[^>]*>/i);
-        if (headOpen) {
-          const i = headOpen.index + headOpen[0].length;
-          template = template.slice(0, i) + resourceScript + template.slice(i);
-        }
-
-        // Parse the template and swap the root element. Scripts inserted via
-        // DOMParser/replaceWith are inert per spec — re-create each with
-        // createElement so they execute, awaiting onload for src scripts to
-        // preserve ordering (React before ReactDOM before Babel before text/babel).
-        const doc = new DOMParser().parseFromString(template, 'text/html');
-        document.documentElement.replaceWith(doc.documentElement);
-        const dead = Array.from(document.scripts);
-        for (const old of dead) {
-          const s = document.createElement('script');
-          for (const a of old.attributes) s.setAttribute(a.name, a.value);
-          s.textContent = old.textContent;
-          // text/babel scripts with a src: fetch and inline. transformScriptTags
-          // does XHR against the src, but blob:null/ from a file:// origin is
-          // silently dropped. Inlining makes it a plain inline babel script,
-          // which transformScriptTags handles unconditionally.
-          if ((s.type === 'text/babel' || s.type === 'text/jsx') && s.src) {
-            const r = await fetch(s.src);
-            s.textContent = await r.text();
-            s.removeAttribute('src');
-          }
-          const p = s.src ? new Promise(function (r) { s.onload = s.onerror = r; }) : null;
-          old.replaceWith(s);
-          if (p) await p;
-        }
-        // Babel standalone auto-transforms type=text/babel on DOMContentLoaded,
-        // which fired before we swapped the document. Trigger manually if present.
-        if (window.Babel && typeof window.Babel.transformScriptTags === 'function') {
-          window.Babel.transformScriptTags();
-        }
+        // === END STATIONS PATCH ===
+        blobUrls[uuid] = URL.createObjectURL(new Blob([finalBytes], { type: entry.mime }));
       } catch (err) {
-        setStatus('Error unpacking: ' + err.message);
-        console.error('Bundle unpack error:', err);
+        console.error('Failed to decode asset ' + uuid + ':', err);
+        blobUrls[uuid] = URL.createObjectURL(new Blob([], { type: entry.mime }));
       }
-    });
+    }));
+
+    const extResEl = document.querySelector('script[type="__bundler/ext_resources"]');
+    const extResources = extResEl ? JSON.parse(extResEl.textContent) : [];
+    const resourceMap = {};
+    for (const entry of extResources) {
+      if (blobUrls[entry.uuid]) resourceMap[entry.id] = blobUrls[entry.uuid];
+    }
+
+    setStatus('Rendering...');
+    for (const uuid of uuids) template = template.split(uuid).join(blobUrls[uuid]);
+
+    // Strip integrity + crossorigin — blob URLs from a file:// document inherit
+    // a null origin, so crossorigin forces a CORS fetch that SRI then rejects.
+    // The manifest bytes are ours; SRI protects against CDN compromise, not this.
+    template = template.replace(/\s+integrity="[^"]*"/gi, '').replace(/\s+crossorigin="[^"]*"/gi, '');
+
+    const resourceScript = '<script>window.__resources = ' +
+      JSON.stringify(resourceMap).split('</' + 'script>').join('<\\/' + 'script>') +
+      ';</' + 'script>';
+    // Inject after <head> so the DOCTYPE stays first; prepending the script
+    // would push the parser into quirks mode. DOMParser always emits a <head>
+    // (synthesizing one if the source HTML omitted it) but may carry
+    // attributes through, so match the full opening tag. slice() rather than
+    // replace() keeps us clear of $-pattern substitution in resourceScript.
+    const headOpen = template.match(/<head[^>]*>/i);
+    if (headOpen) {
+      const i = headOpen.index + headOpen[0].length;
+      template = template.slice(0, i) + resourceScript + template.slice(i);
+    }
+
+    // Parse the template and swap the root element. Scripts inserted via
+    // DOMParser/replaceWith are inert per spec — re-create each with
+    // createElement so they execute, awaiting onload for src scripts to
+    // preserve ordering (React before ReactDOM before Babel before text/babel).
+    const doc = new DOMParser().parseFromString(template, 'text/html');
+    document.documentElement.replaceWith(doc.documentElement);
+    const dead = Array.from(document.scripts);
+    for (const old of dead) {
+      const s = document.createElement('script');
+      for (const a of old.attributes) s.setAttribute(a.name, a.value);
+      s.textContent = old.textContent;
+      // text/babel scripts with a src: fetch and inline. transformScriptTags
+      // does XHR against the src, but blob:null/ from a file:// origin is
+      // silently dropped. Inlining makes it a plain inline babel script,
+      // which transformScriptTags handles unconditionally.
+      if ((s.type === 'text/babel' || s.type === 'text/jsx') && s.src) {
+        const r = await fetch(s.src);
+        s.textContent = await r.text();
+        s.removeAttribute('src');
+      }
+      const p = s.src ? new Promise(function(r) { s.onload = s.onerror = r; }) : null;
+      old.replaceWith(s);
+      if (p) await p;
+    }
+    // Babel standalone auto-transforms type=text/babel on DOMContentLoaded,
+    // which fired before we swapped the document. Trigger manually if present.
+    if (window.Babel && typeof window.Babel.transformScriptTags === 'function') {
+      window.Babel.transformScriptTags();
+    }
+  } catch (err) {
+    setStatus('Error unpacking: ' + err.message);
+    console.error('Bundle unpack error:', err);
+  }
+});
 
   </script>
 
@@ -329,5 +276,4 @@
 "<!DOCTYPE html>\n<html lang=\"en\"><head>\n<meta charset=\"utf-8\">\n<title>EV Charger — Network Map<\u002Ftitle>\n\n\n<style>\n  html, body {\n    margin: 0; padding: 0; height: 100%;\n    background: #0c0e0d; color: #e6e6e6;\n    font: 12.5px/1.45 ui-monospace, \"SF Mono\", Menlo, monospace;\n    overflow: hidden;\n  }\n  #root, .stage { width: 100%; height: 100%; }\n  .stage {\n    position: relative;\n    display: grid; place-items: center;\n    background:\n      radial-gradient(circle at 50% 50%, rgba(0,255,136,0.05), transparent 60%),\n      #0c0e0d;\n  }\n  .stage::before {\n    content: \"\"; position: absolute; inset: 0;\n    background-image:\n      linear-gradient(rgba(0,255,136,0.05) 1px, transparent 1px),\n      linear-gradient(90deg, rgba(0,255,136,0.05) 1px, transparent 1px);\n    background-size: 32px 32px;\n    pointer-events: none;\n    mask-image: radial-gradient(circle at 50% 50%, black 30%, transparent 85%);\n    -webkit-mask-image: radial-gradient(circle at 50% 50%, black 30%, transparent 85%);\n  }\n  .bracket { position: absolute; width: 22px; height: 22px;\n             border: 1px solid #00ff88; opacity: 0.7; }\n  .bracket.tl { top: 24px; left: 24px; border-right: 0; border-bottom: 0; }\n  .bracket.tr { top: 24px; right: 24px; border-left: 0; border-bottom: 0; }\n  .bracket.bl { bottom: 24px; left: 24px; border-right: 0; border-top: 0; }\n  .bracket.br { bottom: 24px; right: 24px; border-left: 0; border-top: 0; }\n  .hud-top {\n    position: absolute; top: 28px; left: 50%; transform: translateX(-50%);\n    display: flex; gap: 22px;\n    font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;\n    color: rgba(0,255,136,0.75);\n  }\n  .hud-top span { display: inline-flex; align-items: center; gap: 6px; }\n  .hud-top i { width: 7px; height: 7px; border-radius: 50%;\n               background: #00ff88; box-shadow: 0 0 8px #00ff88;\n               animation: blink 1s ease-in-out infinite; font-style: normal; }\n  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }\n  .hud-tl, .hud-tr, .hud-bl, .hud-br {\n    position: absolute;\n    font-size: 10.5px; letter-spacing: 0.14em;\n    color: rgba(0,255,136,0.55);\n    line-height: 1.7;\n  }\n  .hud-tl { top: 56px; left: 56px; }\n  .hud-tr { top: 56px; right: 56px; text-align: right; }\n  .hud-bl { bottom: 56px; left: 56px; }\n  .hud-br { bottom: 56px; right: 56px; text-align: right; }\n  .hud-tl b, .hud-tr b, .hud-bl b, .hud-br b {\n    color: #00ff88; font-weight: 400; letter-spacing: 0.06em;\n  }\n  .hud-title {\n    font-size: 13px; color: #00ff88; letter-spacing: 0.18em;\n    text-transform: uppercase; margin-bottom: 4px; font-weight: 400;\n  }\n  .map-shell {\n    position: relative;\n    width: min(86vw, 86vh); height: min(86vw, 86vh);\n    max-width: 880px; max-height: 880px;\n    display: grid; place-items: center;\n  }\n  .map-shell > svg { width: 100% !important; height: 100% !important; }<\u002Fstyle>\n<script src=\"87d5f100-764c-4789-9534-d3be365759e3\" integrity=\"sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L\" crossorigin=\"anonymous\"><\u002Fscript>\n<script src=\"b4c5a6e1-07d7-4d2f-bc46-f04251e459db\" integrity=\"sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm\" crossorigin=\"anonymous\"><\u002Fscript>\n<script src=\"b5562aed-740d-48bf-8e96-99a9d09c3fe8\" integrity=\"sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y\" crossorigin=\"anonymous\"><\u002Fscript>\n<\u002Fhead>\n<body>\n<div id=\"root\"><\u002Fdiv>\n\n<script type=\"text/babel\" src=\"334cec52-ffdd-40fc-bf53-d4df2e15a220\"><\u002Fscript>\n<script type=\"text/babel\" src=\"cd5c8722-61fc-4f63-abaf-9404622242a5\"><\u002Fscript>\n\n<script type=\"text/babel\">\nconst TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{\n  \"accent\": \"#00ff88\",\n  \"showHud\": true,\n  \"showScanRing\": true\n}/*EDITMODE-END*/;\n\nfunction NetworkMap() {\n  const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);\n  const [focusedId, setFocusedId] = React.useState(null);\n  const [focusedCluster, setFocusedCluster] = React.useState(null);\n  const closeTimerRef = React.useRef(null);\n  const [now, setNow] = React.useState(new Date().toISOString().slice(11,19));\n\n  React.useEffect(() => {\n    const id = setInterval(() => setNow(new Date().toISOString().slice(11,19)), 1000);\n    return () => clearInterval(id);\n  }, []);\n\n  const openStation = React.useCallback((s) => {\n    if (closeTimerRef.current) { clearTimeout(closeTimerRef.current); closeTimerRef.current = null; }\n    if (s) { setFocusedId(s.id); setFocusedCluster(null); }\n  }, []);\n  const openCluster = React.useCallback((c) => {\n    if (closeTimerRef.current) { clearTimeout(closeTimerRef.current); closeTimerRef.current = null; }\n    if (c) { setFocusedCluster(c); setFocusedId(null); }\n  }, []);\n  const scheduleClose = React.useCallback(() => {\n    if (closeTimerRef.current) clearTimeout(closeTimerRef.current);\n    closeTimerRef.current = setTimeout(() => {\n      setFocusedId(null); setFocusedCluster(null);\n    }, 150);\n  }, []);\n  const cancelClose = React.useCallback(() => {\n    if (closeTimerRef.current) { clearTimeout(closeTimerRef.current); closeTimerRef.current = null; }\n  }, []);\n\n  const stations = window.EV_STATIONS || [];\n  const focused = stations.find(s => s.id === focusedId);\n  const isBlurred = !!(focused || focusedCluster);\n  const selected = focused || stations.find(s => s.id === 'WB-410') || stations[0];\n\n  return (\n    <div className=\"stage\" data-screen-label=\"Network Map\">\n      {t.showHud && (<>\n        <div className=\"bracket tl\"/><div className=\"bracket tr\"/>\n        <div className=\"bracket bl\"/><div className=\"bracket br\"/>\n\n        <div className=\"hud-top\">\n          <span><i/> SCANNING<\u002Fspan>\n          <span>NETWORK · INDIA<\u002Fspan>\n          <span>UTC {now}<\u002Fspan>\n        <\u002Fdiv>\n\n        <div className=\"hud-tl\">\n          <div className=\"hud-title\">ChargeOps · v4.2<\u002Fdiv>\n          <div>GRID · IND<\u002Fdiv>\n          <div>LAT <b>20.59° N<\u002Fb><\u002Fdiv>\n          <div>LON <b>78.96° E<\u002Fb><\u002Fdiv>\n          <div>ZOOM <b>1.0×<\u002Fb><\u002Fdiv>\n        <\u002Fdiv>\n\n        <div className=\"hud-tr\">\n          <div className=\"hud-title\">Network<\u002Fdiv>\n          <div>STATIONS <b>{stations.length}<\u002Fb><\u002Fdiv>\n          <div>STATES <b>{new Set(stations.map(s=>s.state)).size}<\u002Fb><\u002Fdiv>\n          <div>CAPACITY <b>{(stations.reduce((a,b)=>a+b.kw,0)/1000).toFixed(2)} MW<\u002Fb><\u002Fdiv>\n        <\u002Fdiv>\n\n        <div className=\"hud-bl\">\n          <div className=\"hud-title\">Selected<\u002Fdiv>\n          <div>ID <b>{selected.id}<\u002Fb><\u002Fdiv>\n          <div>SITE <b>{selected.name}<\u002Fb><\u002Fdiv>\n          <div>POWER <b>{selected.kw} kW<\u002Fb><\u002Fdiv>\n          <div>CONN <b>{selected.conn}<\u002Fb><\u002Fdiv>\n        <\u002Fdiv>\n\n        <div className=\"hud-br\">\n          <div className=\"hud-title\">Legend<\u002Fdiv>\n          <div><span style={{display:'inline-block',width:8,height:8,borderRadius:'50%',background:t.accent,marginRight:6,boxShadow:`0 0 6px ${t.accent}`}}/>CCS · DC FAST<\u002Fdiv>\n          <div><span style={{display:'inline-block',width:8,height:8,borderRadius:'50%',background:'#f5b400',marginRight:6,boxShadow:'0 0 6px #f5b400'}}/>CHAdeMO<\u002Fdiv>\n          <div><span style={{display:'inline-block',width:8,height:8,borderRadius:'50%',background:'#3aa0ff',marginRight:6,boxShadow:'0 0 6px #3aa0ff'}}/>TYPE 2<\u002Fdiv>\n        <\u002Fdiv>\n      <\u002F>)}\n\n      <div className=\"map-shell\">\n        <window.IndiaMap\n          accent={t.accent} ink=\"#00ff88\" bg=\"#0c0e0d\" dark={true}\n          width={900} height={900}\n          scanning={true}\n          showScanRing={t.showScanRing}\n          hoveredId={focusedId} selectedId={focusedId}\n          blurred={isBlurred}\n          onStationHover={(s) => { if (s) openStation(s); else scheduleClose(); }}\n          onStationClick={(s) => openStation(s)}\n          onClusterHover={(c) => { if (c) openCluster(c); else scheduleClose(); }}\n          onClusterClick={(c) => openCluster(c)}\n        />\n        {focused && (\n          <div onMouseEnter={cancelClose} onMouseLeave={scheduleClose}\n               style={{ position:'absolute', inset:0, pointerEvents:'none', zIndex:5 }}>\n            <window.StationPopup\n              station={focused}\n              accent={t.accent}\n              onClose={() => setFocusedId(null)}\n            />\n          <\u002Fdiv>\n        )}\n        {focusedCluster && (\n          <div onMouseEnter={cancelClose} onMouseLeave={scheduleClose}\n               style={{ position:'absolute', inset:0, pointerEvents:'none', zIndex:5 }}>\n            <window.ClusterPopup\n              cluster={focusedCluster}\n              accent={t.accent}\n              onPick={(s) => { setFocusedCluster(null); setFocusedId(s.id); }}\n              onClose={() => setFocusedCluster(null)}\n            />\n          <\u002Fdiv>\n        )}\n      <\u002Fdiv>\n\n      <TweaksPanel>\n        <TweakSection label=\"Display\" />\n        <TweakToggle label=\"HUD overlay\" value={t.showHud} onChange={(v) => setTweak('showHud', v)} />\n        <TweakToggle label=\"Radar scan ring\" value={t.showScanRing} onChange={(v) => setTweak('showScanRing', v)} />\n        <TweakSection label=\"Style\" />\n        <TweakColor label=\"Accent\" value={t.accent} onChange={(v) => setTweak('accent', v)} />\n      <\u002FTweaksPanel>\n    <\u002Fdiv>\n  );\n}\n\nReactDOM.createRoot(document.getElementById('root')).render(<NetworkMap />);\n<\u002Fscript>\n\n\n<\u002Fbody><\u002Fhtml>"
   </script>
 </body>
-
 </html>

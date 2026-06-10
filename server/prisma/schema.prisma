@@ -269,7 +269,6 @@ model Station {
   tariff    Float    @default(20)
   enabled   Boolean  @default(true)
   order     Int      @default(0)
-  images    Json     @default("[]")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

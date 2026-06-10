@@ -15,7 +15,6 @@ const select = {
     tariff: true,
     enabled: true,
     order: true,
-    images: true,
 } satisfies Prisma.StationSelect;
 
 export async function list() {
@@ -51,7 +50,6 @@ export async function create(input: StationUpsertInput) {
             tariff: input.tariff,
             enabled: input.enabled ?? true,
             order,
-            images: (input.images ?? []) as unknown as Prisma.InputJsonValue,
         },
         select,
     });
@@ -73,7 +71,6 @@ export async function update(id: string, input: StationUpsertInput) {
             tariff: input.tariff,
             enabled: input.enabled ?? existing.enabled,
             order: input.order ?? existing.order,
-            images: (input.images ?? existing.images ?? []) as unknown as Prisma.InputJsonValue,
         },
         select,
     });

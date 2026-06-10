@@ -12,7 +12,6 @@
         "./dashboard": "./src/dashboard.ts",
         "./blog": "./src/blog.ts",
         "./blog-render": "./src/blog-render.ts",
-        "./station": "./src/station.ts",
         "./carousel": "./src/carousel.ts",
         "./notice": "./src/notice.ts"
     },
