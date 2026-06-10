@@ -172,16 +172,18 @@ document.addEventListener('DOMContentLoaded', async function() {
               finalBytes = new TextEncoder().encode(__txt);
             }
 
-            // === GET DIRECTIONS PATCH: compact inline link inside the status row, single line ===
+            // === GET DIRECTIONS PATCH: blue button BELOW the status row, desktop only ===
             if (__txt.indexOf('<div className="pp-status"><i/> ONLINE') !== -1) {
               var __dirLink =
-                '<div className="pp-status" style={{whiteSpace:"nowrap",fontSize:10,letterSpacing:"0.1em",gap:5}}>' +
-                '<i/> ONLINE · ACCEPTING · ' +
+                '<div>' +
+                '<div className="pp-status"><i/> ONLINE · ACCEPTING SESSIONS</div>' +
+                '{(typeof window !== "undefined" && window.innerWidth >= 900) ? (' +
                 '<a href={"https://www.google.com/maps/dir/?api=1&destination=" + (station && station.lat) + "," + (station && station.lon)} target="_blank" rel="noopener noreferrer" title="Get directions" ' +
-                'style={{color:"#5ec8ff",textDecoration:"none",display:"inline-flex",alignItems:"center",gap:3,fontWeight:700,cursor:"pointer"}}>' +
-                '<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>' +
+                'style={{color:"#04121f",textDecoration:"none",display:"inline-flex",alignItems:"center",gap:4,fontWeight:800,cursor:"pointer",border:"none",borderRadius:6,padding:"5px 12px",background:"#5ec8ff",lineHeight:1,boxShadow:"0 2px 8px rgba(94,200,255,0.4)",marginTop:8,fontSize:11,letterSpacing:"0.1em"}}>' +
+                '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>' +
                 'DIRECTIONS' +
-                '</a></div>';
+                '</a>) : null}' +
+                '</div>';
               __txt = __txt.replace(
                 '<div className="pp-status"><i/> ONLINE · ACCEPTING SESSIONS</div>',
                 __dirLink
